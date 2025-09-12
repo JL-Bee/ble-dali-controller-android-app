@@ -285,4 +285,5 @@ fun GattErrorCode.toNodeConnectionErrorCode() = when(this) {
   GattErrorCode.PreconditionFailed -> NodeConnectionErrorCode.PreconditionFailed
   GattErrorCode.SerializationFailed -> NodeConnectionErrorCode.SerializationFailed
   GattErrorCode.WriteCharacteristicValueMismatch -> NodeConnectionErrorCode.WriteCharacteristicValueMismatch
+  GattErrorCode.MissingPermission -> NodeConnectionErrorCode.MissingPermission
 }

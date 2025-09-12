@@ -323,7 +323,8 @@ class GattConnectionService constructor(
             GattErrorCode.PreconditionFailed,
             GattErrorCode.SerializationFailed,
             GattErrorCode.GattMethodFailed,
-            GattErrorCode.WriteCharacteristicValueMismatch -> Log.e(
+            GattErrorCode.WriteCharacteristicValueMismatch,
+            GattErrorCode.MissingPermission -> Log.e(
               TAG, "Error while executing ${it.operationIdentifier}: ${it.code}")
           }
         }
