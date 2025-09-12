@@ -2,7 +2,10 @@ package com.remoticom.streetlighting.services.bluetooth.gatt.connection
 
 import android.bluetooth.*
 import android.content.Context
+import android.content.pm.PackageManager
 import android.util.Log
+import androidx.core.app.ActivityCompat
+import android.Manifest
 import com.remoticom.streetlighting.services.bluetooth.gatt.bdc.bdcServiceMatchingMask
 import com.remoticom.streetlighting.services.bluetooth.gatt.bdc.getBdcCharacteristic
 import com.remoticom.streetlighting.services.bluetooth.gatt.zsc010.getZsc010Characteristic
@@ -42,8 +45,43 @@ class GattConnection(
 
   fun connectGatt(autoConnect: Boolean = false) {
     Log.v(TAG, "connectGatt initiated")
-    gatt = device.connectGatt(context, autoConnect, this)
-    macAddress = null
+
+    if (
+      ActivityCompat.checkSelfPermission(
+        context,
+        Manifest.permission.BLUETOOTH_CONNECT
+      ) != PackageManager.PERMISSION_GRANTED
+    ) {
+      Log.e(TAG, "BLUETOOTH_CONNECT permission not granted")
+      callback?.onConnectionStateChange(
+        gatt,
+        BluetoothGatt.GATT_FAILURE,
+        BluetoothProfile.STATE_DISCONNECTED
+      )
+      currentOperation?.onConnectionStateChange(
+        gatt,
+        BluetoothGatt.GATT_FAILURE,
+        BluetoothProfile.STATE_DISCONNECTED
+      )
+      return
+    }
+
+    try {
+      gatt = device.connectGatt(context, autoConnect, this)
+      macAddress = null
+    } catch (securityException: SecurityException) {
+      Log.e(TAG, "SecurityException during connectGatt", securityException)
+      callback?.onConnectionStateChange(
+        gatt,
+        BluetoothGatt.GATT_FAILURE,
+        BluetoothProfile.STATE_DISCONNECTED
+      )
+      currentOperation?.onConnectionStateChange(
+        gatt,
+        BluetoothGatt.GATT_FAILURE,
+        BluetoothProfile.STATE_DISCONNECTED
+      )
+    }
   }
 
   fun disconnect() = gatt?.let {

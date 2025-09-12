@@ -13,7 +13,7 @@ class ConnectGattOperation : GattOperation<Boolean>() {
   }
 
   override fun onConnectionStateChange(
-    gatt: BluetoothGatt,
+    gatt: BluetoothGatt?,
     status: Int,
     newState: Int
   ) {
