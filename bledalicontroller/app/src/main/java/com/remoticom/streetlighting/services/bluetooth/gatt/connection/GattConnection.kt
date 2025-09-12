@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import android.Manifest
+import android.os.Build
 import com.remoticom.streetlighting.services.bluetooth.gatt.bdc.bdcServiceMatchingMask
 import com.remoticom.streetlighting.services.bluetooth.gatt.bdc.getBdcCharacteristic
 import com.remoticom.streetlighting.services.bluetooth.gatt.zsc010.getZsc010Characteristic
@@ -60,7 +61,11 @@ class GattConnection(
     }
 
     try {
-      gatt = device.connectGatt(context, autoConnect, this)
+      gatt = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        device.connectGatt(context, autoConnect, this, BluetoothDevice.TRANSPORT_LE)
+      } else {
+        device.connectGatt(context, autoConnect, this)
+      }
       macAddress = null
     } catch (securityException: SecurityException) {
       Log.e(TAG, "SecurityException during connectGatt", securityException)
