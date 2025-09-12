@@ -17,7 +17,8 @@ enum class GattErrorCode {
   GattMethodFailed,
   PreconditionFailed,
   SerializationFailed,
-  WriteCharacteristicValueMismatch
+  WriteCharacteristicValueMismatch,
+  MissingPermission
 }
 
 abstract class GattOperation<T> : BluetoothGattCallback() {

@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import com.google.android.material.navigation.NavigationView
@@ -46,6 +47,23 @@ class MainActivity : AppCompatActivity(), CoroutineScopeProvider {
   private val REQUEST_PERMISSION_ACCESS_FINE_LOCATION = 5000
 
   private var authenticationStatus: AuthenticationService.Status? = null
+
+  private var bluetoothPermissionsGranted = false
+
+  private val bluetoothPermissionLauncher: ActivityResultLauncher<Array<String>> =
+    registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+      bluetoothPermissionsGranted =
+        permissions[Manifest.permission.BLUETOOTH_SCAN] == true &&
+        permissions[Manifest.permission.BLUETOOTH_CONNECT] == true
+
+      permissions.entries.forEach { permission ->
+        Log.d(TAG, "${permission.key} = ${permission.value}")
+      }
+
+      if (!bluetoothPermissionsGranted) {
+        showBluetoothPermissionDialog()
+      }
+    }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     setTheme(R.style.AppTheme_NoActionBar)
@@ -212,24 +230,46 @@ class MainActivity : AppCompatActivity(), CoroutineScopeProvider {
     // https://developer.android.com/guide/topics/connectivity/bluetooth/permissions
     // https://stackoverflow.com/questions/67722950/android-12-new-bluetooth-permissions
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-      val requestPermissions =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-          permissions.entries.forEach { permission ->
-            Log.d(TAG, "${permission.key} = ${permission.value}")
-          }
-        }
+      val scanGranted =
+        ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) ==
+          PackageManager.PERMISSION_GRANTED
+      val connectGranted =
+        ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) ==
+          PackageManager.PERMISSION_GRANTED
 
-      Log.d(TAG, "Requesting BLUETOOTH_SCAN and BLUETOOTH_CONNECT permissions...")
+      bluetoothPermissionsGranted = scanGranted && connectGranted
 
-      requestPermissions.launch(
-        arrayOf(
-          Manifest.permission.BLUETOOTH_SCAN,
-          Manifest.permission.BLUETOOTH_CONNECT
+      if (!bluetoothPermissionsGranted) {
+        Log.d(TAG, "Requesting BLUETOOTH_SCAN and BLUETOOTH_CONNECT permissions...")
+        bluetoothPermissionLauncher.launch(
+          arrayOf(
+            Manifest.permission.BLUETOOTH_SCAN,
+            Manifest.permission.BLUETOOTH_CONNECT
+          )
         )
-      )
+      }
     } else {
       Log.d(TAG, "No need to request BLUETOOTH_SCAN and BLUETOOTH_CONNECT permissions on Android version ${Build.VERSION.SDK_INT}")
     }
+  }
+
+  private fun showBluetoothPermissionDialog() {
+    MaterialAlertDialogBuilder(this)
+      .setTitle(R.string.main_dialog_permission_bluetooth_title)
+      .setMessage(R.string.main_dialog_permission_bluetooth_message)
+      .setNegativeButton(R.string.main_dialog_permission_bluetooth_negative_button) { _, _ ->
+        Log.w(TAG, "User skipped bluetooth permission")
+      }
+      .setPositiveButton(R.string.main_dialog_permission_bluetooth_positive_button) { _, _ ->
+        Log.d(TAG, "User wants bluetooth permission")
+        bluetoothPermissionLauncher.launch(
+          arrayOf(
+            Manifest.permission.BLUETOOTH_SCAN,
+            Manifest.permission.BLUETOOTH_CONNECT
+          )
+        )
+      }
+      .show()
   }
 
   private fun checkLocationPermission(requestCode: Int) {

@@ -9,6 +9,11 @@
   <string name="main_dialog_permission_location_positive_button">Ok</string>
   <string name="main_dialog_permission_location_negative_button">Skip</string>
 
+  <string name="main_dialog_permission_bluetooth_title">@string/app_name</string>
+  <string name="main_dialog_permission_bluetooth_message">Bluetooth permissions are required to connect to devices.</string>
+  <string name="main_dialog_permission_bluetooth_positive_button">Ok</string>
+  <string name="main_dialog_permission_bluetooth_negative_button">Skip</string>
+
   <string name="menu_signin">Sign in</string>
   <string name="menu_home">Home</string>
   <string name="menu_help">Help</string>
