@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Mains",
+    "mode": 0
+  },
+  {
+    "name": "Astroclock",
+    "mode": 1
+  },
+  {
+    "name": "Photocell",
+    "mode": 2
+  }
+]

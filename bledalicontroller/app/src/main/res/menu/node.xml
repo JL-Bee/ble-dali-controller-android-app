@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+  <item
+    android:id="@+id/action_node_report_problem"
+    android:orderInCategory="100"
+    android:title="@string/node_menu_report_problem_title"
+    app:showAsAction="never" />
+  <item
+    android:id="@+id/action_clear_configurations"
+    android:orderInCategory="200"
+    android:title="@string/node_menu_clear_configurations_title"
+    app:showAsAction="never" />
+</menu>

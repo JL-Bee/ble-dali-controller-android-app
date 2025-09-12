@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/mobile_navigation"
+  app:startDestination="@+id/nav_signin">
+
+  <fragment
+    android:id="@+id/nav_signin"
+    android:name="com.remoticom.streetlighting.ui.login.LoginFragment"
+    android:label="@string/login_title"
+    tools:layout="@layout/fragment_login" />
+
+  <fragment
+    android:id="@+id/nav_home"
+    android:name="com.remoticom.streetlighting.ui.nodes.NodeListFragment"
+    android:label="@string/menu_home"
+    tools:layout="@layout/fragment_node_list">
+    <action
+      android:id="@+id/action_nav_home_to_nav_nodesettings"
+      app:destination="@id/nav_node_settings" />
+    <action
+      android:id="@+id/action_nav_home_to_nav_nodeinfo"
+      app:destination="@id/nav_node_info" />
+  </fragment>
+
+  <fragment
+    android:id="@+id/nav_about"
+    android:name="com.remoticom.streetlighting.ui.about.AboutFragment"
+    android:label="@string/menu_about"
+    tools:layout="@layout/fragment_about">
+    <action
+      android:id="@+id/action_nav_about_to_nav_web_text"
+      app:destination="@id/nav_web_text" />
+  </fragment>
+
+  <fragment
+    android:id="@+id/nav_signout"
+    android:name="com.remoticom.streetlighting.ui.signout.SignoutFragment"
+    android:label="@string/menu_signout"
+    tools:layout="@layout/fragment_signout" />
+
+  <fragment
+    android:id="@+id/nav_node_settings"
+    android:name="com.remoticom.streetlighting.ui.nodes.settings.NodeSettingsFragment"
+    android:label="{title}"
+    tools:layout="@layout/fragment_node_settings">
+    <action
+      android:id="@+id/action_nav_nodesettings_to_nav_nodeinfo"
+      app:destination="@id/nav_node_info" />
+    <argument
+      android:name="nodeId"
+      app:argType="string" />
+    <argument
+      android:name="deviceType"
+      app:argType="string" />
+    <action
+      android:id="@+id/action_nav_node_settings_to_nav_node_write_confirmation"
+      app:destination="@id/nav_node_write_confirmation" />
+    <argument
+      android:name="title"
+      app:argType="string" />
+
+    <action
+      android:id="@+id/action_nav_node_settings_to_nav_node_dim_plan"
+      app:destination="@id/nav_node_dim_plan" />
+  </fragment>
+
+  <fragment
+    android:id="@+id/nav_node_info"
+    android:name="com.remoticom.streetlighting.ui.nodes.info.NodeInfoListFragment"
+    android:label="@string/node_info_title"
+    tools:layout="@layout/fragment_node_info_list">
+    <argument
+      android:name="nodeId"
+      app:argType="string" />
+  </fragment>
+
+  <fragment
+    android:id="@+id/nav_node_dim_plan"
+    android:name="com.remoticom.streetlighting.ui.nodes.dimplan.NodeDimPlanListFragment"
+    android:label="@string/node_dim_plan_title"
+    tools:layout="@layout/fragment_node_dim_plan_list">
+    <argument
+      android:name="nodeId"
+      app:argType="string" />
+    <argument
+      android:name="deviceType"
+      app:argType="string" />
+    <action
+      android:id="@+id/action_nav_node_dim_plan_to_nav_node_dim_plan_settings"
+      app:destination="@id/nav_node_dim_plan_settings" />
+  </fragment>
+
+  <fragment
+    android:id="@+id/nav_node_dim_plan_settings"
+    android:name="com.remoticom.streetlighting.ui.nodes.dimplan.settings.NodeDimPlanSettingsFragment"
+    android:label="@string/node_dim_plan_settings_title"
+    tools:layout="@layout/fragment_node_dim_plan_settings">
+    <argument
+      android:name="nodeId"
+      app:argType="string" />
+    <argument
+      android:name="dimStepId"
+      app:argType="integer" />
+  </fragment>
+
+  <fragment
+    android:id="@+id/nav_node_write_confirmation"
+    android:name="com.remoticom.streetlighting.ui.nodes.settings.write.NodeWriteConfirmationFragment"
+    android:label="@string/node_write_confirmation_title"
+    tools:layout="@layout/fragment_node_write_confirmation">
+    <argument
+      android:name="nodeId"
+      app:argType="string" />
+    <argument
+      android:name="success"
+      app:argType="boolean" />
+  </fragment>
+
+  <fragment
+    android:id="@+id/nav_web_text"
+    android:name="com.remoticom.streetlighting.ui.common.WebTextFragment"
+    tools:layout="@layout/fragment_web_text">
+
+    <argument
+      android:name="uri"
+      app:argType="reference" />
+    <argument
+      android:name="title"
+      app:argType="reference" />
+  </fragment>
+
+  <fragment
+    android:id="@+id/nav_help"
+    android:name="com.remoticom.streetlighting.ui.common.WebTextFragment"
+    tools:layout="@layout/fragment_web_text"
+    android:label="Help" />
+
+  <action
+    android:id="@+id/nav_global_signin"
+    app:destination="@id/nav_signin"
+    app:popUpTo="@id/mobile_navigation"
+    app:popUpToInclusive="true" />
+
+  <action
+    android:id="@+id/nav_global_home"
+    app:destination="@id/nav_home"
+    app:popUpTo="@id/mobile_navigation"
+    app:popUpToInclusive="true" />
+
+  <action
+    android:id="@+id/nav_global_about"
+    app:destination="@id/nav_about"
+    app:popUpTo="@id/mobile_navigation"
+    app:popUpToInclusive="true" />
+
+  <action
+    android:id="@+id/nav_global_help"
+    app:destination="@+id/nav_help"
+    app:popUpTo="@id/mobile_navigation"
+    app:popUpToInclusive="true">
+
+    <argument
+      android:name="uri"
+      app:argType="reference"
+      android:defaultValue="@string/help_url" />
+
+    <argument
+      android:name="title"
+      app:argType="reference"
+      android:defaultValue="@string/help_title" />
+
+  </action>
+
+  <action
+    android:id="@+id/nav_global_signout"
+    app:destination="@id/nav_signout"
+    app:popUpTo="@id/mobile_navigation"
+    app:popUpToInclusive="true" />
+
+</navigation>

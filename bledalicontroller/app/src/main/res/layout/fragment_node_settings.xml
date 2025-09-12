@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View"/>
+
+    <variable
+      name="viewmodel"
+      type="com.remoticom.streetlighting.ui.nodes.settings.NodeSettingsViewModel" />
+
+    <variable
+      name="aboutNodeClickListener"
+      type="android.view.View.OnClickListener" />
+
+    <variable
+      name="dimPlanSettingsClickListener"
+      type="android.view.View.OnClickListener" />
+
+    <variable
+      name="toggleConnectionClickListener"
+      type="android.view.View.OnClickListener" />
+
+    <variable
+      name="writeNodeClickListener"
+      type="android.view.View.OnClickListener" />
+
+    <variable
+      name="loadConfigurationClickListener"
+      type="android.view.View.OnClickListener" />
+
+    <variable
+      name="saveConfigurationClickListener"
+      type="android.view.View.OnClickListener" />
+
+  </data>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.nodes.settings.NodeSettingsFragment">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="@dimen/fragment_padding"
+      android:orientation="vertical">
+
+      <Button
+        android:id="@+id/node_settings_button_about_node"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_big_height"
+        android:text="@string/node_settings_about_node_button_text"
+        android:onClick="@{aboutNodeClickListener}" />
+
+      <Space
+        android:layout_width="match_parent"
+        android:layout_height="5dp" />
+
+      <Button
+        android:id="@+id/node_settings_button_disconnect"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_big_height"
+        app:buttonForNode="@{viewmodel.state.currentNode}"
+        android:text="@string/node_settings_disconnect_node_button_text"
+        android:onClick="@{toggleConnectionClickListener}" />
+
+      <Space
+        android:layout_width="match_parent"
+        android:layout_height="5dp" />
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+          android:id="@+id/node_settings_button_configuration_load"
+          android:layout_width="0dp"
+          android:layout_height="@dimen/button_big_height"
+          android:layout_weight="1"
+          android:text="@string/node_settings_load_configuration_button_text"
+          android:onClick="@{loadConfigurationClickListener}"/>
+
+        <Space
+          android:layout_width="12dp"
+          android:layout_height="match_parent" />
+
+        <Button
+          android:id="@+id/node_settings_button_configuration_save"
+          android:layout_width="0dp"
+          android:layout_height="@dimen/button_big_height"
+          android:layout_weight="1"
+          android:text="@string/node_settings_save_configuration_button_text"
+          android:onClick="@{saveConfigurationClickListener}"/>
+
+      </LinearLayout>
+
+      <Space
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+
+      <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="*">
+
+        <TableRow
+          android:id="@+id/node_settings_row_fadetime_labels"
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+
+          <TextView
+            android:text="@string/node_settings_light_level_label" />
+
+          <TextView
+            android:id="@+id/node_settings_textview_light_level"
+            android:text="@{viewmodel.state.editedNode.dimLevel }"
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            app:enabledWhenConnected="@{viewmodel.state.connectionStatus}" />
+
+        </TableRow>
+
+        <TableRow
+          android:id="@+id/node_settings_row_fadetime_controls"
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+
+          <LinearLayout
+            android:orientation="horizontal"
+            android:layout_span="2"
+            android:layout_height="wrap_content">
+
+            <TextView
+              android:layout_width="30dp"
+              android:layout_height="wrap_content"
+              android:text="@string/node_settings_light_level_min_zsc010"
+              android:layout_gravity="center_vertical"
+              app:rangeMinimumForDeviceType="@{viewmodel.state.currentNode.deviceType}"/>
+
+            <!-- Avoid slider value out of range for SNO110 when dimLevel null -->
+            <com.google.android.material.slider.Slider
+              android:id="@+id/node_settings_slider_light_level"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:layout_marginHorizontal="10dp"
+              android:value="@{viewmodel.state.editedNode.dimLevel == null ? viewmodel.safeDefaultDimLevelForDeviceType(viewmodel.state.currentNode.deviceType) : viewmodel.state.editedNode.dimLevel}"
+              android:stepSize="5.0"
+              app:labelBehavior="gone"
+              app:enabledWhenConnectedAndModeNominal="@{viewmodel.state.connectionStatus}"
+              app:generalMode="@{viewmodel.state.editedNode.generalMode}"
+              app:rangeForDeviceType="@{viewmodel.state.currentNode.deviceType}"/>
+
+            <TextView
+              android:layout_width="30dp"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical|end"
+              android:textAlignment="textEnd"
+              app:rangeMaximumForDeviceType="@{viewmodel.state.currentNode.deviceType}"/>
+
+          </LinearLayout>
+
+        </TableRow>
+
+        <TableRow
+          android:id="@+id/node_settings_row_fadetime_space"
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+
+          <Space
+            android:layout_height="10dp"
+            android:layout_width="0dp"
+            android:layout_weight="1" />
+        </TableRow>
+
+        <TableRow
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+
+          <TextView
+            android:text="@string/node_settings_fade_time_label" />
+
+          <TextView
+            android:id="@+id/node_settings_textview_fade_time"
+            android:text="0"
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            app:textWithFadeTimeScaling="@{viewmodel.state.editedNode.daliFadeTime}"
+            app:enabledWhenConnected="@{viewmodel.state.connectionStatus}" />
+
+        </TableRow>
+
+        <TableRow
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+
+          <LinearLayout
+            android:orientation="horizontal"
+            android:layout_span="2"
+            android:layout_height="wrap_content">
+
+            <TextView
+              android:layout_width="30dp"
+              android:layout_height="wrap_content"
+              android:text="@string/node_settings_fade_time_min"
+              android:layout_gravity="center_vertical"/>
+
+            <com.google.android.material.slider.Slider
+              android:id="@+id/node_settings_slider_fade_time"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:layout_marginHorizontal="10dp"
+              android:valueFrom="0"
+              android:valueTo="15"
+              android:value="@={viewmodel.state.editedNode.daliFadeTime}"
+              android:stepSize="1.0"
+              app:labelBehavior="gone"
+              app:enabledWhenConnected="@{viewmodel.state.connectionStatus}"/>
+
+            <TextView
+              android:layout_width="30dp"
+              android:layout_height="wrap_content"
+              android:text="@string/node_settings_fade_time_max"
+              android:layout_gravity="center_vertical|end"
+              android:textAlignment="textEnd" />
+
+          </LinearLayout>
+
+        </TableRow>
+
+
+        <!-- Hidden (not supported by ZSC010 hardware/firmware) -->
+        <TableRow
+          android:visibility="gone"
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+
+          <TextView
+            android:id="@+id/node_settings_textview_power"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/node_settings_power_label" />
+
+          <TextView
+            android:id="@+id/node_settings_textview_scheme"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/node_settings_scheme_label" />
+        </TableRow>
+
+        <!-- Hidden (not supported by ZSC010 hardware/firmware) -->
+        <TableRow
+          android:visibility="gone"
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+
+          <Spinner
+            android:id="@+id/node_settings_spinner_power"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            app:enabledWhenConnected="@{viewmodel.state.connectionStatus}"/>
+
+
+          <Spinner
+            android:id="@+id/node_settings_spinner_scheme"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            app:enabledWhenConnected="@{viewmodel.state.connectionStatus}"/>
+
+        </TableRow>
+
+        <TableRow
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+
+          <Space
+            android:layout_height="10dp"
+            android:layout_width="0dp"
+            android:layout_weight="1" />
+        </TableRow>
+
+        <TableRow
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+
+          <TextView
+            android:id="@+id/node_settings_textview_switching"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/node_settings_switch_label" />
+
+          <!-- Hidden (not supported by ZSC010 hardware/firmware) -->
+          <TextView
+            android:visibility="gone"
+            android:id="@+id/node_settings_textview_clo"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/node_settings_clo_label" />
+        </TableRow>
+
+        <TableRow
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+
+          <Spinner
+            android:id="@+id/node_settings_spinner_switching"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            app:enabledWhenConnected="@{viewmodel.state.connectionStatus}" />
+
+          <!-- Hidden (not supported by ZSC010 hardware/firmware) -->
+          <androidx.appcompat.widget.SwitchCompat
+            android:visibility="invisible"
+            android:id="@+id/node_settings_switch_clo"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            app:enabledWhenConnected="@{viewmodel.state.connectionStatus}" />
+
+        </TableRow>
+
+        <TableRow
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+
+          <Space
+            android:layout_height="10dp"
+            android:layout_width="0dp"
+            android:layout_weight="1" />
+        </TableRow>
+
+        <TableRow
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+
+          <TextView
+            android:text="@string/node_settings_time_midnight_shift_label" />
+
+          <TextView
+            android:id="@+id/node_settings_textview_time_midnight_shift"
+            android:text="@{viewmodel.state.editedNode.timeMidnightOffset}"
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            app:enabledWhenConnected="@{viewmodel.state.connectionStatus}" />
+        </TableRow>
+
+        <TableRow
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+
+          <LinearLayout
+            android:orientation="horizontal"
+            android:layout_span="2"
+            android:layout_height="wrap_content">
+
+            <TextView
+              android:layout_width="30dp"
+              android:layout_height="wrap_content"
+              android:text="@string/node_settings_time_midnight_shift_min"
+              android:layout_gravity="center_vertical"/>
+
+            <com.google.android.material.slider.Slider
+              android:id="@+id/node_settings_slider_time_midnight_shift"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:layout_marginHorizontal="10dp"
+              android:valueFrom="-60"
+              android:valueTo="60"
+              android:value="@={viewmodel.state.editedNode.timeMidnightOffset}"
+              android:stepSize="1.0"
+              app:labelBehavior="gone"
+              app:enabledWhenConnected="@{viewmodel.state.connectionStatus}"/>
+
+            <TextView
+              android:layout_width="30dp"
+              android:layout_height="wrap_content"
+              android:text="@string/node_settings_time_midnight_shift_max"
+              android:layout_gravity="center_vertical|end"
+              android:textAlignment="textEnd" />
+
+          </LinearLayout>
+
+        </TableRow>
+
+        <TableRow
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+
+          <Space
+            android:layout_height="10dp"
+            android:layout_width="0dp"
+            android:layout_weight="1" />
+        </TableRow>
+
+      </TableLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingTop="10dp"
+        android:orientation="vertical">
+
+        <Button
+          android:id="@+id/node_settings_button_dim_plan_settings"
+          android:text="@string/node_settings_dim_plan_button_title"
+          android:layout_width="match_parent"
+          android:layout_height="60dp"
+          app:enabledWhenConnectedAndModeStepDimming="@{viewmodel.state.connectionStatus}"
+          app:generalMode="@{viewmodel.state.editedNode.generalMode}"
+          android:onClick="@{dimPlanSettingsClickListener}" />
+
+        <Button
+          android:id="@+id/node_settings_button_save"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/button_big_height"
+          android:layout_gravity="bottom"
+          android:text="@string/node_settings_write_button_text"
+          app:enabledWhenConnected="@{viewmodel.state.connectionStatus}"
+          android:onClick="@{writeNodeClickListener}"/>
+
+      </LinearLayout>
+
+    </LinearLayout>
+  </ScrollView>
+</layout>

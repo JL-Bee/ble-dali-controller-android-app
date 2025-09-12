@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">EnergyNode Inset</string>
+  <string name="nav_header_title">EnergyNode Inset</string>
+  <string name="nav_header_subtitle">(déconnecté)</string>
+  <string name="action_settings">Paramètres</string>
+
+  <string name="main_dialog_permission_location_title">@string/app_name</string>
+  <string name="main_dialog_permission_location_message">L\'autorisation de localisation est nécessaire pour que la fonctionnalité Bluetooth fonctionne correctement.</string>
+  <string name="main_dialog_permission_location_positive_button">Ok</string>
+  <string name="main_dialog_permission_location_negative_button">Ignorer</string>
+
+  <string name="menu_signin">Se connecter</string>
+  <string name="menu_home">Accueil</string>
+  <string name="menu_help">Aide</string>
+  <string name="menu_about">À propos de</string>
+  <string name="menu_signout">Se déconnecter</string>
+
+  <string name="disclaimer_title">Avis de non-responsabilité</string>
+  <string name="node_list_title">Sélectionnez un nœud</string>
+
+  <string name="node_list_item_unnamed_device">[sans nom]</string>
+
+  <string name="node_list_no_nodes_found">Aucun appareil trouvé. Appuyez sur le bouton ci-dessous pour rescanner</string>
+  <string name="node_list_invalid_permissions">Impossible de numériser. L\'application n\'a pas d\'autorisations.</string>
+
+  <string name="node_list_claim_node_error_title">Erreur de réclamation de propriété</string>
+  <string name="node_list_claim_node_error_message_format">Une erreur s\'est produite en essayant de revendiquer le nœud. Veuillez réessayer ou contacter le support.\n\nErreur : %1$s</string>
+  <string name="node_list_claim_node_error_neutral_button_text">Ok</string>
+
+  <string name="node_button_text_loaded_null">Échec</string>
+  <string name="node_button_text_null">Chargement</string>
+  <string name="node_button_text_claim">Réclamer</string>
+  <string name="node_button_text_connect">Connecter</string>
+  <string name="node_button_text_connecting">Connexion</string>
+  <string name="node_button_text_disconnect">Déconnecter</string>
+  <string name="node_button_text_disconnecting">Déconnexion</string>
+  <string name="node_button_text_unknown">Réclamer</string>
+  <string name="node_button_text_loading">Chargement</string>
+  <string name="node_button_text_error">Erreur</string>
+
+  <string name="node_menu_report_problem_title">Signaler un problème avec le nœud</string>
+  <string name="node_menu_clear_configurations_title">Effacer les configurations enregistrées</string>
+
+  <string name="node_settings_title">Paramètres du nœud</string>
+  <string name="node_settings_about_node_button_text">À propos du nœud</string>
+  <string name="node_settings_disconnect_node_button_text">Déconnecter</string>
+  <string name="node_settings_power_label">Alimentation</string>
+  <string name="node_settings_scheme_label">Schéma</string>
+  <string name="node_settings_switch_label">On/Off</string>
+  <string name="node_settings_clo_label">Activer CLO ?</string>
+  <string name="node_settings_timezone_offset_label">Fuseau horaire</string>
+  <string name="node_settings_timezone_dst_label">Activer DST ?</string>
+
+  <string name="node_settings_light_level_label">Niveau de lumière réglable</string>
+  <string name="node_settings_light_level_min_zsc010">0</string>
+  <string name="node_settings_light_level_max_zsc010">100</string>
+  <string name="node_settings_light_level_min_sno110">10</string>
+  <string name="node_settings_light_level_max_sno110">100</string>
+
+  <string name="node_settings_fade_time_label">Temps d\'évanouissement (sec.)</string>
+  <string name="node_settings_fade_time_min">0</string>
+  <string name="node_settings_fade_time_max">90</string>
+
+  <string name="node_settings_dim_plan_button_label">Plan de gradation</string>
+  <string name="node_settings_dim_plan_switch_label">Activer le plan de gradation ?</string>
+  <string name="node_settings_dim_plan_button_title">Modifier les paramètres</string>
+
+  <string name="node_settings_time_midnight_shift_label">Décalage minuit</string>
+  <string name="node_settings_time_midnight_shift_min">-60</string>
+  <string name="node_settings_time_midnight_shift_max">+60</string>
+
+  <string name="node_settings_write_button_text">Ecrire dans le nœud</string>
+
+  <string name="node_settings_load_configuration_button_text">Charger config</string>
+  <string name="node_settings_save_configuration_button_text">Enregistrer config</string>
+
+  <string name="node_write_confirmation_title">Confirmation</string>
+  <string name="node_write_confirmation_error_message_format">Erreur de configuration du nœud : %1$s</string>
+  <string name="node_write_confirmation_success_message">Le nœud est configuré avec succès.</string>
+  <string name="node_write_confirmation_next_button_text">Suivant</string>
+
+  <string name="node_settings_configuration_load_dialog_title">Sélectionnez la configuration</string>
+  <string name="node_settings_configuration_load_dialog_neutral_button_text">Annuler</string>
+
+  <string name="node_settings_configuration_save_dialog_title">Nom de configuration</string>
+  <string name="node_settings_configuration_save_dialog_neutral_button_text">Annuler</string>
+  <string name="node_settings_configuration_save_dialog_positive_button_text">Enregistrer</string>
+
+  <string name="node_info_title">Informations sur le nœud</string>
+
+  <string name="node_info_owner_label">Propriétaire</string>
+  <string name="node_info_asset_name_label">Nom de l\'actif</string>
+  <string name="node_info_software_version_label">Version du logiciel</string>
+  <string name="node_info_gps_label">GPS</string>
+  <string name="node_info_time_label">Heure</string>
+  <string name="node_info_diagnostics_label">Diagnostics</string>
+
+  <string name="node_info_time_value_sno110_suffix">(non ajusté pour l\'heure avancée)</string>
+
+  <string name="node_info_null_value">(inconnu)</string>
+
+  <string name="node_info_save_asset_name_neutral_button_text">Ok</string>
+
+  <string name="node_info_edit_dialog_positive_button_text">Enregistrer</string>
+  <string name="node_info_edit_dialog_neutral_button_text">Annuler</string>
+
+  <string name="node_info_save_asset_name_success_title">Nom enregistré</string>
+  <string name="node_info_save_asset_name_success_message">Le nom du bien a été enregistré avec succès dans la base de données.</string>
+
+  <string name="node_info_save_asset_name_error_title">Erreur d\'enregistrement du nom</string>
+  <string name="node_info_save_asset_name_error_message_format">Une erreur s\'est produite lors de la tentative d\'enregistrement du nom de l\'actif. Veuillez réessayer ou contacter le service d\'assistance.\n\nErreur : %1$s</string>
+
+
+  <string name="node_info_error_message_should_logout_format">Votre session n\'est pas valide ou a expiré. Veuillez vous connecter et réessayer.\n\nErreur: %1$s</string>
+
+  <string name="node_info_unclaim_node_confirmation_title">Unclaim ownership?</string>
+  <string name="node_info_unclaim_node_confirmation_message">Êtes-vous sûr de vouloir abandonner la propriété de ce nœud ?</string>
+  <string name="node_info_unclaim_node_confirmation_title_positive_button_text">Oui</string>
+  <string name="node_info_unclaim_node_confirmation_title_negative_button_text">Non, Annuler</string>
+
+  <string name="node_info_unclaim_node_success_title">Nœud non réclamé</string>
+  <string name="node_info_unclaim_node_success_message">Vous avez réussi à libérer la propriété de ce nœud. Quelqu\'un d\'autre peut le réclamer maintenant.</string>
+  <string name="node_info_unclaim_node_success_neutral_button_text">Ok</string>
+
+  <string name="node_info_unclaim_node_error_title">Erreur de déréférencement de la propriété</string>
+  <string name="node_info_unclaim_node_error_message_format">Une erreur s\'est produite lors de la tentative d\'annulation de la propriété de ce nœud. Veuillez réessayer ou contacter le support\n\nErreur: %1$s</string>
+  <string name="node_info_unclaim_node_error_neutral_button_text">Ok</string>
+
+  <string name="node_info_gps_status_fixed">Le GPS est fixé</string>
+  <string name="node_info_gps_status_not_fixed">Le GPS n\'est pas fixé</string>
+
+  <string name="node_info_time_status_fixed">L\'heure est fixée</string>
+  <string name="node_info_time_status_not_fixed">L\'heure n\'est pas fixée</string>
+
+  <string name="node_dim_plan_title">Dim plan</string>
+
+  <string name="node_dim_plan_list_item_time">%02d:%02d</string>
+  <string name="node_dim_plan_list_item_level">%.0f%%</string>
+  <string name="node_dim_plan_list_add_button_text">Ajouter la dernière étape</string>
+  <string name="node_dim_plan_list_delete_button_text">Supprimer la dernière étape</string>
+
+  <string name="node_dim_plan_settings_title">Paramètres du plan dim</string>
+  <string name="node_dim_plan_settings_light_level_label">Niveau dim</string>
+
+  <string name="node_dim_plan_settings_light_level_min">0</string>
+  <string name="node_dim_plan_settings_light_level_max">100</string>
+
+  <string name="node_dim_plan_settings_cancel_button_title">Annuler</string>
+  <string name="node_dim_plan_settings_save_button_title">Sauvegarder</string>
+
+  <string name="login_title">Connexion</string>
+  <string name="login_username_hint">ID utilisateur</string>
+  <string name="login_password_hint">Mot de passe</string>
+  <string name="login_button_text">Se connecter ou s\'enregistrer</string>
+
+  <string name="logout_button_text">Se déconnecter</string>
+
+  <string name="about_copyright">Copyright © 2025 Remoticom</string>
+  <string name="about_rights">Tous droits réservés</string>
+  <string name="about_terms_and_conditions_button_text">Conditions d\'utilisation</string>
+  <string name="about_privacy_policy_button_text">Avis de confidentialité</string>
+
+  <string name="about_terms_of_use_url">https://storageaccountrtmus934f.blob.core.windows.net/b2cui/theme/ble-dali-termsofuse.html</string>
+  <string name="about_terms_of_use_title">Conditions d\'utilisation</string>
+
+  <string name="about_privacy_notice_url">https://storageaccountrtmus934f.blob.core.windows.net/b2cui/theme/privacy-fr.html</string>
+  <string name="about_privacy_notice_title">Avis de confidentialité</string>
+
+  <string name="help_title">Aide</string>
+  <string name="help_url">https://remoticom.com/en/contact/</string>
+
+  <string name="node_report_problem_email_address">support@remoticom.com</string>
+  <string name="node_report_problem_subject_format">Problème avec le nœud : %1$s</string>
+  <string name="node_report_problem_body_format">\n\nNom du nœud: %1$s\nAdresse du nœud: %2$s\nUUID du nœud: %3$s\nRSSI du nœud: %4$s\nVersion du micrologiciel du nœud: %5$s\nCode de diagnostic du nœud: %6$s (%7$s)\nPropriétaire du nœud: %8$s\nNom de l\'actif du nœud: %9$s\nEmplacement GPS du nœud: %10$s\nHeure du nœud: %11$s\n\nVersion de l\'application: %12$s\n</string>
+  <string name="node_report_problem_value_null">inconnue</string>
+  <string name="node_report_problem_gps_not_fixed">Aucun correctif</string>
+  <string name="node_report_problem_time_not_fixed">Aucun correctif</string>
+
+  <string name="node_error_description_none">OK</string>
+  <string name="node_error_description_d4i">ERREUR_D4I - Le pilote ne prend pas en charge D4I</string>
+  <string name="node_error_description_gps">ERREUR_GPS_ERREUR</string>
+  <string name="node_error_description_dali">ERREUR_DALI</string>
+  <string name="node_error_description_eeprom">ERREUR_EEPROM</string>
+  <string name="node_error_description_dim">ERREUR_DIM</string>
+  <string name="node_error_description_lux">ERREUR_LUX</string>
+  <string name="node_error_description_ble">ERREUR_BLE</string>
+  <string name="node_error_description_misc">ERREUR_MISC</string>
+  <string name="node_error_description_gps_no_fix">PAS DE_CORRECTION_GPS</string>
+
+  <string name="node_error_sno110_description_scheduler">ERREUR_PLANIFICATEUR</string>
+  <string name="node_error_sno110_description_alo">ERREUR_ALO</string>
+  <string name="node_error_sno110_description_clock">ERREUR_CLOCK</string>
+  <string name="node_error_sno110_description_gps">ERREUR_GNSS</string>
+  <string name="node_error_sno110_description_dali_bus">ERREUR_DALI_BUS</string>
+  <string name="node_error_sno110_description_dali_driver">ERREUR_DALI_DRIVER</string>
+  <string name="node_error_sno110_description_temp_mcu_1">ERREUR_TEMP_MCU_1</string>
+  <string name="node_error_sno110_description_temp_mcu_2">ERREUR_TEMP_MCU_2</string>
+  <string name="node_error_sno110_description_time_no_fix">PAS DE_CORRECTION_DE TEMPS</string>
+  <string name="node_error_sno110_description_position_no_fix">AUCUNE_POSITION_FIXE</string>
+
+  <string name="node_info_dali_memory_bank_1_0x03">Luminaire manufacturer GTIN</string>
+  <string name="node_info_dali_memory_bank_1_0x09">Luminaire identification number</string>
+  <string name="node_info_dali_memory_bank_1_0x11">Content format ID</string>
+  <string name="node_info_dali_memory_bank_1_0x13">Luminaire year of manufacture</string>
+  <string name="node_info_dali_memory_bank_1_0x14">Luminaire week of manufacture</string>
+  <string name="node_info_dali_memory_bank_1_0x15">Nominal input power</string>
+  <string name="node_info_dali_memory_bank_1_0x17">Power at minimum dim level</string>
+  <string name="node_info_dali_memory_bank_1_0x19">Nominal minimum AC mains voltage</string>
+  <string name="node_info_dali_memory_bank_1_0x1B">Nominal maximum AC mains voltage</string>
+  <string name="node_info_dali_memory_bank_1_0x1D">Nominal light output</string>
+  <string name="node_info_dali_memory_bank_1_0x20">CRI</string>
+  <string name="node_info_dali_memory_bank_1_0x21">CCT</string>
+  <string name="node_info_dali_memory_bank_1_0x23">Light distribution type</string>
+  <string name="node_info_dali_memory_bank_1_0x24">Luminaire color</string>
+  <string name="node_info_dali_memory_bank_1_0x3C">Luminaire identification</string>
+
+  <string name="node_info_dali_memory_bank_202_0x03">Version of memory bank 202</string>
+  <string name="node_info_dali_memory_bank_202_0x05">Active energy</string>
+  <string name="node_info_dali_memory_bank_202_0x0C">Active power</string>
+
+  <string name="node_info_dali_memory_bank_203_0x03">Version of memory bank 203</string>
+  <string name="node_info_dali_memory_bank_203_0x05">Apparent energy</string>
+  <string name="node_info_dali_memory_bank_203_0x0C">Apparent power</string>
+
+  <string name="node_info_dali_memory_bank_204_0x03">Version of memory bank 204</string>
+  <string name="node_info_dali_memory_bank_204_0x05">Active energy load side</string>
+  <string name="node_info_dali_memory_bank_204_0x0C">Active power load side</string>
+
+  <string name="node_info_dali_memory_bank_205_0x03">Version of memory bank 205</string>
+  <string name="node_info_dali_memory_bank_205_0x04">Control gear operating time</string>
+  <string name="node_info_dali_memory_bank_205_0x08">Control gear start counter</string>
+  <string name="node_info_dali_memory_bank_205_0x0B">Control gear external supply voltage</string>
+  <string name="node_info_dali_memory_bank_205_0x0D">Control gear external supply voltage frequency</string>
+  <string name="node_info_dali_memory_bank_205_0x0E">Control gear power factor</string>
+  <string name="node_info_dali_memory_bank_205_0x0F">Control gear overall failure condition</string>
+  <string name="node_info_dali_memory_bank_205_0x10">Control gear overall failure condition counter</string>
+  <string name="node_info_dali_memory_bank_205_0x11">Control gear external supply undervoltage</string>
+  <string name="node_info_dali_memory_bank_205_0x12">Control gear external supply undervoltage counter</string>
+  <string name="node_info_dali_memory_bank_205_0x13">Control gear external supply overvoltage</string>
+  <string name="node_info_dali_memory_bank_205_0x14">Control gear external supply overvoltage counter</string>
+  <string name="node_info_dali_memory_bank_205_0x15">Control gear output power limitation</string>
+  <string name="node_info_dali_memory_bank_205_0x16">Control gear output power limitation acounter</string>
+  <string name="node_info_dali_memory_bank_205_0x17">Control gear thermal derating</string>
+  <string name="node_info_dali_memory_bank_205_0x18">Control gear thermal derating counter</string>
+  <string name="node_info_dali_memory_bank_205_0x19">Control gear thermal shutdown</string>
+  <string name="node_info_dali_memory_bank_205_0x1A">Control gear thermal shutdown counter</string>
+  <string name="node_info_dali_memory_bank_205_0x1B">Control gear temperature</string>
+  <string name="node_info_dali_memory_bank_205_0x1C">Control gear output current percentage</string>
+
+  <string name="node_info_dali_memory_bank_206_0x03">Version of memory bank 206</string>
+  <string name="node_info_dali_memory_bank_206_0x04">Light source start counter resettable</string>
+  <string name="node_info_dali_memory_bank_206_0x07">Light source start counter</string>
+  <string name="node_info_dali_memory_bank_206_0x0A">Light source on time resettable</string>
+  <string name="node_info_dali_memory_bank_206_0x0E">Light source on time</string>
+  <string name="node_info_dali_memory_bank_206_0x12">Light source voltage</string>
+  <string name="node_info_dali_memory_bank_206_0x14">Light source current</string>
+  <string name="node_info_dali_memory_bank_206_0x16">Light source overall failure condition</string>
+  <string name="node_info_dali_memory_bank_206_0x17">Light source overall failure condition counter</string>
+  <string name="node_info_dali_memory_bank_206_0x18">Light source short circuit</string>
+  <string name="node_info_dali_memory_bank_206_0x19">Light source short circuit counter</string>
+  <string name="node_info_dali_memory_bank_206_0x1A">Light source open circuit</string>
+  <string name="node_info_dali_memory_bank_206_0x1B">Light source open circuit counter</string>
+  <string name="node_info_dali_memory_bank_206_0x1C">Light source thermal derating</string>
+  <string name="node_info_dali_memory_bank_206_0x1D">Light source thermal derating counter</string>
+  <string name="node_info_dali_memory_bank_206_0x1E">Light source thermal shutdown</string>
+  <string name="node_info_dali_memory_bank_206_0x1F">Light source thermal shutdown counter</string>
+  <string name="node_info_dali_memory_bank_206_0x20">Light source temperature</string>
+
+  <string name="node_info_dali_memory_bank_207_0x03">Version of memory bank 207</string>
+  <string name="node_info_dali_memory_bank_207_0x04">Rated median useful life of luminaire</string>
+  <string name="node_info_dali_memory_bank_207_0x05">Internal control gear reference temperature</string>
+  <string name="node_info_dali_memory_bank_207_0x06">Rated median useful light source starts</string>
+
+  <string name="node_info_dali_memory_value_boolean_true">Oui</string>
+  <string name="node_info_dali_memory_value_boolean_false">Non</string>
+</resources>
+

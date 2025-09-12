@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+    <variable
+      name="viewmodel"
+      type="com.remoticom.streetlighting.ui.nodes.settings.NodeSettingsViewModel" />
+
+    <variable
+      name="addDimStepClickListener"
+      type="android.view.View.OnClickListener" />
+
+    <variable
+      name="deleteDimStepClickListener"
+      type="android.view.View.OnClickListener" />
+
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/list"
+      android:name="com.remoticom.streetlighting.ui.nodes.dimplan.NodeDimPlanFragment"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:layout_marginLeft="16dp"
+      android:layout_marginRight="16dp"
+      app:layoutManager="LinearLayoutManager"
+      tools:context="com.remoticom.streetlighting.ui.nodes.dimplan.NodeDimPlanListFragment"
+      tools:listitem="@layout/fragment_node_dim_plan_list_item" />
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:layout_margin="16dp">
+
+      <Button
+        android:id="@+id/node_dim_plan_button_delete_step"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="@string/node_dim_plan_list_delete_button_text"
+        android:onClick="@{deleteDimStepClickListener}"/>
+
+      <Button
+          android:id="@+id/node_dim_plan_button_add_step"
+          android:layout_width="match_parent"
+          android:layout_height="60dp"
+          android:text="@string/node_dim_plan_list_add_button_text"
+          android:onClick="@{addDimStepClickListener}"/>
+    </LinearLayout>
+  </LinearLayout>
+</layout>

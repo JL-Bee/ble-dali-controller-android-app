@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+    <variable
+      name="clickListener"
+      type="android.view.View.OnClickListener" />
+    <variable
+      name="info"
+      type="com.remoticom.streetlighting.ui.nodes.dimplan.NodeDimPlanListItem" />
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:onClick="@{clickListener}">
+    <TextView
+      android:id="@+id/node_dim_plan_list_item_textview_time"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/text_margin"
+      android:textAppearance="?attr/textAppearanceListItem"
+      android:text="@{@string/node_dim_plan_list_item_time(info.dimStep.hour, info.dimStep.minute)}" />
+    <TextView
+      android:id="@+id/node_dim_plan_list_item_textview_level"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/text_margin"
+      android:textAlignment="textEnd"
+      android:textAppearance="?attr/textAppearanceListItem"
+      android:text="@{@string/node_dim_plan_list_item_level(info.dimStep.level)}"/>
+  </LinearLayout>
+</layout>

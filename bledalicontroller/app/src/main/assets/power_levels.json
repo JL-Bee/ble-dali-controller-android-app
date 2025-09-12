@@ -1,0 +1,30 @@
+[
+  {
+    "name": "12W",
+    "powerLevel": 0
+  },
+  {
+    "name": "10W",
+    "powerLevel": 1
+  },
+  {
+    "name": "8W",
+    "powerLevel": 2
+  },
+  {
+    "name": "6W",
+    "powerLevel": 3
+  },
+  {
+    "name": "4W",
+    "powerLevel": 4
+  },
+  {
+    "name": "2W",
+    "powerLevel": 5
+  },
+  {
+    "name": "1W",
+    "powerLevel": 6
+  }
+]

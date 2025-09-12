@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+    <variable
+      name="viewmodel"
+      type="com.remoticom.streetlighting.ui.nodes.settings.write.NodeWriteConfirmationViewModel" />
+
+    <variable
+      name="nextClickListener"
+      type="android.view.View.OnClickListener" />
+
+  </data>
+
+  <LinearLayout
+    tools:context=".ui.nodes.settings.write.NodeWriteConfirmationFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/fragment_padding">
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingBottom="20dp"
+      android:text="@{viewmodel.state.status ? @string/node_write_confirmation_success_message : @string/node_write_confirmation_error_message_format(viewmodel.state.lastConnectionError)}"
+      android:textSize="20dp" />
+
+    <ImageView
+      android:layout_width="match_parent"
+      android:layout_height="240dp"
+      android:src="@{viewmodel.state.status ? @drawable/ic_success : @drawable/ic_error}" />
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:gravity="center|bottom"
+      android:orientation="vertical">
+
+      <Button
+        android:id="@+id/node_settings_button_save"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_big_height"
+        android:layout_gravity="bottom"
+        android:text="@string/node_write_confirmation_next_button_text"
+        android:onClick="@{nextClickListener}"/>
+
+    </LinearLayout>
+
+  </LinearLayout>
+</layout>

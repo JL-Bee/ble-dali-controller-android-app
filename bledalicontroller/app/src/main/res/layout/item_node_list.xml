@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+
+    <variable
+      name="clickListener"
+      type="android.view.View.OnClickListener" />
+
+    <variable
+      name="nodeButtonClickListener"
+      type="android.view.View.OnClickListener" />
+
+    <variable
+      name="node"
+      type="com.remoticom.streetlighting.data.Node" />
+
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:orientation="horizontal"
+    android:onClick="@{clickListener}">
+
+    <ImageView
+      android:id="@+id/node_list_item_imageview"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:minWidth="20dp"
+      android:minHeight="20dp"
+      android:layout_gravity="center"
+      android:tint="@color/colorNodeDefault"
+      app:srcCompat="@drawable/ic_menu_home"
+      app:imageForConnectionStatus="@{node.connectionStatus}"/>
+
+    <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:layout_weight="1"
+      android:paddingLeft="10dp"
+      android:layout_gravity="center">
+
+      <TextView
+        android:id="@+id/textview_nodelist_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:unnamedIfNull="@{node.name}"
+        android:textStyle="bold" />
+
+      <TextView
+        android:id="@+id/textview_nodelist_item_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@{node.device.address}" />
+
+    </LinearLayout>
+
+    <Button
+      android:id="@+id/node_list_item_button_disconnect"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:buttonForNode="@{node}"
+      android:layout_gravity="end"
+      android:onClick="@{nodeButtonClickListener}" />
+
+
+  </LinearLayout>
+</layout>

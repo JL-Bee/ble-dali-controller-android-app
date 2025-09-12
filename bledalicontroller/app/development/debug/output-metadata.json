@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.remoticom.energynodeinset",
+  "variantName": "developmentDebug",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 2000001,
+      "versionName": "2.0.1",
+      "outputFile": "app-development-debug.apk"
+    }
+  ],
+  "elementType": "File",
+  "minSdkVersionForDexing": 21
+}

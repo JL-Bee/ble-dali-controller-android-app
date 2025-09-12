@@ -1,0 +1,14 @@
+{
+  "client_id" : "927b43b4-5352-4947-8e3b-fc2dea7eb3c3",
+  "redirect_uri" : "msauth://com.remoticom.bledalicontroller/SUtVpAcSsJ5WE0%2Bd%2BRUmhVIHIM8%3D",
+  "authorization_user_agent" : "DEFAULT",
+  "broker_redirect_uri_registered": false,
+  "account_mode": "SINGLE",
+  "authorities": [
+    {
+      "type": "B2C",
+      "authority_url": "https://remoticomb2c.b2clogin.com/tfp/remoticomb2c.onmicrosoft.com/B2C_1_signup_signin/",
+      "default": true
+    }
+  ]
+}

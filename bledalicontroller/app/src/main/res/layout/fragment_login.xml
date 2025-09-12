@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+    <variable
+      name="viewmodel"
+      type="com.remoticom.streetlighting.ui.login.LoginViewModel" />
+
+    <import type="com.remoticom.streetlighting.services.authentication.AuthenticationService.Status"/>
+    <import type="android.view.View" />
+
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/fragment_padding"
+    tools:context=".ui.login.LoginFragment"
+    android:orientation="vertical">
+
+    <ImageView
+      android:id="@+id/login_imageview_logo"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:src="@drawable/logo"
+      android:layout_margin="30dp" />
+
+    <EditText
+      android:id="@+id/login_edittext_username"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:ems="10"
+      android:inputType="textPersonName"
+      android:hint="@string/login_username_hint"
+      android:visibility="gone" />
+
+    <EditText
+      android:id="@+id/login_edittext_password"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:ems="10"
+      android:inputType="textPassword"
+      android:hint="@string/login_password_hint"
+      android:visibility="gone" />
+
+    <Button
+      android:id="@+id/login_button_login"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/button_big_height"
+      android:layout_weight="1"
+      android:text="@string/login_button_text"
+      android:visibility="@{viewmodel.state.status == Status.UNAUTHENTICATED ? View.VISIBLE : View.GONE}" />
+
+    <ProgressBar
+      android:layout_width="40dp"
+      android:layout_height="40dp"
+      android:indeterminate="true"
+      android:layout_gravity="center"
+      android:layout_margin="40dp"
+      android:visibility="@{viewmodel.state.status == Status.AUTHENTICATING ? View.VISIBLE : View.GONE}"/>
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@{viewmodel.state.lastError.cause.message}" />
+  </LinearLayout>
+</layout>

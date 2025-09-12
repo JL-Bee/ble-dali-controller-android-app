@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="colorPrimary">#024C72</color>
+  <color name="colorPrimaryDark">#01354F</color>
+  <color name="colorAccentOld">#BFBEBE</color>
+  <color name="colorAccent">#fb3640</color>
+  <color name="colorSuccess">#349d87</color>
+  <color name="colorError">#fb3640</color>
+  <color name="colorWhite">#ffffff</color>
+
+  <color name="colorNodeConnected">@color/colorAccent</color>
+  <color name="colorNodeDefault">#ececec</color>
+
+  <color name="colorSecondaryButton">#333333</color>
+</resources>

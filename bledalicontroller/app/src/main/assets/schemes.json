@@ -1,0 +1,496 @@
+[
+  {
+    "name": "Preset 1",
+    "preset": 1,
+    "steps": [
+      {
+        "time": "12:00",
+        "level": 100
+      },
+      {
+        "time": "00:00",
+        "level": 75
+      },
+      {
+        "time": "05:00",
+        "level": 100
+      },
+      {
+        "time": "06:00",
+        "level": 100
+      },
+      {
+        "time": "07:00",
+        "level": 100
+      }
+    ]
+  },
+  {
+    "name": "Preset 2",
+    "preset": 2,
+    "steps": [
+      {
+        "time": "12:00",
+        "level": 100
+      },
+      {
+        "time": "00:00",
+        "level": 75
+      },
+      {
+        "time": "05:30",
+        "level": 100
+      },
+      {
+        "time": "06:00",
+        "level": 100
+      },
+      {
+        "time": "07:00",
+        "level": 100
+      }
+    ]
+  },
+  {
+    "name": "Preset 3",
+    "preset": 3,
+    "steps": [
+      {
+        "time": "12:00",
+        "level": 100
+      },
+      {
+        "time": "00:00",
+        "level": 75
+      },
+      {
+        "time": "06:00",
+        "level": 100
+      },
+      {
+        "time": "06:00",
+        "level": 100
+      },
+      {
+        "time": "07:00",
+        "level": 100
+      }
+    ]
+  },
+  {
+    "name": "Preset 4",
+    "preset": 4,
+    "steps": [
+      {
+        "time": "12:00",
+        "level": 100
+      },
+      {
+        "time": "22:00",
+        "level": 75
+      },
+      {
+        "time": "05:00",
+        "level": 100
+      },
+      {
+        "time": "06:00",
+        "level": 100
+      },
+      {
+        "time": "07:00",
+        "level": 100
+      }
+    ]
+  },
+  {
+    "name": "Preset 5",
+    "preset": 5,
+    "steps": [
+      {
+        "time": "12:00",
+        "level": 100
+      },
+      {
+        "time": "22:00",
+        "level": 75
+      },
+      {
+        "time": "05:30",
+        "level": 100
+      },
+      {
+        "time": "06:00",
+        "level": 100
+      },
+      {
+        "time": "07:00",
+        "level": 100
+      }
+    ]
+  },
+  {
+    "name": "Preset 6",
+    "preset": 6,
+    "steps": [
+      {
+        "time": "12:00",
+        "level": 100
+      },
+      {
+        "time": "22:00",
+        "level": 75
+      },
+      {
+        "time": "06:00",
+        "level": 100
+      },
+      {
+        "time": "07:00",
+        "level": 100
+      },
+      {
+        "time": "08:00",
+        "level": 100
+      }
+    ]
+  },
+  {
+    "name": "Preset 7",
+    "preset": 7,
+    "steps": [
+      {
+        "time": "12:00",
+        "level": 100
+      },
+      {
+        "time": "00:00",
+        "level": 66
+      },
+      {
+        "time": "05:00",
+        "level": 100
+      },
+      {
+        "time": "06:00",
+        "level": 100
+      },
+      {
+        "time": "07:00",
+        "level": 100
+      }
+    ]
+  },
+  {
+    "name": "Preset 8",
+    "preset": 8,
+    "steps": [
+      {
+        "time": "12:00",
+        "level": 100
+      },
+      {
+        "time": "00:00",
+        "level": 66
+      },
+      {
+        "time": "05:30",
+        "level": 100
+      },
+      {
+        "time": "06:00",
+        "level": 100
+      },
+      {
+        "time": "07:00",
+        "level": 100
+      }
+    ]
+  },
+  {
+    "name": "Preset 9",
+    "preset": 9,
+    "steps": [
+      {
+        "time": "12:00",
+        "level": 100
+      },
+      {
+        "time": "00:00",
+        "level": 66
+      },
+      {
+        "time": "06:00",
+        "level": 100
+      },
+      {
+        "time": "07:00",
+        "level": 100
+      },
+      {
+        "time": "08:00",
+        "level": 100
+      }
+    ]
+  },
+  {
+    "name": "Preset 10",
+    "preset": 10,
+    "steps": [
+      {
+        "time": "12:00",
+        "level": 100
+      },
+      {
+        "time": "22:00",
+        "level": 66
+      },
+      {
+        "time": "05:00",
+        "level": 100
+      },
+      {
+        "time": "06:00",
+        "level": 100
+      },
+      {
+        "time": "07:00",
+        "level": 100
+      }
+    ]
+  },
+  {
+    "name": "Preset 11",
+    "preset": 11,
+    "steps": [
+      {
+        "time": "12:00",
+        "level": 100
+      },
+      {
+        "time": "22:00",
+        "level": 66
+      },
+      {
+        "time": "05:30",
+        "level": 100
+      },
+      {
+        "time": "07:00",
+        "level": 100
+      },
+      {
+        "time": "08:00",
+        "level": 100
+      }
+    ]
+  },
+  {
+    "name": "Preset 12",
+    "preset": 12,
+    "steps": [
+      {
+        "time": "12:00",
+        "level": 100
+      },
+      {
+        "time": "22:00",
+        "level": 66
+      },
+      {
+        "time": "06:00",
+        "level": 100
+      },
+      {
+        "time": "07:00",
+        "level": 100
+      },
+      {
+        "time": "08:00",
+        "level": 100
+      }
+    ]
+  },
+  {
+    "name": "Preset 13",
+    "preset": 13,
+    "steps": [
+      {
+        "time": "12:00",
+        "level": 100
+      },
+      {
+        "time": "00:00",
+        "level": 50
+      },
+      {
+        "time": "05:00",
+        "level": 100
+      },
+      {
+        "time": "07:00",
+        "level": 100
+      },
+      {
+        "time": "08:00",
+        "level": 100
+      }
+    ]
+  },
+  {
+    "name": "Preset 14",
+    "preset": 14,
+    "steps": [
+      {
+        "time": "12:00",
+        "level": 100
+      },
+      {
+        "time": "00:00",
+        "level": 50
+      },
+      {
+        "time": "05:30",
+        "level": 100
+      },
+      {
+        "time": "07:00",
+        "level": 100
+      },
+      {
+        "time": "08:00",
+        "level": 100
+      }
+    ]
+  },
+  {
+    "name": "Preset 15",
+    "preset": 15,
+    "steps": [
+      {
+        "time": "12:00",
+        "level": 100
+      },
+      {
+        "time": "00:00",
+        "level": 50
+      },
+      {
+        "time": "06:00",
+        "level": 100
+      },
+      {
+        "time": "07:00",
+        "level": 100
+      },
+      {
+        "time": "08:00",
+        "level": 100
+      }
+    ]
+  },
+  {
+    "name": "Preset 16",
+    "preset": 16,
+    "steps": [
+      {
+        "time": "12:00",
+        "level": 100
+      },
+      {
+        "time": "22:00",
+        "level": 50
+      },
+      {
+        "time": "05:00",
+        "level": 100
+      },
+      {
+        "time": "07:00",
+        "level": 100
+      },
+      {
+        "time": "08:00",
+        "level": 100
+      }
+    ]
+  },
+  {
+    "name": "Preset 17",
+    "preset": 17,
+    "steps": [
+      {
+        "time": "12:00",
+        "level": 100
+      },
+      {
+        "time": "22:00",
+        "level": 50
+      },
+      {
+        "time": "05:30",
+        "level": 100
+      },
+      {
+        "time": "07:00",
+        "level": 100
+      },
+      {
+        "time": "08:00",
+        "level": 100
+      }
+    ]
+  },
+  {
+    "name": "Preset 18",
+    "preset": 18,
+    "steps": [
+      {
+        "time": "12:00",
+        "level": 100
+      },
+      {
+        "time": "22:00",
+        "level": 50
+      },
+      {
+        "time": "06:00",
+        "level": 100
+      },
+      {
+        "time": "07:00",
+        "level": 100
+      },
+      {
+        "time": "08:00",
+        "level": 100
+      }
+    ]
+  },
+  {
+    "name": "Preset 19",
+    "preset": 19,
+    "steps": [
+      {
+        "time": "12:00",
+        "level": 100
+      },
+      {
+        "time": "20:00",
+        "level": 75
+      },
+      {
+        "time": "00:00",
+        "level": 50
+      },
+      {
+        "time": "06:00",
+        "level": 100
+      },
+      {
+        "time": "08:00",
+        "level": 100
+      }
+    ]
+  }
+]

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+
+    <variable
+      name="viewmodel"
+      type="com.remoticom.streetlighting.ui.nodes.NodeListViewModel" />
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+      android:id="@+id/node_list_no_nodes_found_message_bar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="12dp"
+      android:visibility="gone"
+      android:background="@color/colorError">
+
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorWhite"
+        android:text="@string/node_list_no_nodes_found" />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:id="@+id/node_list_invalid_permissions"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="12dp"
+      android:visibility="gone"
+      android:background="@color/colorError">
+
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorWhite"
+        android:text="@string/node_list_invalid_permissions" />
+
+    </LinearLayout>
+
+    <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="4dp">
+
+      <ProgressBar
+        android:id="@+id/node_list_progressbar"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_gravity="center"
+        style="@android:style/Widget.Holo.Light.ProgressBar.Horizontal"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorAccent" />
+
+    </FrameLayout>
+
+    <FrameLayout
+      android:name="com.remoticom.streetlighting.ui.nodes.NodeListFragment"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginLeft="16dp"
+      android:layout_marginRight="16dp"
+      android:orientation="vertical"
+      tools:context=".ui.nodes.NodeListFragment">
+
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/node_list_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutManager="LinearLayoutManager"
+        tools:listitem="@layout/item_node_list" />
+
+      <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/node_list_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:backgroundTint="@color/colorAccent"
+        app:tint="@android:color/white"
+        app:srcCompat="@android:drawable/ic_popup_sync" />
+
+    </FrameLayout>
+  </LinearLayout>
+</layout>

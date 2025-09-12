@@ -1,0 +1,125 @@
+<resources>
+
+  <!-- Base application theme. -->
+  <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <!-- Customize your theme here. -->
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
+    <item name="android:textAllCaps">false</item>
+
+    <item name="textAppearanceHeadline1">
+      @style/TextAppearance.StreetLighting.Headline1
+    </item>
+    <item name="textAppearanceHeadline2">
+      @style/TextAppearance.StreetLighting.Headline2
+    </item>
+    <item name="textAppearanceHeadline3">
+      @style/TextAppearance.StreetLighting.Headline3
+    </item>
+    <item name="textAppearanceHeadline4">
+      @style/TextAppearance.StreetLighting.Headline4
+    </item>
+    <item name="textAppearanceHeadline5">
+      @style/TextAppearance.StreetLighting.Headline5
+    </item>
+    <item name="textAppearanceHeadline6">
+      @style/TextAppearance.StreetLighting.Headline6
+    </item>
+
+    <item name="textAppearanceSubtitle1">
+      @style/TextAppearance.StreetLighting.Subtitle1
+    </item>
+    <item name="textAppearanceSubtitle2">
+      @style/TextAppearance.StreetLighting.Subtitle2
+    </item>
+    <item name="textAppearanceBody1">
+      @style/TextAppearance.StreetLighting.Body1
+    </item>
+    <item name="textAppearanceBody2">
+      @style/TextAppearance.StreetLighting.Body2
+    </item>
+    <item name="textAppearanceCaption">
+      @style/TextAppearance.StreetLighting.Caption
+    </item>
+    <item name="textAppearanceButton">
+      @style/TextAppearance.StreetLighting.Button
+    </item>
+    <item name="textAppearanceOverline">
+      @style/TextAppearance.StreetLighting.Overline
+    </item>
+
+  </style>
+
+  <style name="AppTheme.NoActionBar">
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+  </style>
+
+  <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+  <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+  <style name="AppTheme.Launcher">
+    <item name="android:windowBackground">@drawable/launch_screen</item>
+  </style>
+
+  <!-- Poppins for titles -->
+  <style name="TextAppearance.StreetLighting.Headline1" parent="TextAppearance.MaterialComponents.Headline1">
+    <item name="fontFamily">@font/poppins</item>
+  </style>
+
+  <style name="TextAppearance.StreetLighting.Headline2" parent="TextAppearance.MaterialComponents.Headline2">
+    <item name="fontFamily">@font/poppins</item>
+  </style>
+
+  <style name="TextAppearance.StreetLighting.Headline3" parent="TextAppearance.MaterialComponents.Headline3">
+    <item name="fontFamily">@font/poppins</item>
+  </style>
+
+  <style name="TextAppearance.StreetLighting.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
+    <item name="fontFamily">@font/poppins</item>
+  </style>
+
+  <style name="TextAppearance.StreetLighting.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
+    <item name="fontFamily">@font/poppins</item>
+  </style>
+
+  <style name="TextAppearance.StreetLighting.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
+    <item name="fontFamily">@font/poppins</item>
+  </style>
+
+  <!-- Roboto (sans-serif font family) might be default already -->
+  <style name="TextAppearance.StreetLighting.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+    <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <style name="TextAppearance.StreetLighting.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
+    <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <style name="TextAppearance.StreetLighting.Body1" parent="TextAppearance.MaterialComponents.Body1">
+    <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <style name="TextAppearance.StreetLighting.Body2" parent="TextAppearance.MaterialComponents.Body2">
+    <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <style name="TextAppearance.StreetLighting.Caption" parent="TextAppearance.MaterialComponents.Caption">
+    <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <style name="TextAppearance.StreetLighting.Button" parent="TextAppearance.MaterialComponents.Button">
+    <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <style name="TextAppearance.StreetLighting.Overline" parent="TextAppearance.MaterialComponents.Overline">
+    <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <style name="Zsc.Widget.SwitchCompat" parent="Widget.AppCompat.CompoundButton.Switch">
+    <item name="colorAccent">@color/colorPrimary</item>
+  </style>
+
+</resources>
