@@ -13,6 +13,8 @@ import com.remoticom.streetlighting.services.bluetooth.gatt.zsc010.getZsc010Char
 import com.remoticom.streetlighting.services.bluetooth.gatt.zsc010.zsc010ServiceMatchingMask
 import java.lang.reflect.Method
 import java.util.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class GattConnection(
   private val context: Context,
@@ -22,6 +24,7 @@ class GattConnection(
 ) : BluetoothGattCallback() {
 
   private var currentOperation: BluetoothGattCallback? = null
+  private val operationMutex = Mutex()
 
   private var gatt: BluetoothGatt? = null
   private var macAddress: Long? = null
@@ -29,20 +32,21 @@ class GattConnection(
   private val TAG
     get() = (currentOperation ?: this).javaClass.simpleName
 
-  suspend fun <T> perform(operation: GattOperation<T>, block: ((GattOperation.Result<T>) -> Unit)? = null): GattOperation.Result<T> {
-    assert(currentOperation == null)
-    currentOperation = operation;
-    Log.d(TAG, "STARTED")
-    val result = operation.perform(this)
-    Log.d(TAG, "FINISHED")
-    currentOperation = null
+  suspend fun <T> perform(operation: GattOperation<T>, block: ((GattOperation.Result<T>) -> Unit)? = null): GattOperation.Result<T> =
+    operationMutex.withLock {
+      assert(currentOperation == null)
+      currentOperation = operation
+      Log.d(TAG, "STARTED")
+      val result = operation.perform(this)
+      Log.d(TAG, "FINISHED")
+      currentOperation = null
 
-    block?.let {
-      it(result)
+      block?.let {
+        it(result)
+      }
+
+      result
     }
-
-    return result
-  }
 
   fun connectGatt(autoConnect: Boolean = false) {
     Log.v(TAG, "connectGatt initiated")
