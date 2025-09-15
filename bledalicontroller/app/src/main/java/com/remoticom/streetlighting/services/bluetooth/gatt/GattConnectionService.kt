@@ -24,6 +24,7 @@ import com.remoticom.streetlighting.services.web.data.Peripheral
 import kotlinx.coroutines.*
 import kotlin.IllegalStateException
 import android.Manifest
+import com.remoticom.streetlighting.utilities.BluetoothPermissionProvider
 
 
 class GattConnectionService constructor(
@@ -52,6 +53,15 @@ class GattConnectionService constructor(
 
   private val isConnected
     get() = serviceState.connectionStatus == GattConnectionStatus.Connected
+
+  private fun areBluetoothPermissionsGranted(): Boolean {
+    val provider = context as? BluetoothPermissionProvider
+    return provider?.areBluetoothPermissionsGranted() ?: true
+  }
+
+  private fun requestBluetoothPermissions() {
+    (context as? BluetoothPermissionProvider)?.requestBluetoothPermissions()
+  }
 
   private data class ServiceState(
     val device: Device? = null,
@@ -89,6 +99,14 @@ class GattConnectionService constructor(
     tokenProvider: TokenProvider,
     peripheral: Peripheral?
   ): Boolean {
+    if (!areBluetoothPermissionsGranted()) {
+      Log.w(TAG, "Bluetooth permissions not granted, cannot connect")
+      requestBluetoothPermissions()
+      serviceState = serviceState.copy(
+        lastGattError = GattError<Unit>(GattErrorCode.MissingPermission)
+      )
+      return false
+    }
     // Automatically close a previous connection
     disconnect()
 
@@ -320,11 +338,14 @@ class GattConnectionService constructor(
         is GattError -> {
           when (!it) {
             GattErrorCode.GattError -> serviceState = serviceState.copy(lastGattError = it)
+            GattErrorCode.MissingPermission -> {
+              serviceState = serviceState.copy(lastGattError = it)
+              requestBluetoothPermissions()
+            }
             GattErrorCode.PreconditionFailed,
             GattErrorCode.SerializationFailed,
             GattErrorCode.GattMethodFailed,
-            GattErrorCode.WriteCharacteristicValueMismatch,
-            GattErrorCode.MissingPermission -> Log.e(
+            GattErrorCode.WriteCharacteristicValueMismatch -> Log.e(
               TAG, "Error while executing ${it.operationIdentifier}: ${it.code}")
           }
         }
@@ -348,7 +369,10 @@ class GattConnectionService constructor(
         currentConnection?.perform(operation) { result ->
           when(result) {
             is GattData -> noWriteFailures = true
-            is GattError -> serviceState = serviceState.copy(lastGattError = result)
+            is GattError -> {
+              serviceState = serviceState.copy(lastGattError = result)
+              if (result.code == GattErrorCode.MissingPermission) requestBluetoothPermissions()
+            }
             else -> {}
           }
         }
@@ -373,7 +397,10 @@ class GattConnectionService constructor(
         currentConnection?.perform(operation) { result ->
           when(result) {
             is GattData -> noWriteFailures = true
-            is GattError -> serviceState = serviceState.copy(lastGattError = result)
+            is GattError -> {
+              serviceState = serviceState.copy(lastGattError = result)
+              if (result.code == GattErrorCode.MissingPermission) requestBluetoothPermissions()
+            }
             else -> {}
           }
         }
