@@ -49,19 +49,21 @@ class MainActivity : AppCompatActivity(), CoroutineScopeProvider, BluetoothPermi
 
   private var authenticationStatus: AuthenticationService.Status? = null
 
-  private var bluetoothPermissionsGranted = false
+  private var bluetoothScanPermissionGranted = false
+  private var bluetoothConnectPermissionGranted = false
 
   private val bluetoothPermissionLauncher: ActivityResultLauncher<Array<String>> =
     registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-      bluetoothPermissionsGranted =
-        permissions[Manifest.permission.BLUETOOTH_SCAN] == true &&
+      bluetoothScanPermissionGranted =
+        permissions[Manifest.permission.BLUETOOTH_SCAN] == true
+      bluetoothConnectPermissionGranted =
         permissions[Manifest.permission.BLUETOOTH_CONNECT] == true
 
       permissions.entries.forEach { permission ->
         Log.d(TAG, "${permission.key} = ${permission.value}")
       }
 
-      if (!bluetoothPermissionsGranted) {
+      if (!bluetoothScanPermissionGranted || !bluetoothConnectPermissionGranted) {
         showBluetoothPermissionDialog()
       }
     }
@@ -231,16 +233,14 @@ class MainActivity : AppCompatActivity(), CoroutineScopeProvider, BluetoothPermi
     // https://developer.android.com/guide/topics/connectivity/bluetooth/permissions
     // https://stackoverflow.com/questions/67722950/android-12-new-bluetooth-permissions
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-      val scanGranted =
+      bluetoothScanPermissionGranted =
         ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) ==
           PackageManager.PERMISSION_GRANTED
-      val connectGranted =
+      bluetoothConnectPermissionGranted =
         ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) ==
           PackageManager.PERMISSION_GRANTED
 
-      bluetoothPermissionsGranted = scanGranted && connectGranted
-
-      if (!bluetoothPermissionsGranted) {
+      if (!bluetoothScanPermissionGranted || !bluetoothConnectPermissionGranted) {
         Log.d(TAG, "Requesting BLUETOOTH_SCAN and BLUETOOTH_CONNECT permissions...")
         bluetoothPermissionLauncher.launch(
           arrayOf(
@@ -250,7 +250,8 @@ class MainActivity : AppCompatActivity(), CoroutineScopeProvider, BluetoothPermi
         )
       }
     } else {
-      bluetoothPermissionsGranted = true
+      bluetoothScanPermissionGranted = true
+      bluetoothConnectPermissionGranted = true
       Log.d(TAG, "No need to request BLUETOOTH_SCAN and BLUETOOTH_CONNECT permissions on Android version ${Build.VERSION.SDK_INT}")
     }
   }
@@ -299,7 +300,7 @@ class MainActivity : AppCompatActivity(), CoroutineScopeProvider, BluetoothPermi
   }
 
   override fun areBluetoothPermissionsGranted(): Boolean {
-    return bluetoothPermissionsGranted
+    return bluetoothConnectPermissionGranted
   }
 
   override fun requestBluetoothPermissions() {
