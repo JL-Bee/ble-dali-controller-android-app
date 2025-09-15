@@ -49,11 +49,11 @@ class NodeRepository private constructor (
     }
   }
 
-  @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-  private fun onPause() {
+  @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+  private fun onDestroy() {
     _state.value?.connectedNode?.let {
       runBlocking {
-        Log.d(TAG, "Application on pause. Disconnecting if needed...")
+        Log.d(TAG, "Application destroyed. Disconnecting if needed...")
         disconnectNode(it)
       }
     }
