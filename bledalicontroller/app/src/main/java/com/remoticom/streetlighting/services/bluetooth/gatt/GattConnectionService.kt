@@ -486,6 +486,18 @@ class GattConnectionService constructor(
       newState: Int
     ) {
       super.onConnectionStateChange(gatt, status, newState)
+      val stateDescription = when (newState) {
+        BluetoothProfile.STATE_DISCONNECTED -> "DISCONNECTED"
+        BluetoothProfile.STATE_CONNECTING -> "CONNECTING"
+        BluetoothProfile.STATE_CONNECTED -> "CONNECTED"
+        BluetoothProfile.STATE_DISCONNECTING -> "DISCONNECTING"
+        else -> "UNKNOWN"
+      }
+
+      Log.d(
+        TAG,
+        "onConnectionStateChange address=${gatt.device.address}, status=${status.toGattStatusDescription()}, newState=$stateDescription ($newState)"
+      )
 
       val connectionState: GattConnectionStatus? = when (newState) {
         BluetoothProfile.STATE_DISCONNECTED -> GattConnectionStatus.Disconnected
