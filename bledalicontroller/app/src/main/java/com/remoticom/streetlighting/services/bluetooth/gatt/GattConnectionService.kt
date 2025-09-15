@@ -55,12 +55,18 @@ class GattConnectionService constructor(
 
   private val operationMutex = Mutex()
 
+  private var isPermissionErrorReported = false
+
   private val isConnected
     get() = serviceState.connectionStatus == GattConnectionStatus.Connected
 
   private fun areBluetoothPermissionsGranted(): Boolean {
     val provider = context as? BluetoothPermissionProvider
-    return provider?.areBluetoothPermissionsGranted() ?: true
+    val granted = provider?.areBluetoothPermissionsGranted() ?: true
+    if (granted) {
+      isPermissionErrorReported = false
+    }
+    return granted
   }
 
     private fun requestBluetoothPermissions() {
@@ -70,6 +76,13 @@ class GattConnectionService constructor(
         provider.requestBluetoothPermissions()
       }
     }
+
+  private fun handleMissingPermission() {
+    if (!isPermissionErrorReported) {
+      isPermissionErrorReported = true
+      requestBluetoothPermissions()
+    }
+  }
 
   private data class ServiceState(
     val device: Device? = null,
@@ -109,7 +122,7 @@ class GattConnectionService constructor(
   ): Boolean {
     if (!areBluetoothPermissionsGranted()) {
       Log.w(TAG, "Bluetooth permissions not granted, cannot connect")
-      requestBluetoothPermissions()
+      handleMissingPermission()
       serviceState = serviceState.copy(
         lastGattError = GattError<Unit>(GattErrorCode.MissingPermission)
       )
@@ -348,7 +361,7 @@ class GattConnectionService constructor(
             GattErrorCode.GattError -> serviceState = serviceState.copy(lastGattError = it)
             GattErrorCode.MissingPermission -> {
               serviceState = serviceState.copy(lastGattError = it)
-              requestBluetoothPermissions()
+              handleMissingPermission()
             }
             GattErrorCode.PreconditionFailed,
             GattErrorCode.SerializationFailed,
@@ -379,7 +392,7 @@ class GattConnectionService constructor(
             is GattData -> noWriteFailures = true
             is GattError -> {
               serviceState = serviceState.copy(lastGattError = result)
-              if (result.code == GattErrorCode.MissingPermission) requestBluetoothPermissions()
+              if (result.code == GattErrorCode.MissingPermission) handleMissingPermission()
             }
             else -> {}
           }
@@ -393,7 +406,7 @@ class GattConnectionService constructor(
           is GattData -> noEndReliableWriteFailure = !result
           is GattError -> {
             serviceState = serviceState.copy(lastGattError = result)
-            if (result.code == GattErrorCode.MissingPermission) requestBluetoothPermissions()
+            if (result.code == GattErrorCode.MissingPermission) handleMissingPermission()
           }
           else -> {}
         }
@@ -417,7 +430,7 @@ class GattConnectionService constructor(
             is GattData -> noWriteFailures = true
             is GattError -> {
               serviceState = serviceState.copy(lastGattError = result)
-              if (result.code == GattErrorCode.MissingPermission) requestBluetoothPermissions()
+              if (result.code == GattErrorCode.MissingPermission) handleMissingPermission()
             }
             else -> {}
           }
@@ -431,7 +444,7 @@ class GattConnectionService constructor(
           is GattData -> noEndReliableWriteFailure = !result
           is GattError -> {
             serviceState = serviceState.copy(lastGattError = result)
-            if (result.code == GattErrorCode.MissingPermission) requestBluetoothPermissions()
+            if (result.code == GattErrorCode.MissingPermission) handleMissingPermission()
           }
           else -> {}
         }
