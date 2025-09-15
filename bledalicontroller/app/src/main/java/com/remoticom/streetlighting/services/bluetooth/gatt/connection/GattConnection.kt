@@ -58,14 +58,16 @@ class GattConnection(
   fun connectGatt(autoConnect: Boolean = false) {
     Log.v(TAG, "connectGatt initiated")
 
-    val missingPermission = ActivityCompat.checkSelfPermission(
-      context,
-      Manifest.permission.BLUETOOTH_CONNECT
-    ) != PackageManager.PERMISSION_GRANTED
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      val missingPermission = ActivityCompat.checkSelfPermission(
+        context,
+        Manifest.permission.BLUETOOTH_CONNECT
+      ) != PackageManager.PERMISSION_GRANTED
 
-    if (missingPermission) {
-      Log.e(TAG, "Required Bluetooth permissions not granted")
-      throw SecurityException("Missing Bluetooth permissions")
+      if (missingPermission) {
+        Log.e(TAG, "Required Bluetooth permissions not granted")
+        throw SecurityException("Missing Bluetooth permissions")
+      }
     }
 
     try {
