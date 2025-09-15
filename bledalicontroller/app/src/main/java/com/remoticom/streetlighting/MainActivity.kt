@@ -23,13 +23,14 @@ import androidx.navigation.ui.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.remoticom.streetlighting.services.authentication.AuthenticationService
 import com.remoticom.streetlighting.utilities.checkBluetoothEnabled
+import com.remoticom.streetlighting.utilities.BluetoothPermissionProvider
 import com.remoticom.streetlighting.ui.login.LoginViewModel
 import com.remoticom.streetlighting.utilities.InjectorUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 
-class MainActivity : AppCompatActivity(), CoroutineScopeProvider {
+class MainActivity : AppCompatActivity(), CoroutineScopeProvider, BluetoothPermissionProvider {
 
   companion object {
     private const val TAG = "MainActivity"
@@ -249,6 +250,7 @@ class MainActivity : AppCompatActivity(), CoroutineScopeProvider {
         )
       }
     } else {
+      bluetoothPermissionsGranted = true
       Log.d(TAG, "No need to request BLUETOOTH_SCAN and BLUETOOTH_CONNECT permissions on Android version ${Build.VERSION.SDK_INT}")
     }
   }
@@ -294,6 +296,14 @@ class MainActivity : AppCompatActivity(), CoroutineScopeProvider {
     } else {
       Log.d(TAG, "Location permission is/was granted. Not requesting permission.")
     }
+  }
+
+  override fun areBluetoothPermissionsGranted(): Boolean {
+    return bluetoothPermissionsGranted
+  }
+
+  override fun requestBluetoothPermissions() {
+    showBluetoothPermissionDialog()
   }
 
   override fun provideScope(): CoroutineScope {
