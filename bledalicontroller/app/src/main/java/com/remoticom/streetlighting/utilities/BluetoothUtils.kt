@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContract
@@ -23,7 +22,8 @@ fun AppCompatActivity.checkBluetoothEnabled(requestCode: Int) {
   adapter?.let {
     if (!it.isEnabled) {
       val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-      if (ActivityCompat.checkSelfPermission(
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+        ActivityCompat.checkSelfPermission(
           this,
           Manifest.permission.BLUETOOTH_CONNECT
         ) != PackageManager.PERMISSION_GRANTED
