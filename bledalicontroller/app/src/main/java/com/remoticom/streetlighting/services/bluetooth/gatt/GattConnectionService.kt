@@ -62,11 +62,19 @@ class GattConnectionService constructor(
 
   private fun startKeepAlive() {
     keepAliveJob?.cancel()
-    keepAliveJob = scope.launch {
+    keepAliveJob = scope.launch(Dispatchers.IO + SupervisorJob()) {
+      try {
+        Log.d(TAG, "Keep-alive initial ping")
+        currentOperationsService().readDiagnosticsCharacteristics(null, null)
+      } catch (e: Exception) {
+        Log.w(TAG, "Keep-alive initial ping failed", e)
+      }
       while (isActive) {
         delay(keepAliveInterval)
+        Log.d(TAG, "Keep-alive ping")
         try {
           currentOperationsService().readDiagnosticsCharacteristics(null, null)
+          Log.d(TAG, "Keep-alive ping successful")
         } catch (e: Exception) {
           Log.w(TAG, "Keep-alive read failed", e)
         }
