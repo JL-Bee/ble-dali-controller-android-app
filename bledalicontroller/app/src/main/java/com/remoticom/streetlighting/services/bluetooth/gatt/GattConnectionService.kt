@@ -30,9 +30,10 @@ import com.remoticom.streetlighting.utilities.BluetoothPermissionProvider
 
 
 class GattConnectionService constructor(
-  scope: CoroutineScope,
+  private val scope: CoroutineScope,
   private val context: Context,
-  private val deviceManager: BluetoothDeviceManager
+  private val deviceManager: BluetoothDeviceManager,
+  private val keepAliveInterval: Long = DEFAULT_KEEP_ALIVE_INTERVAL
 ) : ConnectionService, ConnectionProvider {
 
   private var operationServices: Map<DeviceType, OperationsService> = mapOf(
@@ -42,6 +43,8 @@ class GattConnectionService constructor(
   )
 
   private var currentConnection: GattConnection? = null
+
+  private var keepAliveJob: Job? = null
 
   private val _state = MutableLiveData(ConnectionService.State())
   override val state: LiveData<ConnectionService.State> = _state
@@ -56,6 +59,25 @@ class GattConnectionService constructor(
   private val operationMutex = Mutex()
 
   private var isPermissionErrorReported = false
+
+  private fun startKeepAlive() {
+    keepAliveJob?.cancel()
+    keepAliveJob = scope.launch {
+      while (isActive) {
+        delay(keepAliveInterval)
+        try {
+          currentOperationsService().readDiagnosticsCharacteristics(null, null)
+        } catch (e: Exception) {
+          Log.w(TAG, "Keep-alive read failed", e)
+        }
+      }
+    }
+  }
+
+  private fun stopKeepAlive() {
+    keepAliveJob?.cancel()
+    keepAliveJob = null
+  }
 
   private val isConnected
     get() = serviceState.connectionStatus == GattConnectionStatus.Connected
@@ -327,6 +349,7 @@ class GattConnectionService constructor(
   }
 
   override suspend fun disconnect() = withContext(NonCancellable) {
+    stopKeepAlive()
     if (null == currentConnection) return@withContext
 
     // Will perform DisconnectOperation
@@ -494,6 +517,12 @@ class GattConnectionService constructor(
       } else {
         nextServiceState
       }
+
+      when (connectionState) {
+        GattConnectionStatus.Connected -> startKeepAlive()
+        GattConnectionStatus.Disconnected -> stopKeepAlive()
+        else -> {}
+      }
     }
 
     override fun onMtuChanged(gatt: BluetoothGatt?, mtu: Int, status: Int) {
@@ -530,6 +559,7 @@ class GattConnectionService constructor(
 
   companion object {
     private const val TAG = "GattConnectionService"
+    private const val DEFAULT_KEEP_ALIVE_INTERVAL = 15_000L
 
     @Volatile
     private var instance: GattConnectionService? = null
@@ -537,7 +567,8 @@ class GattConnectionService constructor(
     fun getInstance(
       scope: CoroutineScope,
       context: Context,
-      deviceManager: BluetoothDeviceManager
+      deviceManager: BluetoothDeviceManager,
+      keepAliveInterval: Long = DEFAULT_KEEP_ALIVE_INTERVAL
     ) =
       instance
         ?: synchronized(this) {
@@ -545,7 +576,8 @@ class GattConnectionService constructor(
             ?: GattConnectionService(
               scope,
               context,
-              deviceManager
+              deviceManager,
+              keepAliveInterval
             ).also {
               instance = it
             }
