@@ -35,7 +35,12 @@ open class Zsc010WriteCharacteristicGattOperation<T>(
       return
     }
 
-    if (!connection.writeCharacteristic(bluetoothCharacteristic)) {
+    val bytes = bluetoothCharacteristic.value ?: run {
+      completeWithError(GattErrorCode.SerializationFailed)
+      return
+    }
+
+    if (!connection.writeValueChunked(bluetoothCharacteristic, bytes)) {
       completeWithError(GattErrorCode.GattMethodFailed)
       return
     }

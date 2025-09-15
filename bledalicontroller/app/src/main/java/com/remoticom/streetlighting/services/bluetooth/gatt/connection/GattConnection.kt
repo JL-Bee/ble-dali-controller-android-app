@@ -29,6 +29,13 @@ class GattConnection(
   private var gatt: BluetoothGatt? = null
   private var macAddress: Long? = null
 
+  var currentMtu: Int = 23
+    private set
+
+  private var pendingChunks: ArrayDeque<ByteArray>? = null
+  private var chunkedCharacteristic: BluetoothGattCharacteristic? = null
+  private var chunkedOriginalValue: ByteArray? = null
+
   private val TAG
     get() = (currentOperation ?: this).javaClass.simpleName
 
@@ -203,6 +210,38 @@ class GattConnection(
       true
     } ?: false
 
+  fun writeValueChunked(
+    characteristic: BluetoothGattCharacteristic,
+    data: ByteArray
+  ): Boolean = gatt?.let {
+    val maxPayload = currentMtu - 3
+    Log.d(TAG, "currentMtu=$currentMtu, maxPayload=$maxPayload")
+
+    if (currentMtu < 69) {
+      Log.w(TAG, "MTU below 69, using small frame mode")
+    }
+
+    val chunks = ArrayDeque<ByteArray>()
+    var offset = 0
+    while (offset < data.size) {
+      val end = minOf(offset + maxPayload, data.size)
+      chunks.addLast(data.copyOfRange(offset, end))
+      offset = end
+    }
+
+    if (chunks.isEmpty()) {
+      Log.e(TAG, "No data to write")
+      return@let false
+    }
+
+    pendingChunks = chunks
+    chunkedCharacteristic = characteristic
+    chunkedOriginalValue = data
+
+    characteristic.value = pendingChunks!!.removeFirst()
+    it.writeCharacteristic(characteristic)
+  } ?: false
+
   fun writeDescriptor(descriptor: BluetoothGattDescriptor) =
     gatt?.let {
       Log.v(TAG, "writeDescriptor initiated")
@@ -289,6 +328,22 @@ class GattConnection(
       Log.e(TAG,"status=${status.toGattStatusDescription()}")
     }
 
+    if (chunkedCharacteristic != null && characteristic === chunkedCharacteristic) {
+      val queue = pendingChunks
+      if (status == BluetoothGatt.GATT_SUCCESS && queue != null && queue.isNotEmpty()) {
+        characteristic.value = queue.removeFirst()
+        gatt.writeCharacteristic(characteristic)
+        return
+      } else {
+        if (status == BluetoothGatt.GATT_SUCCESS) {
+          chunkedOriginalValue?.let { characteristic.value = it }
+        }
+        pendingChunks = null
+        chunkedCharacteristic = null
+        chunkedOriginalValue = null
+      }
+    }
+
     callback?.onCharacteristicWrite(gatt, characteristic, status)
 
     // Must be called last, because code after suspended operation
@@ -316,6 +371,11 @@ class GattConnection(
 
     if (BluetoothGatt.GATT_SUCCESS != status) {
       Log.e(TAG,"status=${status.toGattStatusDescription()}")
+    }
+
+    currentMtu = mtu
+    if (currentMtu < 69) {
+      Log.w(TAG, "MTU $currentMtu below recommended 69")
     }
 
     callback?.onMtuChanged(gatt, mtu, status)
