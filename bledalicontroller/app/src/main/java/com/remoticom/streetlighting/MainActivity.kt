@@ -50,13 +50,12 @@ class MainActivity : AppCompatActivity(), CoroutineScopeProvider, BluetoothPermi
   private var authenticationStatus: AuthenticationService.Status? = null
 
   private var bluetoothScanPermissionGranted = false
-  private var bluetoothConnectPermissionGranted = false
 
   private val bluetoothPermissionLauncher: ActivityResultLauncher<Array<String>> =
     registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
       bluetoothScanPermissionGranted =
         permissions[Manifest.permission.BLUETOOTH_SCAN] == true
-      bluetoothConnectPermissionGranted =
+      val bluetoothConnectPermissionGranted =
         permissions[Manifest.permission.BLUETOOTH_CONNECT] == true
 
       permissions.entries.forEach { permission ->
@@ -236,7 +235,7 @@ class MainActivity : AppCompatActivity(), CoroutineScopeProvider, BluetoothPermi
       bluetoothScanPermissionGranted =
         ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) ==
           PackageManager.PERMISSION_GRANTED
-      bluetoothConnectPermissionGranted =
+      val bluetoothConnectPermissionGranted =
         ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) ==
           PackageManager.PERMISSION_GRANTED
 
@@ -251,7 +250,6 @@ class MainActivity : AppCompatActivity(), CoroutineScopeProvider, BluetoothPermi
       }
     } else {
       bluetoothScanPermissionGranted = true
-      bluetoothConnectPermissionGranted = true
       Log.d(TAG, "No need to request BLUETOOTH_SCAN and BLUETOOTH_CONNECT permissions on Android version ${Build.VERSION.SDK_INT}")
     }
   }
@@ -300,7 +298,14 @@ class MainActivity : AppCompatActivity(), CoroutineScopeProvider, BluetoothPermi
   }
 
   override fun areBluetoothPermissionsGranted(): Boolean {
-    return bluetoothConnectPermissionGranted
+    return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+      true
+    } else {
+      ContextCompat.checkSelfPermission(
+        this,
+        Manifest.permission.BLUETOOTH_CONNECT
+      ) == PackageManager.PERMISSION_GRANTED
+    }
   }
 
   override fun requestBluetoothPermissions() {
