@@ -15,6 +15,7 @@ import androidx.navigation.findNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.forEach
@@ -51,6 +52,7 @@ class MainActivity : AppCompatActivity(), CoroutineScopeProvider, BluetoothPermi
 
   private var bluetoothScanPermissionGranted = false
   private var bluetoothConnectPermissionGranted = false
+  private var bluetoothPermissionDialog: AlertDialog? = null
 
   private val bluetoothPermissionLauncher: ActivityResultLauncher<Array<String>> =
     registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
@@ -260,7 +262,9 @@ class MainActivity : AppCompatActivity(), CoroutineScopeProvider, BluetoothPermi
     }
 
   private fun showBluetoothPermissionDialog() {
-    MaterialAlertDialogBuilder(this)
+    if (bluetoothPermissionDialog?.isShowing == true) return
+
+    bluetoothPermissionDialog = MaterialAlertDialogBuilder(this)
       .setTitle(R.string.main_dialog_permission_bluetooth_title)
       .setMessage(R.string.main_dialog_permission_bluetooth_message)
       .setNegativeButton(R.string.main_dialog_permission_bluetooth_negative_button) { _, _ ->
@@ -280,7 +284,10 @@ class MainActivity : AppCompatActivity(), CoroutineScopeProvider, BluetoothPermi
           )
         }
       }
-      .show()
+      .create()
+
+    bluetoothPermissionDialog?.setOnDismissListener { bluetoothPermissionDialog = null }
+    bluetoothPermissionDialog?.show()
   }
 
   private fun checkLocationPermission(requestCode: Int) {
@@ -325,6 +332,10 @@ class MainActivity : AppCompatActivity(), CoroutineScopeProvider, BluetoothPermi
       return
     }
     showBluetoothPermissionDialog()
+  }
+
+  override fun isBluetoothPermissionRequestInProgress(): Boolean {
+    return bluetoothPermissionDialog?.isShowing == true
   }
 
   override fun provideScope(): CoroutineScope {

@@ -65,7 +65,10 @@ class GattConnectionService constructor(
 
     private fun requestBluetoothPermissions() {
       if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return
-      (context as? BluetoothPermissionProvider)?.requestBluetoothPermissions()
+      val provider = context as? BluetoothPermissionProvider ?: return
+      if (!provider.isBluetoothPermissionRequestInProgress()) {
+        provider.requestBluetoothPermissions()
+      }
     }
 
   private data class ServiceState(
