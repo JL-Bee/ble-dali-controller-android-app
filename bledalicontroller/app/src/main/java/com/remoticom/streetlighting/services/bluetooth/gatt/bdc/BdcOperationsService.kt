@@ -44,9 +44,10 @@ class BdcOperationsService constructor(
     }
 
     // Request MTU
-    //    if (!connectionProvider.performOperation(RequestMtuOperation(512), false)) {
-    //      return
-    //    }
+    if (!connectionProvider.performOperation(RequestMtuOperation(517), false)) {
+      connectionProvider.tearDown()
+      return
+    }
 
     // Discover services
     if (!connectionProvider.performOperation(DiscoverServicesOperation(), false)) {

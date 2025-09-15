@@ -22,6 +22,8 @@ import com.remoticom.streetlighting.services.bluetooth.gatt.zsc010.*
 import com.remoticom.streetlighting.services.web.TokenProvider
 import com.remoticom.streetlighting.services.web.data.Peripheral
 import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.IllegalStateException
 import android.Manifest
 import com.remoticom.streetlighting.utilities.BluetoothPermissionProvider
@@ -50,6 +52,8 @@ class GattConnectionService constructor(
       field = value
       _state.postValue(value.toConnectionServiceState())
     }
+
+  private val operationMutex = Mutex()
 
   private val isConnected
     get() = serviceState.connectionStatus == GattConnectionStatus.Connected
@@ -329,7 +333,7 @@ class GattConnectionService constructor(
     return performOperation(operation) ?: defaultValue
   }
 
-  override suspend fun <T> performOperation(operation: GattOperation<T>): T? {
+  override suspend fun <T> performOperation(operation: GattOperation<T>): T? = operationMutex.withLock {
     var value: T? = null
 
     currentConnection?.perform(operation) {
@@ -359,7 +363,7 @@ class GattConnectionService constructor(
     return value
   }
 
-  override suspend fun performWriteTransaction(operations: List<GattOperation<*>>): Boolean {
+  override suspend fun performWriteTransaction(operations: List<GattOperation<*>>): Boolean = operationMutex.withLock {
     var success = false
 
     if (currentConnection?.beginReliableWrite() == true) {
@@ -379,15 +383,25 @@ class GattConnectionService constructor(
         if (!noWriteFailures) break
       }
 
-      val noEndReliableWriteFailure = performOperation(EndReliableWriteOperation(noWriteFailures)) == true
+      var noEndReliableWriteFailure = false
+      currentConnection?.perform(EndReliableWriteOperation(noWriteFailures)) { result ->
+        when(result) {
+          is GattData -> noEndReliableWriteFailure = !result
+          is GattError -> {
+            serviceState = serviceState.copy(lastGattError = result)
+            if (result.code == GattErrorCode.MissingPermission) requestBluetoothPermissions()
+          }
+          else -> {}
+        }
+      }
 
       success = noWriteFailures && noEndReliableWriteFailure
     }
 
-    return success
+    success
   }
 
-  override suspend fun performSno110WriteTransaction(operations: List<Sno110WriteCharacteristicGattOperation<*>>): Boolean {
+  override suspend fun performSno110WriteTransaction(operations: List<Sno110WriteCharacteristicGattOperation<*>>): Boolean = operationMutex.withLock {
     var success = false
 
     if (currentConnection?.beginReliableWrite() == true) {
@@ -407,12 +421,22 @@ class GattConnectionService constructor(
         if (!noWriteFailures) break
       }
 
-      val noEndReliableWriteFailure = performOperation(EndReliableWriteOperation(noWriteFailures)) == true
+      var noEndReliableWriteFailure = false
+      currentConnection?.perform(EndReliableWriteOperation(noWriteFailures)) { result ->
+        when(result) {
+          is GattData -> noEndReliableWriteFailure = !result
+          is GattError -> {
+            serviceState = serviceState.copy(lastGattError = result)
+            if (result.code == GattErrorCode.MissingPermission) requestBluetoothPermissions()
+          }
+          else -> {}
+        }
+      }
 
       success = noWriteFailures && noEndReliableWriteFailure
     }
 
-    return success
+    success
   }
 
   protected val callback: BluetoothGattCallback = object : BluetoothGattCallback() {
@@ -427,8 +451,10 @@ class GattConnectionService constructor(
         BluetoothProfile.STATE_DISCONNECTED -> GattConnectionStatus.Disconnected
         BluetoothProfile.STATE_CONNECTING -> GattConnectionStatus.Connecting
         BluetoothProfile.STATE_CONNECTED -> {
-          Log.d(TAG, "Device connected, checking permissions and requesting MTU...")
-          requestHigherMtu(gatt)
+          Log.d(TAG, "Device connected")
+          if (currentConnection?.isOperationInProgress() != true) {
+            requestHigherMtu(gatt)
+          }
           GattConnectionStatus.Connected
         }
         BluetoothProfile.STATE_DISCONNECTING -> GattConnectionStatus.Disconnecting
