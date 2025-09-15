@@ -50,9 +50,6 @@ class GattConnection(
     val missingPermission = ActivityCompat.checkSelfPermission(
       context,
       Manifest.permission.BLUETOOTH_CONNECT
-    ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
-      context,
-      Manifest.permission.BLUETOOTH_SCAN
     ) != PackageManager.PERMISSION_GRANTED
 
     if (missingPermission) {

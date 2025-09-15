@@ -140,11 +140,11 @@ class NodeListFragment : Fragment() {
   override fun onResume() {
     super.onResume()
 
-    // Inform user when app is missing permissions and do not show scan button
-    binding.nodeListInvalidPermissions.visibility = if (!hasValidPermissions()) View.VISIBLE else View.GONE
-    binding.nodeListFab.visibility = if (hasValidPermissions()) View.VISIBLE else View.GONE
+    // Inform user when app is missing scan permission and do not show scan button
+    binding.nodeListInvalidPermissions.visibility = if (!hasScanPermission()) View.VISIBLE else View.GONE
+    binding.nodeListFab.visibility = if (hasScanPermission()) View.VISIBLE else View.GONE
 
-    if (viewModel.state.value?.connectedNode == null && hasValidPermissions()) {
+    if (viewModel.state.value?.connectedNode == null && hasScanPermission()) {
       viewModel.startScan()
     }
   }
@@ -219,7 +219,7 @@ class NodeListFragment : Fragment() {
     ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
   }
 
-  private fun hasValidPermissions() : Boolean {
+  private fun hasScanPermission() : Boolean {
     context?.let {
       if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
         return hasPermissions(
@@ -233,7 +233,6 @@ class NodeListFragment : Fragment() {
       return hasPermissions(
         it,
         Manifest.permission.BLUETOOTH_SCAN,
-        Manifest.permission.BLUETOOTH_CONNECT,
       )
     }
 
