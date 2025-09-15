@@ -208,7 +208,9 @@ class NodeRepository private constructor (
   }
 
   suspend fun startScan() {
-    connectionService.disconnect()
+    if (_state.value?.connectedNode == null) {
+      connectionService.disconnect()
+    }
     scannerService.startScan()
   }
 

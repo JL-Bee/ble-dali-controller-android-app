@@ -69,6 +69,13 @@ class NodeListViewModel(private val nodeRepository: NodeRepository) :
       return
     }
 
+    val connectionStatus = nodeRepository.state.value?.connectionStatus
+    if (connectionStatus != null && connectionStatus != NodeConnectionStatus.DISCONNECTED) {
+      Log.i(TAG, "Connection active. Not starting scan.")
+
+      return
+    }
+
     isTimeout = false
 
     // Make it easier to recover from issues, like peripherals that were not loaded
