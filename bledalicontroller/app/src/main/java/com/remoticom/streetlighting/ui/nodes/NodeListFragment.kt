@@ -29,6 +29,7 @@ import com.remoticom.streetlighting.utilities.InjectorUtils
 import com.remoticom.streetlighting.utilities.showShouldLogoutAlert
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class NodeListFragment : Fragment() {
   private lateinit var mainScope: CoroutineScope
@@ -149,6 +150,17 @@ class NodeListFragment : Fragment() {
     }
   }
 
+  override fun onPause() {
+    super.onPause()
+
+    viewModel.state.value?.let { state: NodeListViewModel.ViewState ->
+      if (state.isScanning) {
+        viewModel.stopScan()
+        runBlocking { viewModel.scanningJob?.join() }
+      }
+    }
+  }
+
   private fun subscribeAdapter(adapter: NodeListAdapter) {
     viewModel.state.observe(viewLifecycleOwner) { state: NodeListViewModel.ViewState ->
       Log.d(TAG, "Updating list of nodes")
@@ -182,6 +194,13 @@ class NodeListFragment : Fragment() {
   private fun connectToNode(node: Node?) {
     node?.let {
       mainScope.launch {
+        viewModel.state.value?.let { state: NodeListViewModel.ViewState ->
+          if (state.isScanning) {
+            viewModel.stopScan()
+            viewModel.scanningJob?.join()
+          }
+        }
+
         viewModel.connectNode(node)
       }
     }
