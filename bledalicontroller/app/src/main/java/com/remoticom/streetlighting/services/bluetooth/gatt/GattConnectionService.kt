@@ -177,13 +177,23 @@ class GattConnectionService constructor(
 
       currentConnection = GattConnection(context, it, callback, macAddressServiceMask)
 
-      internalConnectWithRetry(
-        device,
-        tokenProvider,
-        peripheral
-      )
-
-      serviceState = serviceState.copy(isConnecting = false)
+      try {
+        internalConnectWithRetry(
+          device,
+          tokenProvider,
+          peripheral
+        )
+      } finally {
+        if (!isConnected) {
+          Log.w(TAG, "Failed to connect to device ${device.address}")
+          serviceState = serviceState.copy(
+            isConnecting = false,
+            connectionStatus = GattConnectionStatus.Disconnected
+          )
+        } else {
+          serviceState = serviceState.copy(isConnecting = false)
+        }
+      }
     }
 
     return isConnected
