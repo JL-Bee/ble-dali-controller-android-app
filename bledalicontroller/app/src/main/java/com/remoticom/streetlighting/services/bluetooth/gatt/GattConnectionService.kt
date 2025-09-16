@@ -61,24 +61,55 @@ class GattConnectionService constructor(
   private var isPermissionErrorReported = false
 
   private fun startKeepAlive() {
+    if (serviceState.characteristics == null) {
+      Log.d(TAG, "Keep-alive start deferred; characteristics not loaded yet")
+      return
+    }
+
+    if (keepAliveJob?.isActive == true) {
+      Log.d(TAG, "Keep-alive already running")
+      return
+    }
+
     keepAliveJob?.cancel()
     keepAliveJob = scope.launch(Dispatchers.IO + SupervisorJob()) {
-      try {
-        Log.d(TAG, "Keep-alive initial ping")
-        currentOperationsService().readDiagnosticsCharacteristics(null, null)
-      } catch (e: Exception) {
-        Log.w(TAG, "Keep-alive initial ping failed", e)
-      }
+      performKeepAlivePing(isInitial = true)
       while (isActive) {
         delay(keepAliveInterval)
-        Log.d(TAG, "Keep-alive ping")
-        try {
-          currentOperationsService().readDiagnosticsCharacteristics(null, null)
-          Log.d(TAG, "Keep-alive ping successful")
-        } catch (e: Exception) {
-          Log.w(TAG, "Keep-alive read failed", e)
-        }
+        performKeepAlivePing(isInitial = false)
       }
+    }
+  }
+
+  private suspend fun performKeepAlivePing(isInitial: Boolean) {
+    if (serviceState.characteristics == null) {
+      Log.d(TAG, "Skipping keep-alive ${if (isInitial) "initial " else ""}ping; characteristics not loaded")
+      return
+    }
+
+    val (startMessage, successMessage, failureMessage) = if (isInitial) {
+      Triple(
+        "Keep-alive initial ping",
+        "Keep-alive initial ping successful",
+        "Keep-alive initial ping failed"
+      )
+    } else {
+      Triple(
+        "Keep-alive ping",
+        "Keep-alive ping successful",
+        "Keep-alive read failed"
+      )
+    }
+
+    try {
+      Log.d(TAG, startMessage)
+      currentOperationsService().readDiagnosticsCharacteristics(null, null)
+      Log.d(TAG, successMessage)
+    } catch (cancellationException: CancellationException) {
+      throw cancellationException
+    } catch (e: Exception) {
+      Log.w(TAG, failureMessage, e)
+      currentConnection?.resetOperation()
     }
   }
 
@@ -210,6 +241,8 @@ class GattConnectionService constructor(
     serviceState = serviceState.copy(
       characteristics = characteristics
     )
+
+    startKeepAlive()
 
     return characteristics
   }
