@@ -11,7 +11,10 @@ import com.remoticom.streetlighting.services.bluetooth.scanner.ScannerService
 import com.remoticom.streetlighting.services.web.*
 import com.remoticom.streetlighting.services.web.data.OwnershipStatus
 import com.remoticom.streetlighting.services.web.data.Peripheral
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class NodeRepository private constructor (
   private val scannerService: ScannerService,
@@ -34,6 +37,8 @@ class NodeRepository private constructor (
   private val connectionState = connectionService.state
   private val webState = peripheralsDataSource.state
 
+  private val backgroundScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
   private val _state = MediatorLiveData<State>()
   val state: LiveData<State> = _state
 
@@ -51,10 +56,12 @@ class NodeRepository private constructor (
 
   @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
   private fun onDestroy() {
-    _state.value?.connectedNode?.let {
-      runBlocking {
+    if (ProcessLifecycleOwner.get().lifecycle.currentState != Lifecycle.State.DESTROYED) return
+
+    _state.value?.connectedNode?.let { node ->
+      backgroundScope.launch {
         Log.d(TAG, "Application destroyed. Disconnecting if needed...")
-        disconnectNode(it)
+        disconnectNode(node)
       }
     }
   }
