@@ -269,6 +269,12 @@ class GattConnection(
     Log.v(TAG, "onConnectionStateChange called")
     super.onConnectionStateChange(gatt, status, newState)
 
+    val activeOperation = currentOperation
+
+    if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+      resetOperation()
+    }
+
     if (BluetoothGatt.GATT_SUCCESS == status) {
       when (newState) {
          BluetoothProfile.STATE_DISCONNECTED -> {
@@ -285,7 +291,7 @@ class GattConnection(
 
     // Must be called last, because code after suspended operation
     // must see changes by made by callback
-    currentOperation?.onConnectionStateChange(gatt, status, newState)
+    activeOperation?.onConnectionStateChange(gatt, status, newState)
   }
 
   override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {

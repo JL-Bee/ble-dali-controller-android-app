@@ -540,7 +540,10 @@ class GattConnectionService constructor(
 
       when (connectionState) {
         GattConnectionStatus.Connected -> startKeepAlive()
-        GattConnectionStatus.Disconnected -> stopKeepAlive()
+        GattConnectionStatus.Disconnected -> {
+          currentConnection?.resetOperation()
+          stopKeepAlive()
+        }
         else -> {}
       }
     }
