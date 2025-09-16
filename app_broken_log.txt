@@ -6276,3 +6276,337 @@
 2025-09-15 17:08:25.495   963-9172  vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
 2025-09-15 17:08:25.495   963-9172  vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK OFF
 2025-09-15 17:08:25.646   963-9166  vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Release wakelock is released 
+--------------------------------------------------------------------------------------------------------------------------------------------
+2025-09-16 09:41:06.880   963-23752 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Release wakelock is released 
+2025-09-16 09:41:07.273  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  onDataActivity: isNewTxEvent = true, isNewRxEvent = true, isTxEndEvent = false, isRxEndEvent = false
+2025-09-16 09:41:07.273 30462-30498 NetworkCon...troller(1) com.android.systemui                 D  notifyListeners, showSimLoadedFakeIcon :false
+2025-09-16 09:41:07.273  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  onDataActivity: isNewEvent = true, isEndEvent = false
+2025-09-16 09:41:07.273  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  getCurrentSimMccMnc: current SIM mccmnc = [*20416, null]
+2025-09-16 09:41:07.354   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+2025-09-16 09:41:07.354   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK ON
+2025-09-16 09:41:07.355   963-23771 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Acquire wakelock is acquired 
+2025-09-16 09:41:07.355   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Writing IBS_WAKE_ACK
+2025-09-16 09:41:07.357 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:btm_inq.cc(1019)] BTM_InqDbRead: bd addr 4e:9b:5c:a7:7a:16
+2025-09-16 09:41:07.396   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+2025-09-16 09:41:07.396   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK OFF
+2025-09-16 09:41:07.429   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+2025-09-16 09:41:07.429   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK ON
+2025-09-16 09:41:07.429   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Writing IBS_WAKE_ACK
+2025-09-16 09:41:07.432 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:btm_inq.cc(1019)] BTM_InqDbRead: bd addr 59:39:24:84:79:a7
+2025-09-16 09:41:07.441 19804-20113 NearbyDiscovery         com.google.android.gms.persistent    I  (REDACTED) [trigger-id=Scan2949BBC2] FastPairCache: Bloom filter changed, %s, newData=%s, oldData=%s, scanMode=%s
+2025-09-16 09:41:07.470   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+2025-09-16 09:41:07.470   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK OFF
+2025-09-16 09:41:07.621   963-23752 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Release wakelock is released 
+2025-09-16 09:41:08.172   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+2025-09-16 09:41:08.172   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK ON
+2025-09-16 09:41:08.173   963-23771 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Acquire wakelock is acquired 
+2025-09-16 09:41:08.173   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Writing IBS_WAKE_ACK
+2025-09-16 09:41:08.176 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:btm_inq.cc(1019)] BTM_InqDbRead: bd addr 4e:9b:5c:a7:7a:16
+2025-09-16 09:41:08.214   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+2025-09-16 09:41:08.215   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK OFF
+2025-09-16 09:41:08.283  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  onDataActivity: isNewTxEvent = false, isNewRxEvent = false, isTxEndEvent = true, isRxEndEvent = true
+2025-09-16 09:41:08.284  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  updateTransferSpeedData: isTx = true
+2025-09-16 09:41:08.284 30462-30498 NetworkCon...troller(1) com.android.systemui                 D  notifyListeners, showSimLoadedFakeIcon :false
+2025-09-16 09:41:08.285  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  updateTransferSpeedData: mCurDdsSimNetworkClass = 2, currentTxBytes = 137430057, incrementTxBytes = 52, transferTxSpeed = 52
+2025-09-16 09:41:08.285  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  getBucketIndexByBelongingRange: index = 0, transferSpeed = 52
+2025-09-16 09:41:08.285  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  updateTransferSpeedData: isTx = false
+2025-09-16 09:41:08.287  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  updateTransferSpeedData: mCurDdsSimNetworkClass = 2, currentRxBytes = 3695036218, incrementRxBytes = 52, transferRxSpeed = 1
+2025-09-16 09:41:08.287  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  getBucketIndexByBelongingRange: index = 0, transferSpeed = 1
+2025-09-16 09:41:08.287  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  onDataActivity: isNewEvent = false, isEndEvent = true
+2025-09-16 09:41:08.287  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  updateDataActiveDuration: original active duration = 1961389
+2025-09-16 09:41:08.287  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  updateDataActiveDuration: current connection time = 1962403
+2025-09-16 09:41:08.365   963-23752 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Release wakelock is released 
+2025-09-16 09:41:08.777   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+2025-09-16 09:41:08.777   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK ON
+2025-09-16 09:41:08.778   963-23771 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Acquire wakelock is acquired 
+2025-09-16 09:41:08.778   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Writing IBS_WAKE_ACK
+2025-09-16 09:41:08.781 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:btm_inq.cc(1019)] BTM_InqDbRead: bd addr 59:39:24:84:79:a7
+2025-09-16 09:41:08.820   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+2025-09-16 09:41:08.820   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK OFF
+2025-09-16 09:41:08.970   963-23752 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Release wakelock is released 
+2025-09-16 09:41:10.289   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+2025-09-16 09:41:10.290   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK ON
+2025-09-16 09:41:10.291   963-23771 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Acquire wakelock is acquired 
+2025-09-16 09:41:10.291   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Writing IBS_WAKE_ACK
+2025-09-16 09:41:10.294 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:btm_inq.cc(1019)] BTM_InqDbRead: bd addr 62:36:08:4c:67:97
+2025-09-16 09:41:10.303 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:btm_inq.cc(1019)] BTM_InqDbRead: bd addr 59:39:24:84:79:a7
+2025-09-16 09:41:10.342   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+2025-09-16 09:41:10.343   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK OFF
+2025-09-16 09:41:10.493   963-23752 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Release wakelock is released 
+2025-09-16 09:41:11.151   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+2025-09-16 09:41:11.151   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK ON
+2025-09-16 09:41:11.152   963-23771 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Acquire wakelock is acquired 
+2025-09-16 09:41:11.152   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Writing IBS_WAKE_ACK
+2025-09-16 09:41:11.156 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:btm_inq.cc(1019)] BTM_InqDbRead: bd addr 62:36:08:4c:67:97
+2025-09-16 09:41:11.193   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+2025-09-16 09:41:11.194   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK OFF
+2025-09-16 09:41:11.344   963-23752 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Release wakelock is released 
+2025-09-16 09:41:11.804   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+2025-09-16 09:41:11.804   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK ON
+2025-09-16 09:41:11.806   963-23771 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Acquire wakelock is acquired 
+2025-09-16 09:41:11.806   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Writing IBS_WAKE_ACK
+2025-09-16 09:41:11.808 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:btm_inq.cc(1019)] BTM_InqDbRead: bd addr 6b:ba:36:b9:e2:6c
+2025-09-16 09:41:11.847   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+2025-09-16 09:41:11.847   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK OFF
+2025-09-16 09:41:11.948  1444-1922  QMI_FW                  netmgrd                              E  qmi_cci_get_ref: ref count increased 2
+2025-09-16 09:41:11.997   963-23752 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Release wakelock is released 
+2025-09-16 09:41:12.321 30462-30498 NetworkCon...troller(1) com.android.systemui                 D  notifyListeners, showSimLoadedFakeIcon :false
+2025-09-16 09:41:12.321  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  onDataActivity: isNewEvent = true, isEndEvent = false
+2025-09-16 09:41:12.322  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  getCurrentSimMccMnc: current SIM mccmnc = [*20416, null]
+2025-09-16 09:41:12.322  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  onDataActivity: isNewTxEvent = true, isNewRxEvent = true, isTxEndEvent = false, isRxEndEvent = false
+2025-09-16 09:41:12.426   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+2025-09-16 09:41:12.426   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK ON
+2025-09-16 09:41:12.427   963-23771 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Acquire wakelock is acquired 
+2025-09-16 09:41:12.427   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Writing IBS_WAKE_ACK
+2025-09-16 09:41:12.430 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:btm_inq.cc(1019)] BTM_InqDbRead: bd addr 59:39:24:84:79:a7
+2025-09-16 09:41:12.431 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:btm_inq.cc(1019)] BTM_InqDbRead: bd addr 59:39:24:84:79:a7
+2025-09-16 09:41:12.439 19804-20113 NearbyDiscovery         com.google.android.gms.persistent    I  (REDACTED) [trigger-id=Scan17B2CAEF] FastPairCache: Bloom filter changed, %s, newData=%s, oldData=%s, scanMode=%s
+2025-09-16 09:41:12.468   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+2025-09-16 09:41:12.468   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK OFF
+2025-09-16 09:41:12.537   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+2025-09-16 09:41:12.537   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK ON
+2025-09-16 09:41:12.537   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Writing IBS_WAKE_ACK
+2025-09-16 09:41:12.540 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:btm_inq.cc(1019)] BTM_InqDbRead: bd addr 6b:ba:36:b9:e2:6c
+2025-09-16 09:41:12.578   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+2025-09-16 09:41:12.579   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK OFF
+2025-09-16 09:41:12.729   963-23752 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Release wakelock is released 
+2025-09-16 09:41:13.259  1305-1758  BatteryStatsImpl        system_server                        I  set timeToFullsIndexMax = 3
+2025-09-16 09:41:13.267  1305-1734  AlarmManager            system_server                        W  Unrecognized alarm listener com.android.server.OpPowerControllerService$tsu@dab256d
+2025-09-16 09:41:13.273 30462-30462 OpUtils                 com.android.systemui                 I  isSupportWarpCharging:false
+2025-09-16 09:41:13.273 30462-30462 OpSWarpChargingView     com.android.systemui                 D  level is same as latest one [84]
+2025-09-16 09:41:13.276 30462-30462 KeyguardUpdateMonitor   com.android.systemui                 D  received broadcast android.intent.action.BATTERY_CHANGED
+2025-09-16 09:41:13.276 30462-30462 OpUtils                 com.android.systemui                 I  isSupportWarpCharging:false
+2025-09-16 09:41:13.276 30462-30462 KeyguardUpdateMonitor   com.android.systemui                 D  pdCharge false, chargingstatus 0, fastcharge:0
+2025-09-16 09:41:13.321  3107-3107  DeviceStatisticsService com...m.qti.devicestatisticsservice  D  chargerType=2 batteryLevel=84 totalBatteryCapacity=2989400
+2025-09-16 09:41:13.330 30462-30498 NetworkCon...troller(1) com.android.systemui                 D  notifyListeners, showSimLoadedFakeIcon :false
+2025-09-16 09:41:13.332  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  onDataActivity: isNewTxEvent = false, isNewRxEvent = false, isTxEndEvent = true, isRxEndEvent = true
+2025-09-16 09:41:13.332  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  updateTransferSpeedData: isTx = true
+2025-09-16 09:41:13.333  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  updateTransferSpeedData: mCurDdsSimNetworkClass = 2, currentTxBytes = 137430242, incrementTxBytes = 185, transferTxSpeed = 185
+2025-09-16 09:41:13.333  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  getBucketIndexByBelongingRange: index = 0, transferSpeed = 185
+2025-09-16 09:41:13.333  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  updateTransferSpeedData: isTx = false
+2025-09-16 09:41:13.334  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  updateTransferSpeedData: mCurDdsSimNetworkClass = 2, currentRxBytes = 3695036453, incrementRxBytes = 235, transferRxSpeed = 5
+2025-09-16 09:41:13.334  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  getBucketIndexByBelongingRange: index = 0, transferSpeed = 5
+2025-09-16 09:41:13.334  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  onDataActivity: isNewEvent = false, isEndEvent = true
+2025-09-16 09:41:13.334  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  updateDataActiveDuration: original active duration = 1962403
+2025-09-16 09:41:13.334  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  updateDataActiveDuration: current connection time = 1963416
+2025-09-16 09:41:13.977   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+2025-09-16 09:41:13.977   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK ON
+2025-09-16 09:41:13.979   963-23771 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Acquire wakelock is acquired 
+2025-09-16 09:41:13.979   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Writing IBS_WAKE_ACK
+2025-09-16 09:41:14.023   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+2025-09-16 09:41:14.023   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK OFF
+2025-09-16 09:41:14.174   963-23752 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Release wakelock is released 
+2025-09-16 09:41:14.602   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+2025-09-16 09:41:14.602   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK ON
+2025-09-16 09:41:14.603   963-23771 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Acquire wakelock is acquired 
+2025-09-16 09:41:14.604   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Writing IBS_WAKE_ACK
+2025-09-16 09:41:14.606 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:btm_inq.cc(1019)] BTM_InqDbRead: bd addr 6b:ba:36:b9:e2:6c
+2025-09-16 09:41:14.644   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+2025-09-16 09:41:14.645   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK OFF
+2025-09-16 09:41:14.749   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+2025-09-16 09:41:14.749   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK ON
+2025-09-16 09:41:14.749   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Writing IBS_WAKE_ACK
+2025-09-16 09:41:14.752 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:btm_inq.cc(1019)] BTM_InqDbRead: bd addr 59:39:24:84:79:a7
+2025-09-16 09:41:14.790   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+2025-09-16 09:41:14.790   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK OFF
+2025-09-16 09:41:14.941   963-23752 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Release wakelock is released 
+2025-09-16 09:41:14.982 19804-3796  NearbyMediums           com.google.android.gms.persistent    I  No BLE Fast/GATT advertisements found in the latest cycle.
+2025-09-16 09:41:14.983 19804-3796  NearbyMediums           com.google.android.gms.persistent    I  Current Tracked Scanning Clients are : {NearbyConnections.EnvironmentMonitor, NearbySharing}
+2025-09-16 09:41:15.396   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+2025-09-16 09:41:15.396   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK ON
+2025-09-16 09:41:15.397   963-23771 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Acquire wakelock is acquired 
+2025-09-16 09:41:15.397   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Writing IBS_WAKE_ACK
+2025-09-16 09:41:15.400 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:btm_inq.cc(1019)] BTM_InqDbRead: bd addr 29:25:68:f3:d9:d3
+2025-09-16 09:41:15.401 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:btm_inq.cc(1019)] BTM_InqDbRead: bd addr 59:39:24:84:79:a7
+2025-09-16 09:41:15.438   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+2025-09-16 09:41:15.438   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK OFF
+2025-09-16 09:41:15.589   963-23752 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Release wakelock is released 
+2025-09-16 09:41:15.888  1689-1837  QMI_FW                  qcrild                               E  qmi_cci_get_ref: ref count increased 2
+2025-09-16 09:41:15.891  1689-1757  QMI_FW                  qcrild                               E  qmi_cci_get_ref: ref count increased 2
+2025-09-16 09:41:15.937  3143-3143  PhoneInterfaceManager   com.android.phone                    D  [PhoneIntfMgr] getPhoneFromSubId: 1
+2025-09-16 09:41:15.945  1689-1757  QMI_FW                  qcrild                               E  qmi_cci_get_ref: ref count increased 2
+2025-09-16 09:41:15.948  1689-1757  QMI_FW                  qcrild                               E  qmi_cci_get_ref: ref count increased 2
+2025-09-16 09:41:15.962  3143-3143  MDM-OPMdmListener       com.android.phone                    D  onCellInfoChanged the cellInfo changed phoneId 0
+2025-09-16 09:41:16.073   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+2025-09-16 09:41:16.073   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK ON
+2025-09-16 09:41:16.074   963-23771 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Acquire wakelock is acquired 
+2025-09-16 09:41:16.074   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Writing IBS_WAKE_ACK
+2025-09-16 09:41:16.077 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:btm_inq.cc(1019)] BTM_InqDbRead: bd addr 59:39:24:84:79:a7
+2025-09-16 09:41:16.115   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+2025-09-16 09:41:16.116   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK OFF
+2025-09-16 09:41:16.266   963-23752 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Release wakelock is released 
+2025-09-16 09:41:17.363  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  onDataActivity: isNewTxEvent = true, isNewRxEvent = false, isTxEndEvent = false, isRxEndEvent = false
+2025-09-16 09:41:17.363  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  onDataActivity: isNewEvent = true, isEndEvent = false
+2025-09-16 09:41:17.364  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  getCurrentSimMccMnc: current SIM mccmnc = [*20416, null]
+2025-09-16 09:41:17.365 30462-30498 NetworkCon...troller(1) com.android.systemui                 D  notifyListeners, showSimLoadedFakeIcon :false
+2025-09-16 09:41:17.685   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+2025-09-16 09:41:17.685   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK ON
+2025-09-16 09:41:17.687   963-23771 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Acquire wakelock is acquired 
+2025-09-16 09:41:17.687   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Writing IBS_WAKE_ACK
+2025-09-16 09:41:17.689 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:btm_inq.cc(1019)] BTM_InqDbRead: bd addr 6b:ba:36:b9:e2:6c
+2025-09-16 09:41:17.728   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+2025-09-16 09:41:17.728   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK OFF
+2025-09-16 09:41:17.878   963-23752 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Release wakelock is released 
+2025-09-16 09:41:18.374  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  onDataActivity: isNewTxEvent = false, isNewRxEvent = true, isTxEndEvent = false, isRxEndEvent = false
+2025-09-16 09:41:18.374  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  onDataActivity: isNewEvent = false, isEndEvent = false
+2025-09-16 09:41:18.374 30462-30498 NetworkCon...troller(1) com.android.systemui                 D  notifyListeners, showSimLoadedFakeIcon :false
+2025-09-16 09:41:18.773  1689-1837  QMI_FW                  qcrild                               E  qmi_cci_get_ref: ref count increased 2
+2025-09-16 09:41:18.776  1689-1757  QMI_FW                  qcrild                               E  qmi_cci_get_ref: ref count increased 2
+2025-09-16 09:41:19.085 20468-4475  GattConnectionService   com.remoticom.energynodeinset        D  Keep-alive ping
+2025-09-16 09:41:19.086 20468-4475  BdcReadDia...sOperation com.remoticom.energynodeinset        D  STARTED
+2025-09-16 09:41:19.087 20468-4475  BdcReadDia...sOperation com.remoticom.energynodeinset        V  readCharacteristic initiated
+2025-09-16 09:41:19.090 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(361)] bta_gattc_hdl_event: Event:BTA_GATTC_API_READ_EVT
+2025-09-16 09:41:19.090 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(305)] bta_gattc_sm_execute: State 0x02 [GATTC_CONN_ST], Event 0x1f04[BTA_GATTC_API_READ_EVT]
+2025-09-16 09:41:19.090 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_api.cc(692)] GATTC_Read: conn_id=0x0008, type=0x02
+2025-09-16 09:41:19.091 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(341)] bta_gattc_sm_execute: GATTC State Change: 0x02 -> 0x02 after Event 0x1f04
+2025-09-16 09:41:19.091   963-963   vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK ON
+2025-09-16 09:41:19.092   963-963   vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Acquire wakelock is acquired 
+2025-09-16 09:41:19.092   963-963   vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  DeviceWakeUp: Writing IBS_WAKE_IND
+2025-09-16 09:41:19.093   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_WAKE_ACK: 0xFC
+2025-09-16 09:41:19.093   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Signal wack_cond_
+2025-09-16 09:41:19.093   963-963   vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  DeviceWakeUp: Unblocked from waiting for FC
+2025-09-16 09:41:19.384  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  onDataActivity: isNewTxEvent = false, isNewRxEvent = false, isTxEndEvent = true, isRxEndEvent = true
+2025-09-16 09:41:19.384  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  updateTransferSpeedData: isTx = true
+2025-09-16 09:41:19.385 30462-30498 NetworkCon...troller(1) com.android.systemui                 D  notifyListeners, showSimLoadedFakeIcon :false
+2025-09-16 09:41:19.388  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  updateTransferSpeedData: mCurDdsSimNetworkClass = 2, currentTxBytes = 137430498, incrementTxBytes = 256, transferTxSpeed = 128
+2025-09-16 09:41:19.388  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  getBucketIndexByBelongingRange: index = 0, transferSpeed = 128
+2025-09-16 09:41:19.388  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  updateTransferSpeedData: isTx = false
+2025-09-16 09:41:19.390  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  updateTransferSpeedData: mCurDdsSimNetworkClass = 2, currentRxBytes = 3695036681, incrementRxBytes = 228, transferRxSpeed = 228
+2025-09-16 09:41:19.390  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  getBucketIndexByBelongingRange: index = 0, transferSpeed = 228
+2025-09-16 09:41:19.390  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  onDataActivity: isNewEvent = false, isEndEvent = true
+2025-09-16 09:41:19.390  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  updateDataActiveDuration: original active duration = 1963416
+2025-09-16 09:41:19.390  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  updateDataActiveDuration: current connection time = 1965443
+2025-09-16 09:41:19.604   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+2025-09-16 09:41:19.604   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Writing IBS_WAKE_ACK
+2025-09-16 09:41:19.606 23624-23773 bt_stack                com.android.bluetooth                I  [INFO:btsnoop.cc(427)] clear_l2cap_whitelist: Clearing whitelist from l2cap channel. conn_handle=4 cid=4:4
+2025-09-16 09:41:19.607 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_main.cc(461)] GATT   ATT protocol channel with BDA: f0:d7:8f:4d:80:82 is disconnected
+2025-09-16 09:41:19.607 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_utils.cc(312)] gatt_is_bda_in_the_srv_chg_clt_list: f0:d7:8f:4d:80:82
+2025-09-16 09:41:19.607 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_utils.cc(1247)] gatt_cleanup_upon_disc
+2025-09-16 09:41:19.608 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_main.cc(1077)] gatt_set_ch_state: old=4 new=0000
+2025-09-16 09:41:19.608 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_utils.cc(1258)] found p_clcb conn_id=8
+2025-09-16 09:41:19.608 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_utils.cc(1191)] gatt_end_operation status=133 op=2 subtype=2
+2025-09-16 09:41:19.608 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_act.cc(1483)] bta_gattc_cmpl_cback: conn_id:8 op:2 status:133
+2025-09-16 09:41:19.608 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_utils.cc(92)] gatt_free_pending_ind
+2025-09-16 09:41:19.608 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_utils.cc(1279)] found p_reg tcb_idx=0 gatt_if=1  conn_id=0x1
+2025-09-16 09:41:19.608 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_attr.cc(245)] gatt_connect_cback: from f0:d7:8f:4d:80:82 connected: 0, conn_id: 0x0001reason: 0x0008
+2025-09-16 09:41:19.608 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_utils.cc(1279)] found p_reg tcb_idx=0 gatt_if=2  conn_id=0x2
+2025-09-16 09:41:19.608 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_utils.cc(1279)] found p_reg tcb_idx=0 gatt_if=3  conn_id=0x3
+2025-09-16 09:41:19.609 23624-23773 bt_stack                com.android.bluetooth                W  [WARNING:bta_gattc_act.cc(1086)] bta_gattc_conn_cback: cif=3 connected=0 conn_id=0x0003 reason=0x0008
+2025-09-16 09:41:19.609 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_utils.cc(1279)] found p_reg tcb_idx=0 gatt_if=4  conn_id=0x4
+2025-09-16 09:41:19.609 23624-23773 bt_stack                com.android.bluetooth                W  [WARNING:bta_gattc_act.cc(1086)] bta_gattc_conn_cback: cif=4 connected=0 conn_id=0x0004 reason=0x0008
+2025-09-16 09:41:19.609 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_utils.cc(1279)] found p_reg tcb_idx=0 gatt_if=5  conn_id=0x5
+2025-09-16 09:41:19.609 23624-23773 bt_stack                com.android.bluetooth                W  [WARNING:bta_gattc_act.cc(1086)] bta_gattc_conn_cback: cif=5 connected=0 conn_id=0x0005 reason=0x0008
+2025-09-16 09:41:19.609 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_utils.cc(1279)] found p_reg tcb_idx=0 gatt_if=6  conn_id=0x6
+2025-09-16 09:41:19.609 23624-23773 bt_stack                com.android.bluetooth                W  [WARNING:bta_gattc_act.cc(1086)] bta_gattc_conn_cback: cif=6 connected=0 conn_id=0x0006 reason=0x0008
+2025-09-16 09:41:19.609 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_utils.cc(1279)] found p_reg tcb_idx=0 gatt_if=7  conn_id=0x7
+2025-09-16 09:41:19.609 23624-23773 bt_stack                com.android.bluetooth                W  [WARNING:bta_gattc_act.cc(1086)] bta_gattc_conn_cback: cif=7 connected=0 conn_id=0x0007 reason=0x0008
+2025-09-16 09:41:19.610 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_utils.cc(1279)] found p_reg tcb_idx=0 gatt_if=8  conn_id=0x8
+2025-09-16 09:41:19.610 23624-23773 bt_stack                com.android.bluetooth                W  [WARNING:bta_gattc_act.cc(1086)] bta_gattc_conn_cback: cif=8 connected=0 conn_id=0x0008 reason=0x0008
+2025-09-16 09:41:19.610 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_utils.cc(1279)] found p_reg tcb_idx=0 gatt_if=9  conn_id=0x9
+2025-09-16 09:41:19.610 23624-23773 bt_stack                com.android.bluetooth                W  [WARNING:bta_gattc_act.cc(1086)] bta_gattc_conn_cback: cif=9 connected=0 conn_id=0x0009 reason=0x0008
+2025-09-16 09:41:19.610 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_utils.cc(1287)] gatt_cleanup_upon_disc: exit
+2025-09-16 09:41:19.611 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:gatt_main.cc(474)] ATT disconnected
+2025-09-16 09:41:19.611 23624-23773 bt_btm_sec              com.android.bluetooth                I  btm_sec_disconnected clearing pending flag handle:4 reason:8
+2025-09-16 09:41:19.611 23624-23773 bt_stack                com.android.bluetooth                I  [INFO:btm_ble_bgconn.cc(420)] Already connection initiated (or) No Pending connections(or) Resources of lcb are exhausted
+2025-09-16 09:41:19.611 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(361)] bta_gattc_hdl_event: Event:BTA_GATTC_OP_CMPL_EVT
+2025-09-16 09:41:19.611 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(305)] bta_gattc_sm_execute: State 0x02 [GATTC_CONN_ST], Event 0x1f0f[BTA_GATTC_OP_CMPL_EVT]
+2025-09-16 09:41:19.611 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_act.cc(962)] bta_gattc_op_cmpl: op:2
+2025-09-16 09:41:19.611 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(341)] bta_gattc_sm_execute: GATTC State Change: 0x02 -> 0x02 after Event 0x1f0f
+2025-09-16 09:41:19.612 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(361)] bta_gattc_hdl_event: Event:BTA_GATTC_INT_DISCONN_EVT
+2025-09-16 09:41:19.612 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_utils.cc(678)]  disconnection ID:3 not used by BTA
+2025-09-16 09:41:19.612 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(385)] Ignore unknown conn ID: 3
+2025-09-16 09:41:19.612 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(361)] bta_gattc_hdl_event: Event:BTA_GATTC_INT_DISCONN_EVT
+2025-09-16 09:41:19.612 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_utils.cc(678)]  disconnection ID:4 not used by BTA
+2025-09-16 09:41:19.612 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(385)] Ignore unknown conn ID: 4
+2025-09-16 09:41:19.612 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(361)] bta_gattc_hdl_event: Event:BTA_GATTC_INT_DISCONN_EVT
+2025-09-16 09:41:19.612 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_utils.cc(678)]  disconnection ID:5 not used by BTA
+2025-09-16 09:41:19.612 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(385)] Ignore unknown conn ID: 5
+2025-09-16 09:41:19.612 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(361)] bta_gattc_hdl_event: Event:BTA_GATTC_INT_DISCONN_EVT
+2025-09-16 09:41:19.613 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_utils.cc(678)]  disconnection ID:6 not used by BTA
+2025-09-16 09:41:19.613 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(385)] Ignore unknown conn ID: 6
+2025-09-16 09:41:19.613 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(361)] bta_gattc_hdl_event: Event:BTA_GATTC_INT_DISCONN_EVT
+2025-09-16 09:41:19.613 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_utils.cc(678)]  disconnection ID:7 not used by BTA
+2025-09-16 09:41:19.613 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(385)] Ignore unknown conn ID: 7
+2025-09-16 09:41:19.613 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(361)] bta_gattc_hdl_event: Event:BTA_GATTC_INT_DISCONN_EVT
+2025-09-16 09:41:19.613 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(305)] bta_gattc_sm_execute: State 0x02 [GATTC_CONN_ST], Event 0x1f10[BTA_GATTC_INT_DISCONN_EVT]
+2025-09-16 09:41:19.613 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_act.cc(564)] bta_gattc_close: conn_id=0x0008
+2025-09-16 09:41:19.613 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(341)] bta_gattc_sm_execute: GATTC State Change: 0x02 -> 0x00 after Event 0x1f10
+2025-09-16 09:41:19.614 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(361)] bta_gattc_hdl_event: Event:BTA_GATTC_INT_DISCONN_EVT
+2025-09-16 09:41:19.614 23624-23652 BtGatt.GattService      com.android.bluetooth                D  onDisconnected() - clientIf=8, connId=8, address=F0:D7:8F:4D:80:82
+2025-09-16 09:41:19.614 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_utils.cc(678)]  disconnection ID:9 not used by BTA
+2025-09-16 09:41:19.614 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:bta_gattc_main.cc(385)] Ignore unknown conn ID: 9
+2025-09-16 09:41:19.614 23624-23773 bt_l2cap                com.android.bluetooth                W  L2CA_SetDesireRole() new:x0, disallow_switch:0
+2025-09-16 09:41:19.614 20468-4282  BdcReadDia...sOperation com.remoticom.energynodeinset        V  onCharacteristicRead called
+2025-09-16 09:41:19.614 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:btm_acl.cc(648)] BTM_SwitchRole BDA: 74:45:ce:96:e7:cb
+2025-09-16 09:41:19.614 20468-4282  BdcReadDia...sOperation com.remoticom.energynodeinset        E  status=(133) GATT_ERROR
+2025-09-16 09:41:19.615 23624-23652 bt_btif                 com.android.bluetooth                D  btif_av_move_idle: Already in IDLE
+2025-09-16 09:41:19.616 23624-23652 BluetoothRemoteDevices  com.android.bluetooth                D  Battery level was never set or is already reset, device=F0:D7:8F:4D:80:82
+2025-09-16 09:41:19.616 23624-23652 BluetoothRemoteDevices  com.android.bluetooth                D  aclStateChangeCallback: Adapter State: ON Disconnected: F0:D7:8F:4D:80:82
+2025-09-16 09:41:19.617 20468-4282  BluetoothGatt           com.remoticom.energynodeinset        D  onClientConnectionState() - status=8 clientIf=8 device=F0:D7:8F:4D:80:82
+2025-09-16 09:41:19.617 20468-4475  BdcReadDia...sOperation com.remoticom.energynodeinset        D  FINISHED
+2025-09-16 09:41:19.617 20468-4282  BdcReadDia...sOperation com.remoticom.energynodeinset        V  onConnectionStateChange called
+2025-09-16 09:41:19.617 20468-4282  GattConnection          com.remoticom.energynodeinset        E  status=(8) GATT connection timeout
+2025-09-16 09:41:19.617 20468-4282  GattConnectionService   com.remoticom.energynodeinset        D  onConnectionStateChange address=F0:D7:8F:4D:80:82, status=(8) GATT connection timeout, newState=DISCONNECTED (0)
+2025-09-16 09:41:19.617 20468-4282  GattConnectionService   com.remoticom.energynodeinset        D  state = Disconnected, error = GattError ((8) GATT connection timeout)
+2025-09-16 09:41:19.619 20468-4475  GattConnectionService   com.remoticom.energynodeinset        D  Service state updated with ServiceState(device=DeviceImpl(uuid=00000000-0000-0000-0000-f0d78f4d8082, device=F0:D7:8F:4D:80:82, type=Bdc, serviceUuids=[a55d1c55-0088-ffff-0000-000000000000], health=null, state=null), characteristics=DeviceCharacteristics(general=GeneralCharacteristics(mode=STEP_DIMMING, name=????????????????????????????????????????), dim=DimCharacteristics(preset=5, steps=[DimStep(hour=9, minute=0, level=100), DimStep(hour=20, minute=30, level=75), DimStep(hour=22, minute=0, level=50), DimStep(hour=2, minute=0, level=75), DimStep(hour=3, minute=0, level=100)], level=100), dali=DaliCharacteristics(clo=null, powerLevel=null, availablePowerLevels=null, fixtureName=null, fadeTime=4), time=TimeCharacteristics(timezone=null, unixTimestamp=0, midnightOffset=35), gps=null, diagnostics=DiagnosticsCharacteristics(status=2, version=DiagnosticsVersion(firmwareVersion=Version(major=1, minor=2, patch=3, build=null), libraryVersion=Version(major=0, minor=0, patch=0, build=null))), daliBanks=null), isConnecting=false, connectionStatus=Connected, lastGattError=GattError ((133) GATT_ERROR))
+2025-09-16 09:41:19.619 20468-4282  GattConnectionService   com.remoticom.energynodeinset        D  Service state updated with ServiceState(device=DeviceImpl(uuid=00000000-0000-0000-0000-f0d78f4d8082, device=F0:D7:8F:4D:80:82, type=Bdc, serviceUuids=[a55d1c55-0088-ffff-0000-000000000000], health=null, state=null), characteristics=DeviceCharacteristics(general=GeneralCharacteristics(mode=STEP_DIMMING, name=????????????????????????????????????????), dim=DimCharacteristics(preset=5, steps=[DimStep(hour=9, minute=0, level=100), DimStep(hour=20, minute=30, level=75), DimStep(hour=22, minute=0, level=50), DimStep(hour=2, minute=0, level=75), DimStep(hour=3, minute=0, level=100)], level=100), dali=DaliCharacteristics(clo=null, powerLevel=null, availablePowerLevels=null, fixtureName=null, fadeTime=4), time=TimeCharacteristics(timezone=null, unixTimestamp=0, midnightOffset=35), gps=null, diagnostics=DiagnosticsCharacteristics(status=2, version=DiagnosticsVersion(firmwareVersion=Version(major=1, minor=2, patch=3, build=null), libraryVersion=Version(major=0, minor=0, patch=0, build=null))), daliBanks=null), isConnecting=false, connectionStatus=Disconnected, lastGattError=GattError ((8) GATT connection timeout))
+2025-09-16 09:41:19.620 20468-4475  BdcReadDia...nOperation com.remoticom.energynodeinset        D  STARTED
+2025-09-16 09:41:19.621 20468-4475  BdcReadDia...nOperation com.remoticom.energynodeinset        V  readCharacteristic initiated
+2025-09-16 09:41:19.624 23624-29559 BtGatt.GattService      com.android.bluetooth                E  readCharacteristic() - No connection for F0:D7:8F:4D:80:82...
+2025-09-16 09:41:19.625 20468-4475  GattOperation           com.remoticom.energynodeinset        D  Operation cancelled. Resetting current operation...
+2025-09-16 09:41:19.625  3014-3014  aptxalsBTEventHandler   com.qualcomm.qtil.aptxals            I  action: android.bluetooth.device.action.ACL_DISCONNECTED
+2025-09-16 09:41:19.625  3014-3014  aptxalsBTControl        com.qualcomm.qtil.aptxals            I  DisconnectCb
+2025-09-16 09:41:19.626 30462-30498 BluetoothEventManager   com.android.systemui                 W  AclStateChangedHandler: activeDevice is null
+2025-09-16 09:41:19.627 10489-10489 BluetoothEventManager   com.android.settings                 W  AclStateChangedHandler: activeDevice is null
+2025-09-16 09:41:19.629 20077-20077 ParkingCardBTReceiver   net.oneplus.launcher                 D  Device has disconnected
+2025-09-16 09:41:19.629 23624-23624 BluetoothMapService     com.android.bluetooth                D  onReceive: android.bluetooth.device.action.ACL_DISCONNECTED
+2025-09-16 09:41:19.630 20468-4475  GattConnectionService   com.remoticom.energynodeinset        W  Keep-alive read failed
+                                                                                                    kotlinx.coroutines.JobCancellationException: StandaloneCoroutine was cancelled; job=StandaloneCoroutine{Cancelling}@a1364f
+2025-09-16 09:41:19.632 20468-20468 NodeListFragment        com.remoticom.energynodeinset        D  Updating list of nodes
+2025-09-16 09:41:19.633 23624-23624 BluetoothMapService     com.android.bluetooth                I  sRemoteDevice :null device:F0:D7:8F:4D:80:82
+2025-09-16 09:41:19.633 23624-23624 FastPairService         com.android.bluetooth                D  start BLE scan
+2025-09-16 09:41:19.633 23624-23624 BluetoothAdapter        com.android.bluetooth                D  isLeEnabled(): ON
+2025-09-16 09:41:19.645   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+2025-09-16 09:41:19.656  1099-1468  surfaceflinger          surfaceflinger                       E  [frame_perf] perfboost open boost file failed
+2025-09-16 09:41:19.656  1099-1468  surfaceflinger          surfaceflinger                       E  [frame_perf] AutoBoostStrategyQuery fd<0 failed, errno=Inappropriate ioctl for device
+2025-09-16 09:41:19.656  1099-1468  surfaceflinger          surfaceflinger                       E  [frame_perf] AutoBoostConfigQuery fd<0 failed, errno=Inappropriate ioctl for device
+2025-09-16 09:41:19.673  1099-24815 surfaceflinger          surfaceflinger                       E  [frame_perf] perfboost open boost file failed
+2025-09-16 09:41:19.681  1099-1468  surfaceflinger          surfaceflinger                       E  [frame_perf] perfboost open boost file failed
+2025-09-16 09:41:19.683 19804-4688  Nearby                  com.google.android.gms.persistent    I  (REDACTED) is blocked device type %s, isAuto=%s, isIot=%s, isLatchsky=%s, isChinaWearable=%s, isTv=%s, isWearable=%s (supportWearOs=%s), isChromeOsDevice=%s (supportChromeOs=%s)
+2025-09-16 09:41:19.683 29788-29788 xta                     com....android.googlequicksearchbox  I  onReceive
+2025-09-16 09:41:19.684 30462-30462 OpUtils                 com.android.systemui                 I  isSupportWarpCharging:false
+2025-09-16 09:41:19.684 30462-30462 OpSWarpChargingView     com.android.systemui                 D  level is same as latest one [84]
+2025-09-16 09:41:19.686 30462-30462 KeyguardUpdateMonitor   com.android.systemui                 D  received broadcast android.intent.action.BATTERY_CHANGED
+2025-09-16 09:41:19.686 30462-30462 OpUtils                 com.android.systemui                 I  isSupportWarpCharging:false
+2025-09-16 09:41:19.686 30462-30462 KeyguardUpdateMonitor   com.android.systemui                 D  pdCharge false, chargingstatus 0, fastcharge:0
+2025-09-16 09:41:19.686  1305-1734  AlarmManager            system_server                        W  Unrecognized alarm listener com.android.server.OpPowerControllerService$tsu@dab256d
+2025-09-16 09:41:19.695 19804-19804 NearbyDiscovery         com.google.android.gms.persistent    I  (REDACTED) DiscoveryService onStartCommand action: %s
+2025-09-16 09:41:19.696 19804-19804 NearbyDiscovery         com.google.android.gms.persistent    I  (REDACTED) onAclChange: state=%s, %s
+2025-09-16 09:41:19.699 29788-29814 zej                     com....android.googlequicksearchbox  I  (REDACTED) bluetoothConnectionStateChanged. Action: %s
+2025-09-16 09:41:19.725  1099-24815 surfaceflinger          surfaceflinger                       E  [frame_perf] perfboost open boost file failed
+2025-09-16 09:41:19.792  3107-3107  DeviceStatisticsService com...m.qti.devicestatisticsservice  D  chargerType=2 batteryLevel=84 totalBatteryCapacity=2989700
+2025-09-16 09:41:20.094   963-23776 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  DeviceSleep: TX Awake, Sending SLEEP_IND
+2025-09-16 09:41:20.094   963-23776 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK OFF
+2025-09-16 09:41:20.245   963-23752 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Release wakelock is released 
+2025-09-16 09:41:21.150   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+2025-09-16 09:41:21.151   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK ON
+2025-09-16 09:41:21.152   963-23771 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Acquire wakelock is acquired 
+2025-09-16 09:41:21.152   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Writing IBS_WAKE_ACK
+2025-09-16 09:41:21.154 23624-23773 bt_stack                com.android.bluetooth                V  [VERBOSE1:btm_inq.cc(1019)] BTM_InqDbRead: bd addr 62:36:08:4c:67:97
+2025-09-16 09:41:21.193   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  I  ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+2025-09-16 09:41:21.193   963-23771 vendor.qti...bs_handler and...are.bluetooth@1.0-service-qti  D  SerialClockVote: vote for UART CLK OFF
+2025-09-16 09:41:21.344   963-23752 vendor.qti...-wake_lock and...are.bluetooth@1.0-service-qti  D  Release wakelock is released 
+2025-09-16 09:41:21.403 30462-30498 NetworkCon...troller(1) com.android.systemui                 D  notifyListeners, showSimLoadedFakeIcon :false
+2025-09-16 09:41:21.403  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  onDataActivity: isNewTxEvent = true, isNewRxEvent = true, isTxEndEvent = false, isRxEndEvent = false
+2025-09-16 09:41:21.403  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  onDataActivity: isNewEvent = true, isEndEvent = false
+2025-09-16 09:41:21.403  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  getCurrentSimMccMnc: current SIM mccmnc = [*20416, null]
+2025-09-16 09:41:22.413  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  onDataActivity: isNewEvent = false, isEndEvent = true
+2025-09-16 09:41:22.413  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  updateDataActiveDuration: original active duration = 1965443
+2025-09-16 09:41:22.413  3143-3143  MDM-DataAc...ionManager com.android.phone                    D  updateDataActiveDuration: current connection time = 1966453
+2025-09-16 09:41:22.413  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  onDataActivity: isNewTxEvent = false, isNewRxEvent = false, isTxEndEvent = true, isRxEndEvent = true
+2025-09-16 09:41:22.413  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  updateTransferSpeedData: isTx = true
+2025-09-16 09:41:22.414 30462-30498 NetworkCon...troller(1) com.android.systemui                 D  notifyListeners, showSimLoadedFakeIcon :false
+2025-09-16 09:41:22.415  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  updateTransferSpeedData: mCurDdsSimNetworkClass = 2, currentTxBytes = 137430594, incrementTxBytes = 96, transferTxSpeed = 96
+2025-09-16 09:41:22.416  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  getBucketIndexByBelongingRange: index = 0, transferSpeed = 96
+2025-09-16 09:41:22.416  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  updateTransferSpeedData: isTx = false
+2025-09-16 09:41:22.417  3143-3143  MDM-DataTr...eedTracker com.android.phone                    D  updateTransferSpeedData: mCurDdsSimNetworkClass = 2, currentRxBytes = 3695036789, incrementRxBytes = 108, transferRxSpeed = 27
