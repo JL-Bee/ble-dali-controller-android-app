@@ -19,9 +19,6 @@ import com.remoticom.streetlighting.ui.login.LoginViewModelFactory
 object InjectorUtils {
 
   var currentNodeSettingsViewModelFactory : NodeSettingsViewModelFactory? = null
-  @Volatile
-  private var isNodeRepositoryLifecycleObserverRegistered = false
-
   fun getNodeRepository(context: Context, scopeProvider: CoroutineScopeProvider): NodeRepository {
     val scope = scopeProvider.provideScope()
     val scannerService = BluetoothScannerService.getInstance(context = context)
@@ -35,15 +32,7 @@ object InjectorUtils {
 
     val nodeRepository = NodeRepository.getInstance(scannerService, connectionService)
 
-    if (!isNodeRepositoryLifecycleObserverRegistered) {
-      synchronized(this) {
-        if (!isNodeRepositoryLifecycleObserverRegistered) {
-          // Ensure the repository observes the application's lifecycle rather than fragment lifecycles.
-          ProcessLifecycleOwner.get().lifecycle.addObserver(nodeRepository)
-          isNodeRepositoryLifecycleObserverRegistered = true
-        }
-      }
-    }
+    nodeRepository.attachToLifecycle(ProcessLifecycleOwner.get().lifecycle)
 
     return nodeRepository
   }

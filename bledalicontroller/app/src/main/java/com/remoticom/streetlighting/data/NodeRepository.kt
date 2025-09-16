@@ -42,6 +42,9 @@ class NodeRepository private constructor (
   private val _state = MediatorLiveData<State>()
   val state: LiveData<State> = _state
 
+  @Volatile
+  private var registeredLifecycle: Lifecycle? = null
+
   init {
     _state.addSource(scannerService.state) {
       _state.value = mergeDataSources(scannerState, connectionState, webState)!!
@@ -54,9 +57,36 @@ class NodeRepository private constructor (
     }
   }
 
+  fun attachToLifecycle(lifecycle: Lifecycle) {
+    synchronized(this) {
+      if (registeredLifecycle === lifecycle) return
+
+      registeredLifecycle?.removeObserver(this)
+
+      lifecycle.addObserver(this)
+      registeredLifecycle = lifecycle
+    }
+  }
+
+  fun detachFromLifecycle(lifecycle: Lifecycle? = null) {
+    synchronized(this) {
+      val current = registeredLifecycle ?: return
+
+      if (lifecycle == null || lifecycle === current) {
+        current.removeObserver(this)
+        registeredLifecycle = null
+      }
+    }
+  }
+
   @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-  private fun onDestroy() {
-    if (ProcessLifecycleOwner.get().lifecycle.currentState != Lifecycle.State.DESTROYED) return
+  private fun onDestroy(owner: LifecycleOwner) {
+    val lifecycle = owner.lifecycle
+
+    detachFromLifecycle(lifecycle)
+
+    if (lifecycle !== ProcessLifecycleOwner.get().lifecycle) return
+    if (lifecycle.currentState != Lifecycle.State.DESTROYED) return
 
     _state.value?.connectedNode?.let { node ->
       backgroundScope.launch {
