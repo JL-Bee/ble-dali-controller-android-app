@@ -107,7 +107,11 @@ class NodeRepository private constructor (
     val (connectionStatus, connectedDevice, characteristics, lastGattError) = connectionState.value!!
     val (peripherals) = webState.value!!
 
-    val nodeConnectionStatus = connectionStatus.toNodeConnectionStatus()
+    val nodeConnectionStatus = when {
+      connectionStatus == GattConnectionStatus.Connected && characteristics == null ->
+        NodeConnectionStatus.CONNECTING
+      else -> connectionStatus.toNodeConnectionStatus()
+    }
 
     val connectedNode = connectedDevice?.let {
       results[it.uuid]?.let { result ->
@@ -150,11 +154,13 @@ class NodeRepository private constructor (
       }
     }
 
+    val stateConnectionStatus = connectedNode?.connectionStatus ?: nodeConnectionStatus
+
     return State(
       isScanning = isScanning,
       scanResults = scanResults,
       scanErrorCode = errorCode,
-      connectionStatus = nodeConnectionStatus,
+      connectionStatus = stateConnectionStatus,
       connectedNode = connectedNode,
       lastConnectionError = lastGattError?.toNodeConnectionError(),
       hasTimedOutWithoutResults = hasTimedOutWithoutResults
