@@ -44,15 +44,22 @@ class GattConnection(
       assert(currentOperation == null)
       currentOperation = operation
       Log.d(TAG, "STARTED")
-      val result = operation.perform(this)
-      Log.d(TAG, "FINISHED")
-      currentOperation = null
+      try {
+        val result = operation.perform(this)
 
-      block?.let {
-        it(result)
+        block?.let {
+          it(result)
+        }
+
+        Log.d(TAG, "FINISHED")
+
+        result
+      } catch (exception: Exception) {
+        Log.e(TAG, "FAILED", exception)
+        throw exception
+      } finally {
+        currentOperation = null
       }
-
-      result
     }
 
   fun connectGatt(autoConnect: Boolean = false) {
