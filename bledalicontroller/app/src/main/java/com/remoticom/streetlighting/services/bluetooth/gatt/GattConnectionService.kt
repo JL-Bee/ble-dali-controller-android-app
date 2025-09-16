@@ -305,11 +305,15 @@ class GattConnectionService constructor(
       )
 
       val operationsService = currentOperationsService()
-      operationsService.connect(
+      val connectAttemptStarted = operationsService.connect(
         device,
         tokenProvider,
         peripheral
       )
+
+      if (!connectAttemptStarted) {
+        continue
+      }
     }
 
     if (!isConnected) {
