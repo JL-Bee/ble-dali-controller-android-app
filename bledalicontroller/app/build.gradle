@@ -94,6 +94,7 @@ dependencies {
   // implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
   implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
   implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+  implementation "androidx.lifecycle:lifecycle-process:$lifecycle_version"
   implementation "androidx.webkit:webkit:1.12.1"
 
   implementation 'androidx.recyclerview:recyclerview:1.3.2'

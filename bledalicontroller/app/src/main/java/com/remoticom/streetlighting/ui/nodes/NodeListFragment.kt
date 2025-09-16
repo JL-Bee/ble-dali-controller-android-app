@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.findNavController
@@ -39,8 +38,7 @@ class NodeListFragment : Fragment() {
   private val viewModel: NodeListViewModel by viewModels {
     InjectorUtils.provideNodeListViewModelFactory(
       requireContext(),
-      this.activity as CoroutineScopeProvider,
-      this.activity as FragmentActivity
+      this.activity as CoroutineScopeProvider
     )
   }
 
