@@ -32,10 +32,12 @@ class NodeSettingsViewModel(
     val currentNode: Node? = null,
     val editedNode: EditableNode? = null,
     val currentDimStep: Int? = null,
-    val lastConfigurationName: String? = null
+    val lastConfigurationName: String? = null,
+    val isWriting: Boolean = false
   )
 
   private var editedNode : EditableNode? = null
+  private var isWritingInProgress: Boolean = false
 
   private val _state = MediatorLiveData<ViewState>()
   val state: LiveData<ViewState> = _state
@@ -151,7 +153,8 @@ class NodeSettingsViewModel(
       currentNode = currentNode,
       editedNode = editedNode,
       currentDimStep = selectedDimStep,
-      lastConfigurationName = lastConfigurationName
+      lastConfigurationName = lastConfigurationName,
+      isWriting = isWritingInProgress
     )
   }
 
@@ -165,9 +168,27 @@ class NodeSettingsViewModel(
   }
 
   suspend fun updateCurrentNode(characteristics: DeviceCharacteristics): Boolean {
+    if (isWritingInProgress || nodeRepository.isOperationInProgress()) {
+      return false
+    }
+
     val node = state.value?.currentNode ?: return false
 
-    return nodeRepository.writeCharacteristics(node, characteristics)
+    updateWritingState(true)
+
+    return try {
+      nodeRepository.writeCharacteristics(node, characteristics)
+    } finally {
+      updateWritingState(false)
+    }
+  }
+
+  private fun updateWritingState(isWriting: Boolean) {
+    isWritingInProgress = isWriting
+
+    _state.value?.let { currentState ->
+      _state.postValue(currentState.copy(isWriting = isWriting))
+    }
   }
 
   suspend fun claimPeripheral(uuid: String, peripheral: Peripheral) : NodeRepository.UpdatePeripheralResult {

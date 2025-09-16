@@ -6,6 +6,7 @@
   <data>
 
     <import type="android.view.View"/>
+    <import type="com.remoticom.streetlighting.data.NodeConnectionStatus"/>
 
     <variable
       name="viewmodel"
@@ -433,8 +434,17 @@
           android:layout_height="@dimen/button_big_height"
           android:layout_gravity="bottom"
           android:text="@string/node_settings_write_button_text"
-          app:enabledWhenConnected="@{viewmodel.state.connectionStatus}"
+          android:enabled="@{!viewmodel.state.isWriting && viewmodel.state.connectionStatus == NodeConnectionStatus.CONNECTED}"
           android:onClick="@{writeNodeClickListener}"/>
+
+        <ProgressBar
+          android:id="@+id/node_settings_progress_writing"
+          style="?android:attr/progressBarStyleSmall"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_horizontal"
+          android:layout_marginTop="8dp"
+          android:visibility="@{viewmodel.state.isWriting ? View.VISIBLE : View.GONE}" />
 
       </LinearLayout>
 
