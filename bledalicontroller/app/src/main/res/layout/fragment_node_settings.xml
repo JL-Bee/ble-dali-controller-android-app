@@ -434,7 +434,7 @@
           android:layout_height="@dimen/button_big_height"
           android:layout_gravity="bottom"
           android:text="@string/node_settings_write_button_text"
-          android:enabled="@{!viewmodel.state.isWriting && viewmodel.state.connectionStatus == NodeConnectionStatus.CONNECTED}"
+          android:enabled="@{!viewmodel.state.isWriting &amp;&amp; viewmodel.state.connectionStatus == NodeConnectionStatus.CONNECTED}"
           android:onClick="@{writeNodeClickListener}"/>
 
         <ProgressBar
