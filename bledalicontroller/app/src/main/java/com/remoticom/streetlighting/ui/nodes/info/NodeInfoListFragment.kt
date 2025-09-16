@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
@@ -97,7 +96,6 @@ class NodeInfoListFragment : Fragment() {
     InjectorUtils.provideNodeInfoListViewModelFactory(
       requireContext(),
       this.activity as CoroutineScopeProvider,
-      this.activity as FragmentActivity,
       args.nodeId
     )
   }
