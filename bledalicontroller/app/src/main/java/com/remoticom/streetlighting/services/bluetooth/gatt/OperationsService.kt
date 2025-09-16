@@ -7,7 +7,7 @@ import com.remoticom.streetlighting.services.web.data.Peripheral
 
 interface OperationsService {
 
-  suspend fun connect(device: Device, tokenProvider: TokenProvider, peripheral: Peripheral?)
+  suspend fun connect(device: Device, tokenProvider: TokenProvider, peripheral: Peripheral?): Boolean
 
   suspend fun disconnect()
 
