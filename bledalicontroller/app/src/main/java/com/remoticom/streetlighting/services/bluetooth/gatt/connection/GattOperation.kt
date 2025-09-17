@@ -1,10 +1,13 @@
 package com.remoticom.streetlighting.services.bluetooth.gatt.connection
 
+import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
+import android.bluetooth.BluetoothProfile
 import android.util.Log
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import java.util.concurrent.atomic.AtomicBoolean
 
 typealias GattCallback<T> = (GattOperation.Result<T>) -> Unit
 
@@ -23,6 +26,7 @@ enum class GattErrorCode {
 
 abstract class GattOperation<T> : BluetoothGattCallback() {
   lateinit private var callback: GattCallback<T>
+  private val hasCompleted = AtomicBoolean(false)
 
   sealed class Result<out T> {
     data class Data<out T>(val value: T) : Result<T>() {
@@ -56,19 +60,39 @@ abstract class GattOperation<T> : BluetoothGattCallback() {
     connection: GattConnection,
     callback: GattCallback<T>
   ) {
+    hasCompleted.set(false)
     this.callback = callback
   }
 
-  protected fun completeWithData(value: T) = callback.let {
-    it(Result.Data(value))
+  protected fun completeWithData(value: T) = complete(Result.Data(value))
+
+  protected fun completeWithError(code: GattErrorCode, status: Int? = null) =
+    complete(Result.Error<T>(code, status, this::class.simpleName))
+
+  protected fun completeWithFatalError(exception: Throwable) =
+    complete(Result.FatalError<T>(exception))
+
+  private fun complete(result: Result<T>) {
+    if (hasCompleted.compareAndSet(false, true)) {
+      callback(result)
+    } else {
+      Log.w(TAG, "Ignoring completion for ${this::class.simpleName} because the operation has already finished")
+    }
   }
 
-  protected fun completeWithError(code: GattErrorCode, status: Int? = null) = callback.let {
-    it(Result.Error<T>(code, status, this::class.simpleName))
-  }
+  protected open fun shouldFailOnDisconnect(): Boolean = true
 
-  protected fun completeWithFatalError(exception: Throwable) = callback.let {
-    it(Result.FatalError<T>(exception))
+  internal fun handleConnectionStateChange(status: Int, newState: Int) {
+    if (status != BluetoothGatt.GATT_SUCCESS) {
+      Log.w(TAG, "Completing ${this::class.simpleName} due to GATT error ${status.toGattStatusDescription()}")
+      completeWithError(GattErrorCode.GattError, status)
+      return
+    }
+
+    if (newState == BluetoothProfile.STATE_DISCONNECTED && shouldFailOnDisconnect()) {
+      Log.w(TAG, "Completing ${this::class.simpleName} due to unexpected disconnection")
+      completeWithError(GattErrorCode.GattError, BluetoothGatt.GATT_FAILURE)
+    }
   }
 
   suspend fun perform(connection: GattConnection): Result<T> =

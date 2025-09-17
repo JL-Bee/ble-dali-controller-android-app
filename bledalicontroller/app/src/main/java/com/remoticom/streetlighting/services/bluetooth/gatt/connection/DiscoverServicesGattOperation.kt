@@ -52,5 +52,7 @@ class DiscoverServicesOperation() : GattOperation<Boolean>() {
   companion object {
     private const val TAG = "DiscoverServicesOp"
   }
+
+  override fun shouldFailOnDisconnect(): Boolean = false
 }
 

@@ -32,4 +32,6 @@ class DisconnectGattOperation() : GattOperation<Boolean>() {
     }
 
   }
+
+  override fun shouldFailOnDisconnect(): Boolean = false
 }
