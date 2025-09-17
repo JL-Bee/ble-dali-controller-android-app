@@ -53,11 +53,14 @@ fun imageForConnectionStatus(
 }
 
 // @BindingAdapter(value = [ "app:buttonForNode", "app:peripheralStatus"], requireAll = true)
-@BindingAdapter("app:buttonForNode")
+@BindingAdapter(value = ["app:buttonForNode", "app:disableWhenBusy"], requireAll = false)
 fun buttonForNode(
   button: Button,
-  node: Node?
+  node: Node?,
+  disableWhenBusy: Boolean?
 ) {
+
+  val busy = disableWhenBusy == true
 
   if (null == node) {
     button.text = button.context.getString(R.string.node_button_text_null)
@@ -105,7 +108,7 @@ fun buttonForNode(
         PeripheralStatus.None, PeripheralStatus.Loaded, PeripheralStatus.Error -> {
           button.text = button.context.getString(R.string.node_button_text_claim)
           button.visibility = View.VISIBLE
-          button.isEnabled = true
+          button.isEnabled = !busy
         }
         PeripheralStatus.Loading -> {
           button.text = button.context.getString(R.string.node_button_text_loading)
@@ -121,7 +124,7 @@ fun buttonForNode(
         NodeConnectionStatus.DISCONNECTED -> {
           button.text = button.context.getString(R.string.node_button_text_connect)
           button.visibility = View.VISIBLE
-          button.isEnabled = (null != node.info.password)
+          button.isEnabled = (null != node.info.password) && !busy
         }
         NodeConnectionStatus.CONNECTING -> {
           button.text = button.context.getString(R.string.node_button_text_connecting)
@@ -131,7 +134,7 @@ fun buttonForNode(
         NodeConnectionStatus.CONNECTED -> {
           button.text = button.context.getString(R.string.node_button_text_disconnect)
           button.visibility = View.VISIBLE
-          button.isEnabled = true
+          button.isEnabled = !busy
         }
         NodeConnectionStatus.DISCONNECTING -> {
           button.text = button.context.getString(R.string.node_button_text_disconnecting)
