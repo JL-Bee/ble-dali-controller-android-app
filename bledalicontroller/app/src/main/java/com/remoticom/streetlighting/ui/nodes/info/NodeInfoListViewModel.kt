@@ -9,7 +9,9 @@ import com.remoticom.streetlighting.data.NodeConnectionStatus
 import com.remoticom.streetlighting.data.NodeRepository
 import com.remoticom.streetlighting.services.bluetooth.gatt.bdc.BDC_BLUETOOTH_CHARACTERISTIC_DIAGNOSTICS_STATUS_D4I_ERROR
 import com.remoticom.streetlighting.services.web.data.Peripheral
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 // TODO (REFACTOR): Similar to NodeSettingsViewModel? Compose viewModel with some 'super' viewModel?
 class NodeInfoListViewModel(
@@ -36,18 +38,49 @@ class NodeInfoListViewModel(
   }
 
   fun startReadDaliBanksIfNeeded() {
+    readDaliBanksJob?.cancel()
     readDaliBanksJob = viewModelScope.launch {
-      state.value?.currentNode?.let { node ->
+      delay(READ_DALI_BANKS_START_DELAY_MS)
 
-        node.characteristics?.diagnostics?.status?.let { status ->
-          if (status and BDC_BLUETOOTH_CHARACTERISTIC_DIAGNOSTICS_STATUS_D4I_ERROR != BDC_BLUETOOTH_CHARACTERISTIC_DIAGNOSTICS_STATUS_D4I_ERROR) {
-            nodeRepository.readDaliBanks(node)
-          } else {
-            Log.i(TAG, "D4I not available (or diagnostics status not loaded). Skipping read of DALI banks.")
-          }
-        }
+      if (!waitForPendingOperations()) {
+        Log.i(TAG, "Operation still in progress. Skipping read of DALI banks.")
+        return@launch
       }
+
+      val node = state.value?.currentNode
+      val characteristics = node?.characteristics
+      if (node == null || characteristics == null) {
+        Log.i(TAG, "Node characteristics not available. Skipping read of DALI banks.")
+        return@launch
+      }
+
+      val diagnosticsStatus = characteristics.diagnostics?.status
+      if (diagnosticsStatus == null) {
+        Log.i(TAG, "Diagnostics status not available. Skipping read of DALI banks.")
+        return@launch
+      }
+
+      if (diagnosticsStatus and BDC_BLUETOOTH_CHARACTERISTIC_DIAGNOSTICS_STATUS_D4I_ERROR == BDC_BLUETOOTH_CHARACTERISTIC_DIAGNOSTICS_STATUS_D4I_ERROR) {
+        Log.i(TAG, "D4I not available (or diagnostics status not loaded). Skipping read of DALI banks.")
+        return@launch
+      }
+
+      if (nodeRepository.isOperationInProgress()) {
+        Log.i(TAG, "Operation resumed before reading DALI banks. Skipping read request.")
+        return@launch
+      }
+
+      nodeRepository.readDaliBanks(node)
     }
+  }
+
+  private suspend fun waitForPendingOperations(): Boolean {
+    var attempts = 0
+    while (nodeRepository.isOperationInProgress() && attempts < READ_DALI_BANKS_MAX_ATTEMPTS) {
+      delay(READ_DALI_BANKS_OPERATION_CHECK_INTERVAL_MS)
+      attempts += 1
+    }
+    return !nodeRepository.isOperationInProgress()
   }
 
   fun stopReadDaliBanks() {
@@ -86,5 +119,8 @@ class NodeInfoListViewModel(
 
   companion object {
     const val TAG = "NodeInfoListVM"
+    private const val READ_DALI_BANKS_START_DELAY_MS = 200L
+    private const val READ_DALI_BANKS_OPERATION_CHECK_INTERVAL_MS = 100L
+    private const val READ_DALI_BANKS_MAX_ATTEMPTS = 10
   }
 }
