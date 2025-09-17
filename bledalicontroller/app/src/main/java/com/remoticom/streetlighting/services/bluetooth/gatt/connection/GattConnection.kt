@@ -271,7 +271,14 @@ class GattConnection(
 
     val activeOperation = currentOperation
 
-    if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+    val shouldCompleteOperation =
+      status != BluetoothGatt.GATT_SUCCESS || newState == BluetoothProfile.STATE_DISCONNECTED
+
+    if (shouldCompleteOperation) {
+      (activeOperation as? GattOperation<*>)?.handleConnectionStateChange(status, newState)
+    }
+
+    if (newState == BluetoothProfile.STATE_DISCONNECTED || status != BluetoothGatt.GATT_SUCCESS) {
       resetOperation()
     }
 

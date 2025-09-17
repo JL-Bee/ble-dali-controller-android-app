@@ -34,5 +34,7 @@ class ConnectGattOperation : GattOperation<Boolean>() {
       completeWithError(GattErrorCode.GattError, status)
     }
   }
+
+  override fun shouldFailOnDisconnect(): Boolean = false
 }
 
