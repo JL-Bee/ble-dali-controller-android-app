@@ -49,6 +49,7 @@
   <string name="node_settings_title">Node settings</string>
   <string name="node_settings_about_node_button_text">About the node</string>
   <string name="node_settings_disconnect_node_button_text">Disconnect</string>
+  <string name="node_settings_disconnect_busy_message">Please wait for the current action to finish.</string>
   <string name="node_settings_power_label">Power</string>
   <string name="node_settings_scheme_label">Scheme</string>
   <string name="node_settings_switch_label">On/Off</string>

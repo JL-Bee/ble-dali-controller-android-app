@@ -42,6 +42,9 @@ class NodeSettingsViewModel(
   private val _state = MediatorLiveData<ViewState>()
   val state: LiveData<ViewState> = _state
 
+  private val _busy = MediatorLiveData<Boolean>().apply { value = false }
+  val busy: LiveData<Boolean> = _busy
+
   init {
       _state.addSource(nodeRepository.state) {
         _state.value = mergeDataSources(nodeRepository.state, configurationService.state)!!
@@ -49,6 +52,10 @@ class NodeSettingsViewModel(
       _state.addSource(configurationService.state) {
         _state.value = mergeDataSources(nodeRepository.state, configurationService.state)!!
       }
+
+      _busy.addSource(_state) { _busy.value = isBusy() }
+      _busy.addSource(nodeRepository.state) { _busy.value = isBusy() }
+      _busy.value = isBusy()
   }
 
   private fun mergeDataSources(
@@ -189,7 +196,11 @@ class NodeSettingsViewModel(
     _state.value?.let { currentState ->
       _state.postValue(currentState.copy(isWriting = isWriting))
     }
+
+    _busy.postValue(isBusy())
   }
+
+  fun isBusy(): Boolean = isWritingInProgress || nodeRepository.isOperationInProgress()
 
   suspend fun claimPeripheral(uuid: String, peripheral: Peripheral) : NodeRepository.UpdatePeripheralResult {
     Log.d(TAG, "Claiming node/peripheral: $uuid")

@@ -566,6 +566,11 @@ class NodeSettingsFragment : Fragment() {
   }
 
   private fun disconnect() {
+    if (viewModel.isBusy()) {
+      Toast.makeText(requireContext(), R.string.node_settings_disconnect_busy_message, Toast.LENGTH_SHORT).show()
+      return
+    }
+
     mainScope.launch {
       viewModel.disconnectCurrentNode()
     }
