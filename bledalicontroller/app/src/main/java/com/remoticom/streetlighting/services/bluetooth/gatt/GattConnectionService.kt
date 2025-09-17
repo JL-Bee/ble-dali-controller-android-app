@@ -1,5 +1,6 @@
 package com.remoticom.streetlighting.services.bluetooth.gatt
 
+import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothProfile
@@ -163,38 +164,48 @@ class GattConnectionService constructor(
     // Automatically close a previous connection
     disconnect()
 
-    deviceManager.bluetoothDeviceFor(device)?.let {
+    val bluetoothDevice = deviceManager.bluetoothDeviceFor(device)
 
-      serviceState = ServiceState(
-        isConnecting = true,
-        device = device
+    if (bluetoothDevice == null) {
+      Log.w(TAG, "BluetoothDevice not found for ${device.address}")
+      serviceState = serviceState.copy(
+        isConnecting = false,
+        connectionStatus = GattConnectionStatus.Disconnected,
+        lastGattError = serviceState.lastGattError
+          ?: GattError<Unit>(GattErrorCode.GattError, GattStatus.GATT_FAILURE)
       )
+      return false
+    }
 
-      // TODO: Refactor MAC address dependency?
-      val macAddressServiceMask = when (device.type) {
-        DeviceType.Bdc -> BDC_BLUETOOTH_SERVICE_GENERAL_MASK
-        DeviceType.Zsc010 -> ZSC010_BLUETOOTH_SERVICE_GENERAL_MASK
-        DeviceType.Sno110 -> "" // TODO: Not used
-      }
+    serviceState = ServiceState(
+      isConnecting = true,
+      device = device
+    )
 
-      currentConnection = GattConnection(context, it, callback, macAddressServiceMask)
+    // TODO: Refactor MAC address dependency?
+    val macAddressServiceMask = when (device.type) {
+      DeviceType.Bdc -> BDC_BLUETOOTH_SERVICE_GENERAL_MASK
+      DeviceType.Zsc010 -> ZSC010_BLUETOOTH_SERVICE_GENERAL_MASK
+      DeviceType.Sno110 -> "" // TODO: Not used
+    }
 
-      try {
-        internalConnectWithRetry(
-          device,
-          tokenProvider,
-          peripheral
+    try {
+      internalConnectWithRetry(
+        device,
+        tokenProvider,
+        peripheral,
+        bluetoothDevice,
+        macAddressServiceMask
+      )
+    } finally {
+      if (!isConnected) {
+        Log.w(TAG, "Failed to connect to device ${device.address}")
+        serviceState = serviceState.copy(
+          isConnecting = false,
+          connectionStatus = GattConnectionStatus.Disconnected
         )
-      } finally {
-        if (!isConnected) {
-          Log.w(TAG, "Failed to connect to device ${device.address}")
-          serviceState = serviceState.copy(
-            isConnecting = false,
-            connectionStatus = GattConnectionStatus.Disconnected
-          )
-        } else {
-          serviceState = serviceState.copy(isConnecting = false)
-        }
+      } else {
+        serviceState = serviceState.copy(isConnecting = false)
       }
     }
 
@@ -285,12 +296,15 @@ class GattConnectionService constructor(
   private suspend fun internalConnectWithRetry(
     device: Device,
     tokenProvider: TokenProvider,
-    peripheral: Peripheral?
+    peripheral: Peripheral?,
+    bluetoothDevice: BluetoothDevice,
+    macAddressServiceMask: String
   ) {
     val backoffDelays = listOf(0L, 200L, 500L, 1_000L, 2_000L, 4_000L)
     var attempts = 0
     var connectionTimedOut = false
     var lastFailureStatus: Int? = null
+    var connectFailedToStart = false
 
     while (!isConnected && attempts < backoffDelays.size) {
       val backoffDelay = backoffDelays[attempts]
@@ -304,16 +318,34 @@ class GattConnectionService constructor(
 
       Log.d(TAG, "Connect attempt #$attempts")
 
+      rebuildGattConnection(bluetoothDevice, macAddressServiceMask)
+
+      if (attempts > 1) {
+        serviceState = serviceState.copy(lastGattError = null)
+      }
+
       serviceState = serviceState.copy(
         connectionStatus = GattConnectionStatus.Connecting
       )
 
       val operationsService = currentOperationsService()
-      val connectAttemptStarted = operationsService.connect(
-        device,
-        tokenProvider,
-        peripheral
-      )
+      val previousError = serviceState.lastGattError
+      val connectAttemptStarted = withTimeoutOrNull(CONNECT_ATTEMPT_TIMEOUT_MS) {
+        operationsService.connect(
+          device,
+          tokenProvider,
+          peripheral
+        )
+      }
+
+      if (connectAttemptStarted == null) {
+        Log.w(TAG, "Connect attempt #$attempts timed out after ${CONNECT_ATTEMPT_TIMEOUT_MS} ms")
+        connectionTimedOut = true
+        serviceState = serviceState.copy(
+          lastGattError = GattError<Unit>(GattErrorCode.GattError, GattStatus.GATT_CONNECTION_TIMEOUT)
+        )
+        continue
+      }
 
       if (isConnected) {
         connectionTimedOut = false
@@ -326,10 +358,23 @@ class GattConnectionService constructor(
         connectionTimedOut = lastErrorStatus == GattStatus.GATT_CONNECTION_TIMEOUT
         if (connectionTimedOut) {
           Log.w(TAG, "Connect attempt #$attempts failed with GATT connection timeout")
+        } else if (lastErrorStatus == GattStatus.GATT_ERROR) {
+          Log.w(TAG, "Connect attempt #$attempts failed with GATT error 133")
         }
       }
 
       if (!connectAttemptStarted) {
+        val latestError = serviceState.lastGattError
+        val operationStarted = latestError != null && latestError != previousError
+        if (!operationStarted) {
+          Log.e(TAG, "Connect attempt #$attempts failed to start ConnectGattOperation")
+          connectFailedToStart = true
+          serviceState = serviceState.copy(
+            lastGattError = latestError ?: GattError<Unit>(GattErrorCode.GattError, GattStatus.GATT_FAILURE),
+            connectionStatus = GattConnectionStatus.Disconnected
+          )
+          break
+        }
         continue
       }
     }
@@ -338,6 +383,8 @@ class GattConnectionService constructor(
       if (connectionTimedOut) {
         Log.w(TAG, "Connection attempts exhausted after GATT timeout (status=$lastFailureStatus)")
         serviceState = serviceState.copy(hasConnectionTimeout = true)
+      } else if (connectFailedToStart) {
+        serviceState = serviceState.copy(hasConnectionTimeout = false)
       } else {
         serviceState = serviceState.copy(hasConnectionTimeout = false)
       }
@@ -346,6 +393,16 @@ class GattConnectionService constructor(
       disconnect()
     } else {
       serviceState = serviceState.copy(hasConnectionTimeout = false)
+    }
+  }
+
+  private suspend fun rebuildGattConnection(
+    bluetoothDevice: BluetoothDevice,
+    macAddressServiceMask: String
+  ) {
+    operationMutex.withLock {
+      currentConnection?.close()
+      currentConnection = GattConnection(context, bluetoothDevice, callback, macAddressServiceMask)
     }
   }
 
@@ -637,6 +694,7 @@ class GattConnectionService constructor(
   companion object {
     private const val TAG = "GattConnectionService"
     private const val DEFAULT_KEEP_ALIVE_INTERVAL = 15_000L
+    private const val CONNECT_ATTEMPT_TIMEOUT_MS = 15_000L
 
     @Volatile
     private var instance: GattConnectionService? = null
