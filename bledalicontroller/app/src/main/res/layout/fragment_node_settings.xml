@@ -140,7 +140,7 @@
               android:layout_height="wrap_content"
               android:text="@string/node_settings_light_level_min_zsc010"
               android:layout_gravity="center_vertical"
-              app:rangeMinimumForDeviceType="@{viewmodel.state.currentNode.deviceType}"/>
+              app:rangeMinimumForDeviceType="@{viewmodel.state.currentNode != null ? viewmodel.state.currentNode.deviceType : null}"/>
 
             <!-- Avoid slider value out of range for SNO110 when dimLevel null -->
             <com.google.android.material.slider.Slider
@@ -149,19 +149,19 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:layout_marginHorizontal="10dp"
-              android:value="@{viewmodel.state.editedNode.dimLevel == null ? viewmodel.safeDefaultDimLevelForDeviceType(viewmodel.state.currentNode.deviceType) : viewmodel.state.editedNode.dimLevel}"
+              android:value="@{viewmodel.state.editedNode.dimLevel == null ? (viewmodel.state.currentNode != null ? viewmodel.safeDefaultDimLevelForDeviceType(viewmodel.state.currentNode.deviceType) : 0f) : viewmodel.state.editedNode.dimLevel}"
               android:stepSize="5.0"
               app:labelBehavior="gone"
               app:enabledWhenConnectedAndModeNominal="@{viewmodel.state.connectionStatus}"
               app:generalMode="@{viewmodel.state.editedNode.generalMode}"
-              app:rangeForDeviceType="@{viewmodel.state.currentNode.deviceType}"/>
+              app:rangeForDeviceType="@{viewmodel.state.currentNode != null ? viewmodel.state.currentNode.deviceType : null}"/>
 
             <TextView
               android:layout_width="30dp"
               android:layout_height="wrap_content"
               android:layout_gravity="center_vertical|end"
               android:textAlignment="textEnd"
-              app:rangeMaximumForDeviceType="@{viewmodel.state.currentNode.deviceType}"/>
+              app:rangeMaximumForDeviceType="@{viewmodel.state.currentNode != null ? viewmodel.state.currentNode.deviceType : null}"/>
 
           </LinearLayout>
 
