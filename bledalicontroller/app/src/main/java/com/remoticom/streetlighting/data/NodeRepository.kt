@@ -13,7 +13,9 @@ import com.remoticom.streetlighting.services.web.data.OwnershipStatus
 import com.remoticom.streetlighting.services.web.data.Peripheral
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class NodeRepository private constructor (
@@ -45,6 +47,14 @@ class NodeRepository private constructor (
 
   @Volatile
   private var registeredLifecycle: Lifecycle? = null
+
+  private val pendingDisconnectLock = Any()
+
+  @Volatile
+  private var pendingDisconnectNodeId: String? = null
+
+  @Volatile
+  private var pendingDisconnectJob: Job? = null
 
   init {
     _state.addSource(scannerService.state) {
@@ -114,7 +124,12 @@ class NodeRepository private constructor (
     ) = connectionState.value!!
     val (peripherals) = webState.value!!
 
+    val pendingDisconnectId = pendingDisconnectNodeId
+
+    val isPendingDisconnect = pendingDisconnectId != null && pendingDisconnectId == connectedDevice?.uuid
+
     val nodeConnectionStatus = when {
+      isPendingDisconnect -> NodeConnectionStatus.DISCONNECTING
       connectionStatus == GattConnectionStatus.Connected && characteristics == null ->
         NodeConnectionStatus.CONNECTING
       else -> connectionStatus.toNodeConnectionStatus()
@@ -179,6 +194,79 @@ class NodeRepository private constructor (
     return state.value?.scanResults?.get(nodeId)
    }
 
+  private fun refreshState() {
+    mergeDataSources(scannerState, connectionState, webState)?.let { newState ->
+      _state.postValue(newState)
+    }
+  }
+
+  private fun clearPendingDisconnectIfMatching(nodeId: String? = null) {
+    val (jobToCancel, cleared) = synchronized(pendingDisconnectLock) {
+      if (nodeId == null || pendingDisconnectNodeId == nodeId) {
+        val job = pendingDisconnectJob
+        pendingDisconnectNodeId = null
+        pendingDisconnectJob = null
+
+        job to true
+      } else {
+        null to false
+      }
+    }
+
+    jobToCancel?.cancel()
+
+    if (cleared) {
+      refreshState()
+    }
+  }
+
+  private fun enqueueDisconnect(nodeId: String) {
+    synchronized(pendingDisconnectLock) {
+      if (pendingDisconnectNodeId == nodeId && pendingDisconnectJob?.isActive == true) {
+        return
+      }
+
+      pendingDisconnectNodeId = nodeId
+
+      pendingDisconnectJob?.cancel()
+
+      val job = backgroundScope.launch {
+        waitForActiveOperationToFinish(nodeId)
+      }
+
+      pendingDisconnectJob = job
+    }
+
+    Log.i(TAG, "Operation in progress. Queuing disconnect request for node $nodeId.")
+
+    refreshState()
+  }
+
+  private suspend fun waitForActiveOperationToFinish(nodeId: String) {
+    try {
+      while (connectionService.isOperationInProgress()) {
+        delay(PENDING_DISCONNECT_POLL_INTERVAL_MS)
+      }
+
+      val shouldDisconnect = synchronized(pendingDisconnectLock) {
+        if (pendingDisconnectNodeId == nodeId) {
+          pendingDisconnectNodeId = null
+          pendingDisconnectJob = null
+          true
+        } else {
+          false
+        }
+      }
+
+      if (shouldDisconnect) {
+        Log.i(TAG, "Disconnecting node $nodeId after pending operation finished.")
+        connectionService.disconnect()
+      }
+    } finally {
+      refreshState()
+    }
+  }
+
   suspend fun connectNode(nodeId: String) {
     lookupNodeById(nodeId)?.let {
       connectNode(it)
@@ -220,15 +308,16 @@ class NodeRepository private constructor (
   }
 
   suspend fun disconnectNode(node: Node) {
-    if (node.connectionStatus != NodeConnectionStatus.CONNECTED) return
+    if (node.connectionStatus == NodeConnectionStatus.DISCONNECTED ||
+      node.connectionStatus == NodeConnectionStatus.DISCONNECTING) return
 
     if (isOperationInProgress()) {
-      // When (most likely) read of characteristics is in progress;
-      // Only proceed when not in progress to avoid assertion error
-      Log.i(TAG, "Operation in progress. Not disconnecting.")
+      enqueueDisconnect(node.id)
 
       return
     }
+
+    clearPendingDisconnectIfMatching(node.id)
 
     connectionService.disconnect()
   }
@@ -299,6 +388,7 @@ class NodeRepository private constructor (
 
   companion object {
     private const val TAG = "NodeRepository"
+    private const val PENDING_DISCONNECT_POLL_INTERVAL_MS = 50L
     @Volatile
     private var instance: NodeRepository? = null
 
