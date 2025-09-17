@@ -27,7 +27,8 @@ class NodeRepository private constructor (
     val connectionStatus: NodeConnectionStatus = NodeConnectionStatus.DISCONNECTED,
     val connectedNode: Node?,
     val lastConnectionError: NodeConnectionError? = null,
-    val hasTimedOutWithoutResults: Boolean = false
+    val hasTimedOutWithoutResults: Boolean = false,
+    val hasConnectionTimeout: Boolean = false
   )
 
   private val webService = WebService(OkHttpHttpClientFactory(/*AuthenticationProvider("basic", "auth")*/))
@@ -104,7 +105,13 @@ class NodeRepository private constructor (
     if (null == scannerState.value || null == connectionState.value || null == webState.value) return null
 
     val (isScanning, results, errorCode, hasTimedOutWithoutResults) = scannerState.value!!
-    val (connectionStatus, connectedDevice, characteristics, lastGattError) = connectionState.value!!
+    val (
+      connectionStatus,
+      connectedDevice,
+      characteristics,
+      lastGattError,
+      hasConnectionTimeout
+    ) = connectionState.value!!
     val (peripherals) = webState.value!!
 
     val nodeConnectionStatus = when {
@@ -163,7 +170,8 @@ class NodeRepository private constructor (
       connectionStatus = stateConnectionStatus,
       connectedNode = connectedNode,
       lastConnectionError = lastGattError?.toNodeConnectionError(),
-      hasTimedOutWithoutResults = hasTimedOutWithoutResults
+      hasTimedOutWithoutResults = hasTimedOutWithoutResults,
+      hasConnectionTimeout = hasConnectionTimeout
     )
   }
 

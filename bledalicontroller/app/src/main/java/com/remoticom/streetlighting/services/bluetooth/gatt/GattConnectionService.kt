@@ -119,7 +119,8 @@ class GattConnectionService constructor(
     val characteristics: DeviceCharacteristics? = null,
     val isConnecting: Boolean = false,
     val connectionStatus: GattConnectionStatus = GattConnectionStatus.Disconnected,
-    val lastGattError: GattError<*>? = null
+    val lastGattError: GattError<*>? = null,
+    val hasConnectionTimeout: Boolean = false
   ) {
     val safeCharacteristics = characteristics ?: DeviceCharacteristics()
 
@@ -135,7 +136,8 @@ class GattConnectionService constructor(
       },
       device = device,
       characteristics = characteristics,
-      lastGattError = lastGattError
+      lastGattError = lastGattError,
+      hasConnectionTimeout = hasConnectionTimeout
     )
   }
 
@@ -285,9 +287,11 @@ class GattConnectionService constructor(
     tokenProvider: TokenProvider,
     peripheral: Peripheral?
   ) {
-    val backoffDelays =
-      listOf(0L, 100L, 200L, 400L) // what are the recommendations?
+    val backoffDelays = listOf(0L, 200L, 500L, 1_000L, 2_000L, 4_000L)
     var attempts = 0
+    var connectionTimedOut = false
+    var lastFailureStatus: Int? = null
+
     while (!isConnected && attempts < backoffDelays.size) {
       val backoffDelay = backoffDelays[attempts]
 
@@ -311,15 +315,37 @@ class GattConnectionService constructor(
         peripheral
       )
 
+      if (isConnected) {
+        connectionTimedOut = false
+        break
+      }
+
+      val lastErrorStatus = serviceState.lastGattError?.status
+      if (lastErrorStatus != null) {
+        lastFailureStatus = lastErrorStatus
+        connectionTimedOut = lastErrorStatus == GattStatus.GATT_CONNECTION_TIMEOUT
+        if (connectionTimedOut) {
+          Log.w(TAG, "Connect attempt #$attempts failed with GATT connection timeout")
+        }
+      }
+
       if (!connectAttemptStarted) {
         continue
       }
     }
 
     if (!isConnected) {
+      if (connectionTimedOut) {
+        Log.w(TAG, "Connection attempts exhausted after GATT timeout (status=$lastFailureStatus)")
+        serviceState = serviceState.copy(hasConnectionTimeout = true)
+      } else {
+        serviceState = serviceState.copy(hasConnectionTimeout = false)
+      }
+
       // Setting up the connection failed, close it now to cleanup resources
-      // (what if we want to propagate error message?)
       disconnect()
+    } else {
+      serviceState = serviceState.copy(hasConnectionTimeout = false)
     }
   }
 
@@ -372,7 +398,17 @@ class GattConnectionService constructor(
 
   override suspend fun disconnect() = withContext(NonCancellable) {
     stopKeepAlive()
-    if (null == currentConnection) return@withContext
+
+    val lastGattError = serviceState.lastGattError
+    val hasConnectionTimeout = serviceState.hasConnectionTimeout
+
+    if (null == currentConnection) {
+      serviceState = ServiceState(
+        lastGattError = lastGattError,
+        hasConnectionTimeout = hasConnectionTimeout
+      )
+      return@withContext
+    }
 
     // Will perform DisconnectOperation
     // (and close when STATE_DISCONNECTED)
@@ -385,7 +421,10 @@ class GattConnectionService constructor(
 
     currentConnection = null
 
-    serviceState = ServiceState()
+    serviceState = ServiceState(
+      lastGattError = lastGattError,
+      hasConnectionTimeout = hasConnectionTimeout
+    )
   }
 
   override suspend fun <T> performOperation(
