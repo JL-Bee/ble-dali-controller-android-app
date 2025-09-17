@@ -22,7 +22,8 @@ class NodeListViewModel(private val nodeRepository: NodeRepository) :
     val nodes: List<Node> = listOf(),
     val connectionStatus: NodeConnectionStatus = NodeConnectionStatus.DISCONNECTED,
     val connectedNode: Node? = null,
-    val isScanningTimedOutWithoutResults: Boolean = false
+    val isScanningTimedOutWithoutResults: Boolean = false,
+    val hasConnectionTimeout: Boolean = false
   )
 
   val state = nodeRepository.state.map { newState ->
@@ -35,7 +36,8 @@ class NodeListViewModel(private val nodeRepository: NodeRepository) :
       connectionStatus,
       connectedNode,
       _,
-      hasTimedOutWithoutResults
+      hasTimedOutWithoutResults,
+      hasConnectionTimeout
     ) = newState
 
     ViewState(
@@ -46,7 +48,8 @@ class NodeListViewModel(private val nodeRepository: NodeRepository) :
       },
       connectionStatus = connectionStatus,
       connectedNode = connectedNode,
-      isScanningTimedOutWithoutResults = hasTimedOutWithoutResults
+      isScanningTimedOutWithoutResults = hasTimedOutWithoutResults,
+      hasConnectionTimeout = hasConnectionTimeout
     )
   }
 
