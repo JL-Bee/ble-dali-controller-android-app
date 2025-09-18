@@ -652,6 +652,7 @@ class GattConnectionService constructor(
         GattConnectionStatus.Connected -> startKeepAlive()
         GattConnectionStatus.Disconnected -> {
           currentConnection?.resetOperation()
+          currentConnection?.close()
           stopKeepAlive()
           currentConnection = null
         }
