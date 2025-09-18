@@ -282,15 +282,28 @@ class GattConnection(
       resetOperation()
     }
 
-    if (BluetoothGatt.GATT_SUCCESS == status) {
-      when (newState) {
-         BluetoothProfile.STATE_DISCONNECTED -> {
-           this.gatt?.close()
-           this.gatt = null
-           this.macAddress = null
+    if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+      val activeGatt = this.gatt
+
+      if (activeGatt != null) {
+        try {
+          activeGatt.abortReliableWrite()
+        } catch (exception: Exception) {
+          Log.w(TAG, "Failed to abort reliable write", exception)
         }
+
+        activeGatt.close()
       }
-    } else {
+
+      pendingChunks = null
+      chunkedCharacteristic = null
+      chunkedOriginalValue = null
+
+      this.gatt = null
+      this.macAddress = null
+    }
+
+    if (BluetoothGatt.GATT_SUCCESS != status) {
       Log.e(TAG,"status=${status.toGattStatusDescription()}")
     }
 
