@@ -16,7 +16,7 @@ class DisconnectGattOperation() : GattOperation<Boolean>() {
   }
 
   override fun onConnectionStateChange(
-    gatt: BluetoothGatt,
+    gatt: BluetoothGatt?,
     status: Int,
     newState: Int
   ) {
@@ -32,4 +32,6 @@ class DisconnectGattOperation() : GattOperation<Boolean>() {
     }
 
   }
+
+  override fun shouldFailOnDisconnect(): Boolean = false
 }

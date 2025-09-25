@@ -36,13 +36,13 @@ class Sno110OperationsService constructor(
     device: Device,
     tokenProvider: TokenProvider,
     peripheral: Peripheral?
-  ) {
+  ): Boolean {
     // receive message1 (and context) from backend
-    when (val challengeResult = tokenProvider.initiateAuth(device.uuid)) {
+    return when (val challengeResult = tokenProvider.initiateAuth(device.uuid)) {
       is InitiateAuthResult.Failure -> {
         Log.w(TAG, "Initiate failed")
 
-        return
+        false
       }
       is InitiateAuthResult.Success -> {
         Log.d(TAG, "Initiate succeeded")
@@ -51,50 +51,50 @@ class Sno110OperationsService constructor(
         // Log.d(TAG, challenge.context)
 
         if (!performConnectOperation()) {
-          return
-        }
-
-        if (!performPreAuthenticateOperations()) {
+          false
+        } else if (!performPreAuthenticateOperations()) {
           connectionProvider.tearDown()
-          return
-        }
+          false
+        } else {
+          // message1: RA | NA
+          val challengeBytes = Base64.decode(challenge.challenge, Base64.NO_WRAP)
+          // Log.d(WebService.TAG, "Challenge: ${challengeBytes.joinToString("") { "%02x".format(it) }}")
 
-        // message1: RA | NA
-        val challengeBytes = Base64.decode(challenge.challenge, Base64.NO_WRAP)
-        // Log.d(WebService.TAG, "Challenge: ${challengeBytes.joinToString("") { "%02x".format(it) }}")
+          // Send message1, receive message2 via indication
+          val message2 = requestDeviceChallenge(challengeBytes)
 
-        // Send message1, receive message2 via indication
-        val message2 = requestDeviceChallenge(challengeBytes)
+          val challengeResponse = Base64.encodeToString(message2, Base64.NO_WRAP)
 
-        val challengeResponse = Base64.encodeToString(message2, Base64.NO_WRAP)
+          // receive message3 from backend
+          when (val requestTokenResult = tokenProvider.requestToken(device.uuid, challenge.context, challengeResponse)) {
 
-        // receive message3 from backend
-        when (val requestTokenResult = tokenProvider.requestToken(device.uuid, challenge.context, challengeResponse)) {
-
-          is RequestTokenResult.Failure -> {
-            Log.w(TAG, "Request token failed")
-            connectionProvider.tearDown()
-            return
-          }
-
-          is RequestTokenResult.Success -> {
-            Log.d(TAG, "Request token succeeded")
-            // Log.d(TAG, "Token: ${requestTokenResult.token.token}")
-
-            val tokenBytes = Base64.decode(requestTokenResult.token.token, Base64.NO_WRAP)
-
-            // send message3
-            if (!authenticateToDeviceWithToken(tokenBytes)) {
-              Log.w(TAG, "Authentication to device: failed / not authorized")
+            is RequestTokenResult.Failure -> {
+              Log.w(TAG, "Request token failed")
               connectionProvider.tearDown()
-              return
+              false
             }
 
-            Log.d(TAG, "Authentication to device: success / authorized")
+            is RequestTokenResult.Success -> {
+              Log.d(TAG, "Request token succeeded")
+              // Log.d(TAG, "Token: ${requestTokenResult.token.token}")
 
-            if (!performPostAuthenticateOperations()) {
-              connectionProvider.tearDown()
-              return
+              val tokenBytes = Base64.decode(requestTokenResult.token.token, Base64.NO_WRAP)
+
+              // send message3
+              if (!authenticateToDeviceWithToken(tokenBytes)) {
+                Log.w(TAG, "Authentication to device: failed / not authorized")
+                connectionProvider.tearDown()
+                false
+              } else {
+                Log.d(TAG, "Authentication to device: success / authorized")
+
+                if (!performPostAuthenticateOperations()) {
+                  connectionProvider.tearDown()
+                  false
+                } else {
+                  true
+                }
+              }
             }
           }
         }

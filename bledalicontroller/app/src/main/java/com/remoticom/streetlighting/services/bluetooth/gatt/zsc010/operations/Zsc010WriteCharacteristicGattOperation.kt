@@ -1,4 +1,4 @@
-package com.remoticom.streetlighting.services.bluetooth.gatt.bdc.operations
+package com.remoticom.streetlighting.services.bluetooth.gatt.zsc010.operations
 
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
@@ -7,7 +7,7 @@ import com.remoticom.streetlighting.services.bluetooth.gatt.connection.GattConne
 import com.remoticom.streetlighting.services.bluetooth.gatt.connection.GattErrorCode
 import com.remoticom.streetlighting.services.bluetooth.gatt.connection.GattOperation
 
-open class BdcWriteCharacteristicGattOperation<T>(
+open class Zsc010WriteCharacteristicGattOperation<T>(
   private val serviceMask: String,
   private val characteristic: Long,
   private val value: T?,
@@ -20,7 +20,7 @@ open class BdcWriteCharacteristicGattOperation<T>(
   ) {
     super.performAsync(connection, callback)
 
-    val bluetoothCharacteristic = connection.getBdcCharacteristic(
+    val bluetoothCharacteristic = connection.getZsc010Characteristic(
         serviceMask,
         characteristic
       )

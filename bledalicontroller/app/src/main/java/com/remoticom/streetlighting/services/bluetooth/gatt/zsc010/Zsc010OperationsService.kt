@@ -18,39 +18,39 @@ class Zsc010OperationsService constructor(
     device: Device,
     tokenProvider: TokenProvider,
     peripheral: Peripheral?
-  ) {
-    peripheral ?: return
+  ): Boolean {
+    val nonNullPeripheral = peripheral ?: return false
 
-    if (null == peripheral.password) {
+    val password = nonNullPeripheral.password ?: run {
       Log.e(TAG, "Password not yet available")
 
-      return
+      return false
     }
 
-    val devicePassword = peripheral.password.toUIntOrNull()?.toInt()
-
-    if (null == devicePassword) {
+    val devicePassword = password.toUIntOrNull()?.toInt() ?: run {
       Log.e(TAG, "Password has invalid format")
 
-      return
+      return false
     }
 
     // Connect
     if (!connectionProvider.performOperation(ConnectGattOperation(), false)) {
-      return
+      return false
     }
 
     // Discover services
     if (!connectionProvider.performOperation(DiscoverServicesOperation(), false)) {
       connectionProvider.tearDown()
-      return
+      return false
     }
 
     // Write pin
     if (connectionProvider.performOperation(Zsc010WriteSecurityPasswordOperation(devicePassword)) != devicePassword) {
       connectionProvider.tearDown()
-      return
+      return false
     }
+
+    return true
   }
 
   override suspend fun readGeneralCharacteristics() : GeneralCharacteristics {

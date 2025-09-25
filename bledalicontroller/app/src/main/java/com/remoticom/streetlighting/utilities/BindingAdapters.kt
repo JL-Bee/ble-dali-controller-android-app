@@ -53,11 +53,21 @@ fun imageForConnectionStatus(
 }
 
 // @BindingAdapter(value = [ "app:buttonForNode", "app:peripheralStatus"], requireAll = true)
-@BindingAdapter("app:buttonForNode")
+@BindingAdapter(value = ["app:buttonForNode", "app:disableWhenBusy"], requireAll = false)
 fun buttonForNode(
   button: Button,
-  node: Node
+  node: Node?,
+  disableWhenBusy: Boolean?
 ) {
+
+  val busy = disableWhenBusy == true
+
+  if (null == node) {
+    button.text = button.context.getString(R.string.node_button_text_null)
+    button.visibility = View.VISIBLE
+    button.isEnabled = false
+    return
+  }
 
   // Handle situation where we don't know ownership status
   if (null == node.info) {
@@ -98,7 +108,7 @@ fun buttonForNode(
         PeripheralStatus.None, PeripheralStatus.Loaded, PeripheralStatus.Error -> {
           button.text = button.context.getString(R.string.node_button_text_claim)
           button.visibility = View.VISIBLE
-          button.isEnabled = true
+          button.isEnabled = !busy
         }
         PeripheralStatus.Loading -> {
           button.text = button.context.getString(R.string.node_button_text_loading)
@@ -114,7 +124,7 @@ fun buttonForNode(
         NodeConnectionStatus.DISCONNECTED -> {
           button.text = button.context.getString(R.string.node_button_text_connect)
           button.visibility = View.VISIBLE
-          button.isEnabled = (null != node.info.password)
+          button.isEnabled = (null != node.info.password) && !busy
         }
         NodeConnectionStatus.CONNECTING -> {
           button.text = button.context.getString(R.string.node_button_text_connecting)
@@ -124,7 +134,7 @@ fun buttonForNode(
         NodeConnectionStatus.CONNECTED -> {
           button.text = button.context.getString(R.string.node_button_text_disconnect)
           button.visibility = View.VISIBLE
-          button.isEnabled = true
+          button.isEnabled = !busy
         }
         NodeConnectionStatus.DISCONNECTING -> {
           button.text = button.context.getString(R.string.node_button_text_disconnecting)
@@ -257,7 +267,7 @@ fun setFloat(view: TextView, value: Float) {
 }
 
 @BindingAdapter("app:rangeForDeviceType")
-fun rangeForDeviceType(slider: Slider, deviceType: DeviceType) {
+fun rangeForDeviceType(slider: Slider, deviceType: DeviceType?) {
   when (deviceType) {
     DeviceType.Zsc010, DeviceType.Bdc -> {
       slider.valueFrom = 0.0f
@@ -267,21 +277,27 @@ fun rangeForDeviceType(slider: Slider, deviceType: DeviceType) {
       slider.valueFrom = SNO110_BLUETOOTH_CHARACTERISTIC_LIGHT_CONTROL_OUTPUT_RANGE_CONFIG_MIN_PERCENTAGE.toFloat()
       slider.valueTo = SNO110_BLUETOOTH_CHARACTERISTIC_LIGHT_CONTROL_OUTPUT_RANGE_CONFIG_MAX_PERCENTAGE.toFloat()
     }
+    null -> {
+      slider.valueFrom = 0.0f
+      slider.valueTo = 100.0f
+    }
   }
 }
 
 @BindingAdapter("app:rangeMinimumForDeviceType")
-fun rangeMinimumForDeviceType(textView: TextView, deviceType: DeviceType) {
+fun rangeMinimumForDeviceType(textView: TextView, deviceType: DeviceType?) {
   when (deviceType) {
     DeviceType.Zsc010, DeviceType.Bdc -> textView.text = textView.resources.getText(R.string.node_settings_light_level_min_zsc010)
     DeviceType.Sno110 -> textView.text = textView.resources.getText(R.string.node_settings_light_level_min_sno110)
+    null -> textView.text = ""
   }
 }
 
 @BindingAdapter("app:rangeMaximumForDeviceType")
-fun rangeMaximumForDeviceType(textView: TextView, deviceType: DeviceType) {
+fun rangeMaximumForDeviceType(textView: TextView, deviceType: DeviceType?) {
   when (deviceType) {
     DeviceType.Zsc010, DeviceType.Bdc -> textView.text = textView.resources.getText(R.string.node_settings_light_level_max_zsc010)
     DeviceType.Sno110 -> textView.text = textView.resources.getText(R.string.node_settings_light_level_max_sno110)
+    null -> textView.text = ""
   }
 }

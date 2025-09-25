@@ -2,13 +2,19 @@ package com.remoticom.streetlighting.services.bluetooth.gatt.connection
 
 import android.bluetooth.*
 import android.content.Context
+import android.content.pm.PackageManager
 import android.util.Log
+import androidx.core.app.ActivityCompat
+import android.Manifest
+import android.os.Build
 import com.remoticom.streetlighting.services.bluetooth.gatt.bdc.bdcServiceMatchingMask
 import com.remoticom.streetlighting.services.bluetooth.gatt.bdc.getBdcCharacteristic
 import com.remoticom.streetlighting.services.bluetooth.gatt.zsc010.getZsc010Characteristic
 import com.remoticom.streetlighting.services.bluetooth.gatt.zsc010.zsc010ServiceMatchingMask
 import java.lang.reflect.Method
 import java.util.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class GattConnection(
   private val context: Context,
@@ -18,32 +24,70 @@ class GattConnection(
 ) : BluetoothGattCallback() {
 
   private var currentOperation: BluetoothGattCallback? = null
+  private val operationMutex = Mutex()
 
   private var gatt: BluetoothGatt? = null
   private var macAddress: Long? = null
 
+  var currentMtu: Int = 23
+    private set
+
+  private var pendingChunks: ArrayDeque<ByteArray>? = null
+  private var chunkedCharacteristic: BluetoothGattCharacteristic? = null
+  private var chunkedOriginalValue: ByteArray? = null
+
   private val TAG
     get() = (currentOperation ?: this).javaClass.simpleName
 
-  suspend fun <T> perform(operation: GattOperation<T>, block: ((GattOperation.Result<T>) -> Unit)? = null): GattOperation.Result<T> {
-    assert(currentOperation == null)
-    currentOperation = operation;
-    Log.d(TAG, "STARTED")
-    val result = operation.perform(this)
-    Log.d(TAG, "FINISHED")
-    currentOperation = null
+  suspend fun <T> perform(operation: GattOperation<T>, block: ((GattOperation.Result<T>) -> Unit)? = null): GattOperation.Result<T> =
+    operationMutex.withLock {
+      assert(currentOperation == null)
+      currentOperation = operation
+      Log.d(TAG, "STARTED")
+      try {
+        val result = operation.perform(this)
 
-    block?.let {
-      it(result)
+        block?.let {
+          it(result)
+        }
+
+        Log.d(TAG, "FINISHED")
+
+        result
+      } catch (exception: Exception) {
+        Log.e(TAG, "FAILED", exception)
+        throw exception
+      } finally {
+        currentOperation = null
+      }
     }
-
-    return result
-  }
 
   fun connectGatt(autoConnect: Boolean = false) {
     Log.v(TAG, "connectGatt initiated")
-    gatt = device.connectGatt(context, autoConnect, this)
-    macAddress = null
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      val missingPermission = ActivityCompat.checkSelfPermission(
+        context,
+        Manifest.permission.BLUETOOTH_CONNECT
+      ) != PackageManager.PERMISSION_GRANTED
+
+      if (missingPermission) {
+        Log.e(TAG, "Required Bluetooth permissions not granted")
+        throw SecurityException("Missing Bluetooth permissions")
+      }
+    }
+
+    try {
+      gatt = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        device.connectGatt(context, autoConnect, this, BluetoothDevice.TRANSPORT_LE)
+      } else {
+        device.connectGatt(context, autoConnect, this)
+      }
+      macAddress = null
+    } catch (securityException: SecurityException) {
+      Log.e(TAG, "SecurityException during connectGatt", securityException)
+      throw securityException
+    }
   }
 
   fun disconnect() = gatt?.let {
@@ -175,6 +219,38 @@ class GattConnection(
       true
     } ?: false
 
+  fun writeValueChunked(
+    characteristic: BluetoothGattCharacteristic,
+    data: ByteArray
+  ): Boolean = gatt?.let {
+    val maxPayload = currentMtu - 3
+    Log.d(TAG, "currentMtu=$currentMtu, maxPayload=$maxPayload")
+
+    if (currentMtu < 69) {
+      Log.w(TAG, "MTU below 69, using small frame mode")
+    }
+
+    val chunks = ArrayDeque<ByteArray>()
+    var offset = 0
+    while (offset < data.size) {
+      val end = minOf(offset + maxPayload, data.size)
+      chunks.addLast(data.copyOfRange(offset, end))
+      offset = end
+    }
+
+    if (chunks.isEmpty()) {
+      Log.e(TAG, "No data to write")
+      return@let false
+    }
+
+    pendingChunks = chunks
+    chunkedCharacteristic = characteristic
+    chunkedOriginalValue = data
+
+    characteristic.value = pendingChunks!!.removeFirst()
+    it.writeCharacteristic(characteristic)
+  } ?: false
+
   fun writeDescriptor(descriptor: BluetoothGattDescriptor) =
     gatt?.let {
       Log.v(TAG, "writeDescriptor initiated")
@@ -193,15 +269,41 @@ class GattConnection(
     Log.v(TAG, "onConnectionStateChange called")
     super.onConnectionStateChange(gatt, status, newState)
 
-    if (BluetoothGatt.GATT_SUCCESS == status) {
-      when (newState) {
-         BluetoothProfile.STATE_DISCONNECTED -> {
-           this.gatt?.close()
-           this.gatt = null
-           this.macAddress = null
+    val activeOperation = currentOperation
+
+    val shouldCompleteOperation =
+      status != BluetoothGatt.GATT_SUCCESS || newState == BluetoothProfile.STATE_DISCONNECTED
+
+    if (shouldCompleteOperation) {
+      (activeOperation as? GattOperation<*>)?.handleConnectionStateChange(status, newState)
+    }
+
+    if (newState == BluetoothProfile.STATE_DISCONNECTED || status != BluetoothGatt.GATT_SUCCESS) {
+      resetOperation()
+    }
+
+    if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+      val activeGatt = this.gatt
+
+      if (activeGatt != null) {
+        try {
+          activeGatt.abortReliableWrite()
+        } catch (exception: Exception) {
+          Log.w(TAG, "Failed to abort reliable write", exception)
         }
+
+        activeGatt.close()
       }
-    } else {
+
+      pendingChunks = null
+      chunkedCharacteristic = null
+      chunkedOriginalValue = null
+
+      this.gatt = null
+      this.macAddress = null
+    }
+
+    if (BluetoothGatt.GATT_SUCCESS != status) {
       Log.e(TAG,"status=${status.toGattStatusDescription()}")
     }
 
@@ -209,7 +311,7 @@ class GattConnection(
 
     // Must be called last, because code after suspended operation
     // must see changes by made by callback
-    currentOperation?.onConnectionStateChange(gatt, status, newState)
+    activeOperation?.onConnectionStateChange(gatt, status, newState)
   }
 
   override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
@@ -261,6 +363,22 @@ class GattConnection(
       Log.e(TAG,"status=${status.toGattStatusDescription()}")
     }
 
+    if (chunkedCharacteristic != null && characteristic === chunkedCharacteristic) {
+      val queue = pendingChunks
+      if (status == BluetoothGatt.GATT_SUCCESS && queue != null && queue.isNotEmpty()) {
+        characteristic.value = queue.removeFirst()
+        gatt.writeCharacteristic(characteristic)
+        return
+      } else {
+        if (status == BluetoothGatt.GATT_SUCCESS) {
+          chunkedOriginalValue?.let { characteristic.value = it }
+        }
+        pendingChunks = null
+        chunkedCharacteristic = null
+        chunkedOriginalValue = null
+      }
+    }
+
     callback?.onCharacteristicWrite(gatt, characteristic, status)
 
     // Must be called last, because code after suspended operation
@@ -288,6 +406,11 @@ class GattConnection(
 
     if (BluetoothGatt.GATT_SUCCESS != status) {
       Log.e(TAG,"status=${status.toGattStatusDescription()}")
+    }
+
+    currentMtu = mtu
+    if (currentMtu < 69) {
+      Log.w(TAG, "MTU $currentMtu below recommended 69")
     }
 
     callback?.onMtuChanged(gatt, mtu, status)

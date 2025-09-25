@@ -11,7 +11,12 @@ import com.remoticom.streetlighting.services.bluetooth.scanner.ScannerService
 import com.remoticom.streetlighting.services.web.*
 import com.remoticom.streetlighting.services.web.data.OwnershipStatus
 import com.remoticom.streetlighting.services.web.data.Peripheral
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class NodeRepository private constructor (
   private val scannerService: ScannerService,
@@ -24,7 +29,8 @@ class NodeRepository private constructor (
     val connectionStatus: NodeConnectionStatus = NodeConnectionStatus.DISCONNECTED,
     val connectedNode: Node?,
     val lastConnectionError: NodeConnectionError? = null,
-    val hasTimedOutWithoutResults: Boolean = false
+    val hasTimedOutWithoutResults: Boolean = false,
+    val hasConnectionTimeout: Boolean = false
   )
 
   private val webService = WebService(OkHttpHttpClientFactory(/*AuthenticationProvider("basic", "auth")*/))
@@ -34,8 +40,21 @@ class NodeRepository private constructor (
   private val connectionState = connectionService.state
   private val webState = peripheralsDataSource.state
 
+  private val backgroundScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
   private val _state = MediatorLiveData<State>()
   val state: LiveData<State> = _state
+
+  @Volatile
+  private var registeredLifecycle: Lifecycle? = null
+
+  private val pendingDisconnectLock = Any()
+
+  @Volatile
+  private var pendingDisconnectNodeId: String? = null
+
+  @Volatile
+  private var pendingDisconnectJob: Job? = null
 
   init {
     _state.addSource(scannerService.state) {
@@ -49,12 +68,41 @@ class NodeRepository private constructor (
     }
   }
 
-  @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-  private fun onPause() {
-    _state.value?.connectedNode?.let {
-      runBlocking {
-        Log.d(TAG, "Application on pause. Disconnecting if needed...")
-        disconnectNode(it)
+  fun attachToLifecycle(lifecycle: Lifecycle) {
+    synchronized(this) {
+      if (registeredLifecycle === lifecycle) return
+
+      registeredLifecycle?.removeObserver(this)
+
+      lifecycle.addObserver(this)
+      registeredLifecycle = lifecycle
+    }
+  }
+
+  fun detachFromLifecycle(lifecycle: Lifecycle? = null) {
+    synchronized(this) {
+      val current = registeredLifecycle ?: return
+
+      if (lifecycle == null || lifecycle === current) {
+        current.removeObserver(this)
+        registeredLifecycle = null
+      }
+    }
+  }
+
+  @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+  private fun onDestroy(owner: LifecycleOwner) {
+    val lifecycle = owner.lifecycle
+
+    detachFromLifecycle(lifecycle)
+
+    if (lifecycle !== ProcessLifecycleOwner.get().lifecycle) return
+    if (lifecycle.currentState != Lifecycle.State.DESTROYED) return
+
+    _state.value?.connectedNode?.let { node ->
+      backgroundScope.launch {
+        Log.d(TAG, "Application destroyed. Disconnecting if needed...")
+        disconnectNode(node)
       }
     }
   }
@@ -67,10 +115,25 @@ class NodeRepository private constructor (
     if (null == scannerState.value || null == connectionState.value || null == webState.value) return null
 
     val (isScanning, results, errorCode, hasTimedOutWithoutResults) = scannerState.value!!
-    val (connectionStatus, connectedDevice, characteristics, lastGattError) = connectionState.value!!
+    val (
+      connectionStatus,
+      connectedDevice,
+      characteristics,
+      lastGattError,
+      hasConnectionTimeout
+    ) = connectionState.value!!
     val (peripherals) = webState.value!!
 
-    val nodeConnectionStatus = connectionStatus.toNodeConnectionStatus()
+    val pendingDisconnectId = pendingDisconnectNodeId
+
+    val isPendingDisconnect = pendingDisconnectId != null && pendingDisconnectId == connectedDevice?.uuid
+
+    val nodeConnectionStatus = when {
+      isPendingDisconnect -> NodeConnectionStatus.DISCONNECTING
+      connectionStatus == GattConnectionStatus.Connected && characteristics == null ->
+        NodeConnectionStatus.CONNECTING
+      else -> connectionStatus.toNodeConnectionStatus()
+    }
 
     val connectedNode = connectedDevice?.let {
       results[it.uuid]?.let { result ->
@@ -113,20 +176,96 @@ class NodeRepository private constructor (
       }
     }
 
+    val stateConnectionStatus = connectedNode?.connectionStatus ?: nodeConnectionStatus
+
     return State(
       isScanning = isScanning,
       scanResults = scanResults,
       scanErrorCode = errorCode,
-      connectionStatus = nodeConnectionStatus,
+      connectionStatus = stateConnectionStatus,
       connectedNode = connectedNode,
       lastConnectionError = lastGattError?.toNodeConnectionError(),
-      hasTimedOutWithoutResults = hasTimedOutWithoutResults
+      hasTimedOutWithoutResults = hasTimedOutWithoutResults,
+      hasConnectionTimeout = hasConnectionTimeout
     )
   }
 
   private fun lookupNodeById(nodeId: String): Node? {
     return state.value?.scanResults?.get(nodeId)
    }
+
+  private fun refreshState() {
+    mergeDataSources(scannerState, connectionState, webState)?.let { newState ->
+      _state.postValue(newState)
+    }
+  }
+
+  private fun clearPendingDisconnectIfMatching(nodeId: String? = null) {
+    val (jobToCancel, cleared) = synchronized(pendingDisconnectLock) {
+      if (nodeId == null || pendingDisconnectNodeId == nodeId) {
+        val job = pendingDisconnectJob
+        pendingDisconnectNodeId = null
+        pendingDisconnectJob = null
+
+        job to true
+      } else {
+        null to false
+      }
+    }
+
+    jobToCancel?.cancel()
+
+    if (cleared) {
+      refreshState()
+    }
+  }
+
+  private fun enqueueDisconnect(nodeId: String) {
+    synchronized(pendingDisconnectLock) {
+      if (pendingDisconnectNodeId == nodeId && pendingDisconnectJob?.isActive == true) {
+        return
+      }
+
+      pendingDisconnectNodeId = nodeId
+
+      pendingDisconnectJob?.cancel()
+
+      val job = backgroundScope.launch {
+        waitForActiveOperationToFinish(nodeId)
+      }
+
+      pendingDisconnectJob = job
+    }
+
+    Log.i(TAG, "Operation in progress. Queuing disconnect request for node $nodeId.")
+
+    refreshState()
+  }
+
+  private suspend fun waitForActiveOperationToFinish(nodeId: String) {
+    try {
+      while (connectionService.isOperationInProgress()) {
+        delay(PENDING_DISCONNECT_POLL_INTERVAL_MS)
+      }
+
+      val shouldDisconnect = synchronized(pendingDisconnectLock) {
+        if (pendingDisconnectNodeId == nodeId) {
+          pendingDisconnectNodeId = null
+          pendingDisconnectJob = null
+          true
+        } else {
+          false
+        }
+      }
+
+      if (shouldDisconnect) {
+        Log.i(TAG, "Disconnecting node $nodeId after pending operation finished.")
+        connectionService.disconnect()
+      }
+    } finally {
+      refreshState()
+    }
+  }
 
   suspend fun connectNode(nodeId: String) {
     lookupNodeById(nodeId)?.let {
@@ -169,15 +308,16 @@ class NodeRepository private constructor (
   }
 
   suspend fun disconnectNode(node: Node) {
-    if (node.connectionStatus != NodeConnectionStatus.CONNECTED) return
+    if (node.connectionStatus == NodeConnectionStatus.DISCONNECTED ||
+      node.connectionStatus == NodeConnectionStatus.DISCONNECTING) return
 
     if (isOperationInProgress()) {
-      // When (most likely) read of characteristics is in progress;
-      // Only proceed when not in progress to avoid assertion error
-      Log.i(TAG, "Operation in progress. Not disconnecting.")
+      enqueueDisconnect(node.id)
 
       return
     }
+
+    clearPendingDisconnectIfMatching(node.id)
 
     connectionService.disconnect()
   }
@@ -248,6 +388,7 @@ class NodeRepository private constructor (
 
   companion object {
     private const val TAG = "NodeRepository"
+    private const val PENDING_DISCONNECT_POLL_INTERVAL_MS = 50L
     @Volatile
     private var instance: NodeRepository? = null
 
@@ -285,4 +426,5 @@ fun GattErrorCode.toNodeConnectionErrorCode() = when(this) {
   GattErrorCode.PreconditionFailed -> NodeConnectionErrorCode.PreconditionFailed
   GattErrorCode.SerializationFailed -> NodeConnectionErrorCode.SerializationFailed
   GattErrorCode.WriteCharacteristicValueMismatch -> NodeConnectionErrorCode.WriteCharacteristicValueMismatch
+  GattErrorCode.MissingPermission -> NodeConnectionErrorCode.MissingPermission
 }

@@ -1,4 +1,4 @@
-package com.remoticom.streetlighting.services.bluetooth.gatt.bdc.operations
+package com.remoticom.streetlighting.services.bluetooth.gatt.sno110.operations
 
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
@@ -6,13 +6,14 @@ import com.remoticom.streetlighting.services.bluetooth.gatt.connection.GattCallb
 import com.remoticom.streetlighting.services.bluetooth.gatt.connection.GattConnection
 import com.remoticom.streetlighting.services.bluetooth.gatt.connection.GattErrorCode
 import com.remoticom.streetlighting.services.bluetooth.gatt.connection.GattOperation
+import java.util.*
 
-open class BdcWriteCharacteristicGattOperation<T>(
-  private val serviceMask: String,
-  private val characteristic: Long,
+open class Sno110WriteCharacteristicGattOperation<T>(
+  private val serviceUuidString: String,
+  private val characteristicUuidString: String,
   private val value: T?,
-  private val serialize: (BluetoothGattCharacteristic, T?) -> Boolean,
-  private val deserialize: (BluetoothGattCharacteristic) -> T
+  private val serialize: (BluetoothGattCharacteristic, T?) -> Boolean //,
+  //private val deserialize: (BluetoothGattCharacteristic) -> T
 ) : GattOperation<T>() {
   override fun performAsync(
     connection: GattConnection,
@@ -20,10 +21,10 @@ open class BdcWriteCharacteristicGattOperation<T>(
   ) {
     super.performAsync(connection, callback)
 
-    val bluetoothCharacteristic = connection.getBdcCharacteristic(
-        serviceMask,
-        characteristic
-      )
+    val bluetoothCharacteristic = connection.getCharacteristic(
+      UUID.fromString(serviceUuidString),
+      UUID.fromString(characteristicUuidString)
+    )
 
     if (null == bluetoothCharacteristic) {
       completeWithError(GattErrorCode.PreconditionFailed)
@@ -54,9 +55,8 @@ open class BdcWriteCharacteristicGattOperation<T>(
     super.onCharacteristicWrite(gatt, characteristic, status)
 
     if (status == BluetoothGatt.GATT_SUCCESS) {
-      val confirmedValue = deserialize(characteristic)
-      if (confirmedValue == value) {
-        completeWithData(confirmedValue)
+      if (null != value) {
+        completeWithData(value)
       } else {
         completeWithError(GattErrorCode.WriteCharacteristicValueMismatch)
       }

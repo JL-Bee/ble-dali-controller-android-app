@@ -15,7 +15,8 @@ interface ConnectionService {
     val connectionStatus: GattConnectionStatus = GattConnectionStatus.Disconnected,
     val device: Device? = null,
     val characteristics: DeviceCharacteristics? = null,
-    val lastGattError: GattError<*>? = null
+    val lastGattError: GattError<*>? = null,
+    val hasConnectionTimeout: Boolean = false
   )
 
   suspend fun connect(device: Device, tokenProvider: TokenProvider, peripheral: Peripheral?): Boolean

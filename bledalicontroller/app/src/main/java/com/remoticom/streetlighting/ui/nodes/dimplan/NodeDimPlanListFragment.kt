@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
@@ -49,7 +48,6 @@ class NodeDimPlanListFragment : Fragment() {
     InjectorUtils.provideNodeSettingsViewModelFactory(
       requireContext(),
       this.activity as CoroutineScopeProvider,
-      this.activity as FragmentActivity,
       args.nodeId
     )
   }

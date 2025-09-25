@@ -7,7 +7,8 @@ enum class NodeConnectionErrorCode {
   GattMethodFailed,
   PreconditionFailed,
   SerializationFailed,
-  WriteCharacteristicValueMismatch
+  WriteCharacteristicValueMismatch,
+  MissingPermission
 }
 
 data class NodeConnectionError(

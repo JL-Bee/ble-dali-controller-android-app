@@ -9,11 +9,15 @@ class ConnectGattOperation : GattOperation<Boolean>() {
     callback: GattCallback<Boolean>
   ) {
     super.performAsync(connection, callback)
-    connection.connectGatt()
+    try {
+      connection.connectGatt()
+    } catch (securityException: SecurityException) {
+      completeWithError(GattErrorCode.MissingPermission)
+    }
   }
 
   override fun onConnectionStateChange(
-    gatt: BluetoothGatt,
+    gatt: BluetoothGatt?,
     status: Int,
     newState: Int
   ) {
@@ -30,5 +34,7 @@ class ConnectGattOperation : GattOperation<Boolean>() {
       completeWithError(GattErrorCode.GattError, status)
     }
   }
+
+  override fun shouldFailOnDisconnect(): Boolean = false
 }
 

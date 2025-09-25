@@ -32,13 +32,18 @@ class NodeSettingsViewModel(
     val currentNode: Node? = null,
     val editedNode: EditableNode? = null,
     val currentDimStep: Int? = null,
-    val lastConfigurationName: String? = null
+    val lastConfigurationName: String? = null,
+    val isWriting: Boolean = false
   )
 
   private var editedNode : EditableNode? = null
+  private var isWritingInProgress: Boolean = false
 
   private val _state = MediatorLiveData<ViewState>()
   val state: LiveData<ViewState> = _state
+
+  private val _busy = MediatorLiveData<Boolean>().apply { value = false }
+  val busy: LiveData<Boolean> = _busy
 
   init {
       _state.addSource(nodeRepository.state) {
@@ -47,6 +52,10 @@ class NodeSettingsViewModel(
       _state.addSource(configurationService.state) {
         _state.value = mergeDataSources(nodeRepository.state, configurationService.state)!!
       }
+
+      _busy.addSource(_state) { _busy.value = isBusy() }
+      _busy.addSource(nodeRepository.state) { _busy.value = isBusy() }
+      _busy.value = isBusy()
   }
 
   private fun mergeDataSources(
@@ -151,7 +160,8 @@ class NodeSettingsViewModel(
       currentNode = currentNode,
       editedNode = editedNode,
       currentDimStep = selectedDimStep,
-      lastConfigurationName = lastConfigurationName
+      lastConfigurationName = lastConfigurationName,
+      isWriting = isWritingInProgress
     )
   }
 
@@ -165,10 +175,32 @@ class NodeSettingsViewModel(
   }
 
   suspend fun updateCurrentNode(characteristics: DeviceCharacteristics): Boolean {
+    if (isWritingInProgress || nodeRepository.isOperationInProgress()) {
+      return false
+    }
+
     val node = state.value?.currentNode ?: return false
 
-    return nodeRepository.writeCharacteristics(node, characteristics)
+    updateWritingState(true)
+
+    return try {
+      nodeRepository.writeCharacteristics(node, characteristics)
+    } finally {
+      updateWritingState(false)
+    }
   }
+
+  private fun updateWritingState(isWriting: Boolean) {
+    isWritingInProgress = isWriting
+
+    _state.value?.let { currentState ->
+      _state.postValue(currentState.copy(isWriting = isWriting))
+    }
+
+    _busy.postValue(isBusy())
+  }
+
+  fun isBusy(): Boolean = isWritingInProgress || nodeRepository.isOperationInProgress()
 
   suspend fun claimPeripheral(uuid: String, peripheral: Peripheral) : NodeRepository.UpdatePeripheralResult {
     Log.d(TAG, "Claiming node/peripheral: $uuid")

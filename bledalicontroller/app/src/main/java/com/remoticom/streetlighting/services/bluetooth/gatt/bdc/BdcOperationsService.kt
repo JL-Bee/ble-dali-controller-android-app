@@ -21,37 +21,39 @@ class BdcOperationsService constructor(
     device: Device,
     tokenProvider: TokenProvider,
     peripheral: Peripheral?
-  ) {
-    peripheral ?: return
-
-    if (null == peripheral.password) {
-      Log.e(TAG, "Password not yet available")
-
-      return
+  ): Boolean {
+    val nonNullPeripheral = peripheral ?: run {
+      Log.e(TAG, "Peripheral not available")
+      return false
     }
 
-    val devicePassword = peripheral.password.toUIntOrNull()?.toInt()
+    val password = nonNullPeripheral.password ?: run {
+      Log.e(TAG, "Password not yet available")
 
-    if (null == devicePassword) {
+      return false
+    }
+
+    val devicePassword = password.toUIntOrNull()?.toInt() ?: run {
       Log.e(TAG, "Password has invalid format")
 
-      return
+      return false
     }
 
     // Connect
     if (!connectionProvider.performOperation(ConnectGattOperation(), false)) {
-      return
+      return false
     }
 
     // Request MTU
-    //    if (!connectionProvider.performOperation(RequestMtuOperation(512), false)) {
-    //      return
-    //    }
+    if (!connectionProvider.performOperation(RequestMtuOperation(517), false)) {
+      connectionProvider.tearDown()
+      return false
+    }
 
     // Discover services
     if (!connectionProvider.performOperation(DiscoverServicesOperation(), false)) {
       connectionProvider.tearDown()
-      return
+      return false
     }
 
     delay(500)
@@ -59,10 +61,12 @@ class BdcOperationsService constructor(
     // Write pin
     if (connectionProvider.performOperation(BdcWriteSecurityPasswordOperation(devicePassword)) != devicePassword) {
       connectionProvider.tearDown()
-      return
+      return false
     }
 
     delay(500)
+
+    return true
   }
 
   override suspend fun readGeneralCharacteristics() : GeneralCharacteristics {

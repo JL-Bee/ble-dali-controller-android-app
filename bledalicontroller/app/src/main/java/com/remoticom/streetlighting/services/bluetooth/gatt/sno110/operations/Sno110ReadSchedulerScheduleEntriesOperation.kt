@@ -1,4 +1,4 @@
-package com.remoticom.streetlighting.services.bluetooth.gatt.bdc.operations
+package com.remoticom.streetlighting.services.bluetooth.gatt.sno110.operations
 
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
@@ -6,31 +6,28 @@ import com.remoticom.streetlighting.services.bluetooth.gatt.connection.GattCallb
 import com.remoticom.streetlighting.services.bluetooth.gatt.connection.GattConnection
 import com.remoticom.streetlighting.services.bluetooth.gatt.connection.GattErrorCode
 import com.remoticom.streetlighting.services.bluetooth.gatt.connection.GattOperation
+import com.remoticom.streetlighting.services.bluetooth.gatt.sno110.*
+import com.remoticom.streetlighting.services.bluetooth.gatt.sno110.characteristics.ScheduleEntry
+import java.util.*
 
-open class BdcWriteCharacteristicGattOperation<T>(
-  private val serviceMask: String,
-  private val characteristic: Long,
-  private val value: T?,
-  private val serialize: (BluetoothGattCharacteristic, T?) -> Boolean,
-  private val deserialize: (BluetoothGattCharacteristic) -> T
-) : GattOperation<T>() {
+open class Sno110ReadSchedulerScheduleEntriesOperation() : GattOperation<List<ScheduleEntry>>() {
   override fun performAsync(
     connection: GattConnection,
-    callback: GattCallback<T>
+    callback: GattCallback<List<ScheduleEntry>>
   ) {
     super.performAsync(connection, callback)
 
-    val bluetoothCharacteristic = connection.getBdcCharacteristic(
-        serviceMask,
-        characteristic
-      )
+    val bluetoothCharacteristic = connection.getCharacteristic(
+      UUID.fromString(SNO110_BLUETOOTH_SERVICE_SCHEDULER),
+      UUID.fromString(SNO110_BLUETOOTH_CHARACTERISTIC_SCHEDULER_CONTROL_POINT)
+    )
 
     if (null == bluetoothCharacteristic) {
       completeWithError(GattErrorCode.PreconditionFailed)
       return
     }
 
-    if (!serialize(bluetoothCharacteristic, value)) {
+    if (!bluetoothCharacteristic.serializeSchedulerControlPointOpcode(SNO110_BLUETOOTH_CHARACTERISTIC_SCHEDULER_CONTROL_POINT_OPCODE_READ_ENTRIES)) {
       completeWithError(GattErrorCode.SerializationFailed)
       return
     }
@@ -53,15 +50,23 @@ open class BdcWriteCharacteristicGattOperation<T>(
   ) {
     super.onCharacteristicWrite(gatt, characteristic, status)
 
-    if (status == BluetoothGatt.GATT_SUCCESS) {
-      val confirmedValue = deserialize(characteristic)
-      if (confirmedValue == value) {
-        completeWithData(confirmedValue)
-      } else {
-        completeWithError(GattErrorCode.WriteCharacteristicValueMismatch)
-      }
-    } else {
+    if (status != BluetoothGatt.GATT_SUCCESS) {
       completeWithError(GattErrorCode.GattError, status)
+    }
+  }
+
+  override fun onCharacteristicChanged(
+    gatt: BluetoothGatt?,
+    characteristic: BluetoothGattCharacteristic?
+  ) {
+    super.onCharacteristicChanged(gatt, characteristic)
+
+    if (null == characteristic) {
+      completeWithError(GattErrorCode.PreconditionFailed)
+    } else {
+      val entries = characteristic.deserializeSchedulerScheduleEntries()
+
+      completeWithData(entries)
     }
   }
 }

@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
@@ -62,7 +61,6 @@ class NodeSettingsFragment : Fragment() {
     InjectorUtils.provideNodeSettingsViewModelFactory(
       requireContext(),
       this.activity as CoroutineScopeProvider,
-      this.activity as FragmentActivity,
       args.nodeId
     )
   }
@@ -568,6 +566,11 @@ class NodeSettingsFragment : Fragment() {
   }
 
   private fun disconnect() {
+    if (viewModel.isBusy()) {
+      Toast.makeText(requireContext(), R.string.node_settings_disconnect_busy_message, Toast.LENGTH_SHORT).show()
+      return
+    }
+
     mainScope.launch {
       viewModel.disconnectCurrentNode()
     }

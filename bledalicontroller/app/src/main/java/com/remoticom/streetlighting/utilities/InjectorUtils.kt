@@ -1,7 +1,7 @@
 package com.remoticom.streetlighting.utilities
 
 import android.content.Context
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.remoticom.streetlighting.data.NodeRepository
 // import com.remoticom.streetlighting.services.bluetooth.gatt.MockConnectionService
 // import com.remoticom.streetlighting.services.bluetooth.scanner.MockScannerService
@@ -19,8 +19,7 @@ import com.remoticom.streetlighting.ui.login.LoginViewModelFactory
 object InjectorUtils {
 
   var currentNodeSettingsViewModelFactory : NodeSettingsViewModelFactory? = null
-
-  fun getNodeRepository(context: Context, scopeProvider: CoroutineScopeProvider, lifecycleOwner: LifecycleOwner): NodeRepository {
+  fun getNodeRepository(context: Context, scopeProvider: CoroutineScopeProvider): NodeRepository {
     val scope = scopeProvider.provideScope()
     val scannerService = BluetoothScannerService.getInstance(context = context)
 
@@ -33,42 +32,38 @@ object InjectorUtils {
 
     val nodeRepository = NodeRepository.getInstance(scannerService, connectionService)
 
-    // TODO (REFACTOR): Do we need to call removeObserver(), and if so: when?
-    lifecycleOwner.lifecycle.addObserver(nodeRepository)
+    nodeRepository.attachToLifecycle(ProcessLifecycleOwner.get().lifecycle)
 
     return nodeRepository
   }
 
   fun provideNodeListViewModelFactory(
     context: Context,
-    scopeProvider: CoroutineScopeProvider,
-    lifecycleOwner: LifecycleOwner
+    scopeProvider: CoroutineScopeProvider
   ): NodeListViewModelFactory {
-    val repository = getNodeRepository(context, scopeProvider, lifecycleOwner)
+    val repository = getNodeRepository(context, scopeProvider)
     return NodeListViewModelFactory(repository)
   }
 
   fun provideNodeInfoListViewModelFactory(
     context: Context,
     scopeProvider: CoroutineScopeProvider,
-    lifecycleOwner: LifecycleOwner,
     nodeId: String
   ): NodeInfoListViewModelFactory {
-    val repository = getNodeRepository(context, scopeProvider, lifecycleOwner)
+    val repository = getNodeRepository(context, scopeProvider)
     return NodeInfoListViewModelFactory(repository, nodeId)
   }
 
   fun provideNodeSettingsViewModelFactory(
     context: Context,
     scopeProvider: CoroutineScopeProvider,
-    lifecycleOwner: LifecycleOwner,
     nodeId: String
   ): NodeSettingsViewModelFactory {
     currentNodeSettingsViewModelFactory?.let {
       return it
     }
 
-    val repository = getNodeRepository(context, scopeProvider, lifecycleOwner)
+    val repository = getNodeRepository(context, scopeProvider)
     currentNodeSettingsViewModelFactory = NodeSettingsViewModelFactory(repository, nodeId)
 
     return currentNodeSettingsViewModelFactory!!
@@ -82,11 +77,10 @@ object InjectorUtils {
   fun provideNodeWriteConfirmationViewModelFactory(
     context: Context,
     scopeProvider: CoroutineScopeProvider,
-    lifecycleOwner: LifecycleOwner,
     nodeId: String,
     success: Boolean
   ): NodeWriteConfirmationViewModelFactory {
-    val repository = getNodeRepository(context, scopeProvider, lifecycleOwner)
+    val repository = getNodeRepository(context, scopeProvider)
     return NodeWriteConfirmationViewModelFactory(repository, nodeId, success)
   }
 

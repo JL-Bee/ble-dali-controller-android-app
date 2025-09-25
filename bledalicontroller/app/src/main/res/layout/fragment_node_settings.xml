@@ -6,6 +6,7 @@
   <data>
 
     <import type="android.view.View"/>
+    <import type="com.remoticom.streetlighting.data.NodeConnectionStatus"/>
 
     <variable
       name="viewmodel"
@@ -64,6 +65,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/button_big_height"
         app:buttonForNode="@{viewmodel.state.currentNode}"
+        app:disableWhenBusy="@{viewmodel.busy}"
         android:text="@string/node_settings_disconnect_node_button_text"
         android:onClick="@{toggleConnectionClickListener}" />
 
@@ -139,7 +141,7 @@
               android:layout_height="wrap_content"
               android:text="@string/node_settings_light_level_min_zsc010"
               android:layout_gravity="center_vertical"
-              app:rangeMinimumForDeviceType="@{viewmodel.state.currentNode.deviceType}"/>
+              app:rangeMinimumForDeviceType="@{viewmodel.state.currentNode != null ? viewmodel.state.currentNode.deviceType : null}"/>
 
             <!-- Avoid slider value out of range for SNO110 when dimLevel null -->
             <com.google.android.material.slider.Slider
@@ -148,19 +150,19 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:layout_marginHorizontal="10dp"
-              android:value="@{viewmodel.state.editedNode.dimLevel == null ? viewmodel.safeDefaultDimLevelForDeviceType(viewmodel.state.currentNode.deviceType) : viewmodel.state.editedNode.dimLevel}"
+              android:value="@{viewmodel.state.editedNode.dimLevel == null ? (viewmodel.state.currentNode != null ? viewmodel.safeDefaultDimLevelForDeviceType(viewmodel.state.currentNode.deviceType) : 0f) : viewmodel.state.editedNode.dimLevel}"
               android:stepSize="5.0"
               app:labelBehavior="gone"
               app:enabledWhenConnectedAndModeNominal="@{viewmodel.state.connectionStatus}"
               app:generalMode="@{viewmodel.state.editedNode.generalMode}"
-              app:rangeForDeviceType="@{viewmodel.state.currentNode.deviceType}"/>
+              app:rangeForDeviceType="@{viewmodel.state.currentNode != null ? viewmodel.state.currentNode.deviceType : null}"/>
 
             <TextView
               android:layout_width="30dp"
               android:layout_height="wrap_content"
               android:layout_gravity="center_vertical|end"
               android:textAlignment="textEnd"
-              app:rangeMaximumForDeviceType="@{viewmodel.state.currentNode.deviceType}"/>
+              app:rangeMaximumForDeviceType="@{viewmodel.state.currentNode != null ? viewmodel.state.currentNode.deviceType : null}"/>
 
           </LinearLayout>
 
@@ -433,8 +435,17 @@
           android:layout_height="@dimen/button_big_height"
           android:layout_gravity="bottom"
           android:text="@string/node_settings_write_button_text"
-          app:enabledWhenConnected="@{viewmodel.state.connectionStatus}"
+          android:enabled="@{!viewmodel.state.isWriting &amp;&amp; viewmodel.state.connectionStatus == NodeConnectionStatus.CONNECTED}"
           android:onClick="@{writeNodeClickListener}"/>
+
+        <ProgressBar
+          android:id="@+id/node_settings_progress_writing"
+          style="?android:attr/progressBarStyleSmall"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_horizontal"
+          android:layout_marginTop="8dp"
+          android:visibility="@{viewmodel.state.isWriting ? View.VISIBLE : View.GONE}" />
 
       </LinearLayout>
 

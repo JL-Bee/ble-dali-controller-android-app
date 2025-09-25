@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -23,7 +22,6 @@ class NodeWriteConfirmationFragment : Fragment() {
     InjectorUtils.provideNodeWriteConfirmationViewModelFactory(
       requireContext(),
       this.activity as CoroutineScopeProvider,
-      this.activity as FragmentActivity,
       args.nodeId,
       args.success
     )

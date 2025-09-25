@@ -17,8 +17,8 @@ android {
     applicationId "com.remoticom.energynodeinset"
     minSdkVersion 21
     targetSdkVersion 35
-    versionCode 2000001
-    versionName "2.0.1"
+    versionCode 2001000
+    versionName "2.1.0"
 
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
   }
@@ -94,6 +94,7 @@ dependencies {
   // implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
   implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
   implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+  implementation "androidx.lifecycle:lifecycle-process:$lifecycle_version"
   implementation "androidx.webkit:webkit:1.12.1"
 
   implementation 'androidx.recyclerview:recyclerview:1.3.2'
@@ -114,6 +115,7 @@ dependencies {
   implementation 'com.microsoft.identity.client:msal:3.0.2'
 
   testImplementation 'junit:junit:4.13.2'
+  testImplementation 'androidx.arch.core:core-testing:2.2.0'
   androidTestImplementation 'androidx.test.ext:junit:1.2.1'
   androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 }

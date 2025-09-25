@@ -1,5 +1,6 @@
 package com.remoticom.streetlighting.services.bluetooth.gatt
 
+import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothProfile
@@ -22,14 +23,18 @@ import com.remoticom.streetlighting.services.bluetooth.gatt.zsc010.*
 import com.remoticom.streetlighting.services.web.TokenProvider
 import com.remoticom.streetlighting.services.web.data.Peripheral
 import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.IllegalStateException
 import android.Manifest
+import com.remoticom.streetlighting.utilities.BluetoothPermissionProvider
 
 
 class GattConnectionService constructor(
-  scope: CoroutineScope,
+  private val scope: CoroutineScope,
   private val context: Context,
-  private val deviceManager: BluetoothDeviceManager
+  private val deviceManager: BluetoothDeviceManager,
+  private val keepAliveInterval: Long = DEFAULT_KEEP_ALIVE_INTERVAL
 ) : ConnectionService, ConnectionProvider {
 
   private var operationServices: Map<DeviceType, OperationsService> = mapOf(
@@ -39,6 +44,8 @@ class GattConnectionService constructor(
   )
 
   private var currentConnection: GattConnection? = null
+
+  private var keepAliveJob: Job? = null
 
   private val _state = MutableLiveData(ConnectionService.State())
   override val state: LiveData<ConnectionService.State> = _state
@@ -50,15 +57,71 @@ class GattConnectionService constructor(
       _state.postValue(value.toConnectionServiceState())
     }
 
+  private val operationMutex = Mutex()
+
+  private var isPermissionErrorReported = false
+
+  private fun startKeepAlive() {
+    keepAliveJob?.cancel()
+    keepAliveJob = scope.launch(Dispatchers.IO + SupervisorJob()) {
+      try {
+        Log.d(TAG, "Keep-alive initial ping")
+        currentOperationsService().readDiagnosticsCharacteristics(null, null)
+      } catch (e: Exception) {
+        Log.w(TAG, "Keep-alive initial ping failed", e)
+      }
+      while (isActive) {
+        delay(keepAliveInterval)
+        Log.d(TAG, "Keep-alive ping")
+        try {
+          currentOperationsService().readDiagnosticsCharacteristics(null, null)
+          Log.d(TAG, "Keep-alive ping successful")
+        } catch (e: Exception) {
+          Log.w(TAG, "Keep-alive read failed", e)
+        }
+      }
+    }
+  }
+
+  private fun stopKeepAlive() {
+    keepAliveJob?.cancel()
+    keepAliveJob = null
+  }
+
   private val isConnected
     get() = serviceState.connectionStatus == GattConnectionStatus.Connected
+
+  private fun areBluetoothPermissionsGranted(): Boolean {
+    val provider = context as? BluetoothPermissionProvider
+    val granted = provider?.areBluetoothPermissionsGranted() ?: true
+    if (granted) {
+      isPermissionErrorReported = false
+    }
+    return granted
+  }
+
+    private fun requestBluetoothPermissions() {
+      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return
+      val provider = context as? BluetoothPermissionProvider ?: return
+      if (!provider.isBluetoothPermissionRequestInProgress()) {
+        provider.requestBluetoothPermissions()
+      }
+    }
+
+  private fun handleMissingPermission() {
+    if (!isPermissionErrorReported) {
+      isPermissionErrorReported = true
+      requestBluetoothPermissions()
+    }
+  }
 
   private data class ServiceState(
     val device: Device? = null,
     val characteristics: DeviceCharacteristics? = null,
     val isConnecting: Boolean = false,
     val connectionStatus: GattConnectionStatus = GattConnectionStatus.Disconnected,
-    val lastGattError: GattError<*>? = null
+    val lastGattError: GattError<*>? = null,
+    val hasConnectionTimeout: Boolean = false
   ) {
     val safeCharacteristics = characteristics ?: DeviceCharacteristics()
 
@@ -74,7 +137,8 @@ class GattConnectionService constructor(
       },
       device = device,
       characteristics = characteristics,
-      lastGattError = lastGattError
+      lastGattError = lastGattError,
+      hasConnectionTimeout = hasConnectionTimeout
     )
   }
 
@@ -89,32 +153,60 @@ class GattConnectionService constructor(
     tokenProvider: TokenProvider,
     peripheral: Peripheral?
   ): Boolean {
+    if (!areBluetoothPermissionsGranted()) {
+      Log.w(TAG, "Bluetooth permissions not granted, cannot connect")
+      handleMissingPermission()
+      serviceState = serviceState.copy(
+        lastGattError = GattError<Unit>(GattErrorCode.MissingPermission)
+      )
+      return false
+    }
     // Automatically close a previous connection
     disconnect()
 
-    deviceManager.bluetoothDeviceFor(device)?.let {
+    val bluetoothDevice = deviceManager.bluetoothDeviceFor(device)
 
-      serviceState = ServiceState(
-        isConnecting = true,
-        device = device
+    if (bluetoothDevice == null) {
+      Log.w(TAG, "BluetoothDevice not found for ${device.address}")
+      serviceState = serviceState.copy(
+        isConnecting = false,
+        connectionStatus = GattConnectionStatus.Disconnected,
+        lastGattError = serviceState.lastGattError
+          ?: GattError<Unit>(GattErrorCode.GattError, GattStatus.GATT_FAILURE)
       )
+      return false
+    }
 
-      // TODO: Refactor MAC address dependency?
-      val macAddressServiceMask = when (device.type) {
-        DeviceType.Bdc -> BDC_BLUETOOTH_SERVICE_GENERAL_MASK
-        DeviceType.Zsc010 -> ZSC010_BLUETOOTH_SERVICE_GENERAL_MASK
-        DeviceType.Sno110 -> "" // TODO: Not used
-      }
+    serviceState = ServiceState(
+      isConnecting = true,
+      device = device
+    )
 
-      currentConnection = GattConnection(context, it, callback, macAddressServiceMask)
+    // TODO: Refactor MAC address dependency?
+    val macAddressServiceMask = when (device.type) {
+      DeviceType.Bdc -> BDC_BLUETOOTH_SERVICE_GENERAL_MASK
+      DeviceType.Zsc010 -> ZSC010_BLUETOOTH_SERVICE_GENERAL_MASK
+      DeviceType.Sno110 -> "" // TODO: Not used
+    }
 
+    try {
       internalConnectWithRetry(
         device,
         tokenProvider,
-        peripheral
+        peripheral,
+        bluetoothDevice,
+        macAddressServiceMask
       )
-
-      serviceState = serviceState.copy(isConnecting = false)
+    } finally {
+      if (!isConnected) {
+        Log.w(TAG, "Failed to connect to device ${device.address}")
+        serviceState = serviceState.copy(
+          isConnecting = false,
+          connectionStatus = GattConnectionStatus.Disconnected
+        )
+      } else {
+        serviceState = serviceState.copy(isConnecting = false)
+      }
     }
 
     return isConnected
@@ -204,11 +296,16 @@ class GattConnectionService constructor(
   private suspend fun internalConnectWithRetry(
     device: Device,
     tokenProvider: TokenProvider,
-    peripheral: Peripheral?
+    peripheral: Peripheral?,
+    bluetoothDevice: BluetoothDevice,
+    macAddressServiceMask: String
   ) {
-    val backoffDelays =
-      listOf(0L, 100L, 200L, 400L) // what are the recommendations?
+    val backoffDelays = listOf(0L, 200L, 500L, 1_000L, 2_000L, 4_000L)
     var attempts = 0
+    var connectionTimedOut = false
+    var lastFailureStatus: Int? = null
+    var connectFailedToStart = false
+
     while (!isConnected && attempts < backoffDelays.size) {
       val backoffDelay = backoffDelays[attempts]
 
@@ -221,22 +318,91 @@ class GattConnectionService constructor(
 
       Log.d(TAG, "Connect attempt #$attempts")
 
+      rebuildGattConnection(bluetoothDevice, macAddressServiceMask)
+
+      if (attempts > 1) {
+        serviceState = serviceState.copy(lastGattError = null)
+      }
+
       serviceState = serviceState.copy(
         connectionStatus = GattConnectionStatus.Connecting
       )
 
       val operationsService = currentOperationsService()
-      operationsService.connect(
-        device,
-        tokenProvider,
-        peripheral
-      )
+      val previousError = serviceState.lastGattError
+      val connectAttemptStarted = withTimeoutOrNull(CONNECT_ATTEMPT_TIMEOUT_MS) {
+        operationsService.connect(
+          device,
+          tokenProvider,
+          peripheral
+        )
+      }
+
+      if (connectAttemptStarted == null) {
+        Log.w(TAG, "Connect attempt #$attempts timed out after ${CONNECT_ATTEMPT_TIMEOUT_MS} ms")
+        connectionTimedOut = true
+        serviceState = serviceState.copy(
+          lastGattError = GattError<Unit>(GattErrorCode.GattError, GattStatus.GATT_CONNECTION_TIMEOUT)
+        )
+        continue
+      }
+
+      if (isConnected) {
+        connectionTimedOut = false
+        break
+      }
+
+      val lastErrorStatus = serviceState.lastGattError?.status
+      if (lastErrorStatus != null) {
+        lastFailureStatus = lastErrorStatus
+        connectionTimedOut = lastErrorStatus == GattStatus.GATT_CONNECTION_TIMEOUT
+        if (connectionTimedOut) {
+          Log.w(TAG, "Connect attempt #$attempts failed with GATT connection timeout")
+        } else if (lastErrorStatus == GattStatus.GATT_ERROR) {
+          Log.w(TAG, "Connect attempt #$attempts failed with GATT error 133")
+        }
+      }
+
+      if (!connectAttemptStarted) {
+        val latestError = serviceState.lastGattError
+        val operationStarted = latestError != null && latestError != previousError
+        if (!operationStarted) {
+          Log.e(TAG, "Connect attempt #$attempts failed to start ConnectGattOperation")
+          connectFailedToStart = true
+          serviceState = serviceState.copy(
+            lastGattError = latestError ?: GattError<Unit>(GattErrorCode.GattError, GattStatus.GATT_FAILURE),
+            connectionStatus = GattConnectionStatus.Disconnected
+          )
+          break
+        }
+        continue
+      }
     }
 
     if (!isConnected) {
+      if (connectionTimedOut) {
+        Log.w(TAG, "Connection attempts exhausted after GATT timeout (status=$lastFailureStatus)")
+        serviceState = serviceState.copy(hasConnectionTimeout = true)
+      } else if (connectFailedToStart) {
+        serviceState = serviceState.copy(hasConnectionTimeout = false)
+      } else {
+        serviceState = serviceState.copy(hasConnectionTimeout = false)
+      }
+
       // Setting up the connection failed, close it now to cleanup resources
-      // (what if we want to propagate error message?)
       disconnect()
+    } else {
+      serviceState = serviceState.copy(hasConnectionTimeout = false)
+    }
+  }
+
+  private suspend fun rebuildGattConnection(
+    bluetoothDevice: BluetoothDevice,
+    macAddressServiceMask: String
+  ) {
+    operationMutex.withLock {
+      currentConnection?.close()
+      currentConnection = GattConnection(context, bluetoothDevice, callback, macAddressServiceMask)
     }
   }
 
@@ -288,7 +454,18 @@ class GattConnectionService constructor(
   }
 
   override suspend fun disconnect() = withContext(NonCancellable) {
-    if (null == currentConnection) return@withContext
+    stopKeepAlive()
+
+    val lastGattError = serviceState.lastGattError
+    val hasConnectionTimeout = serviceState.hasConnectionTimeout
+
+    if (null == currentConnection) {
+      serviceState = ServiceState(
+        lastGattError = lastGattError,
+        hasConnectionTimeout = hasConnectionTimeout
+      )
+      return@withContext
+    }
 
     // Will perform DisconnectOperation
     // (and close when STATE_DISCONNECTED)
@@ -301,7 +478,10 @@ class GattConnectionService constructor(
 
     currentConnection = null
 
-    serviceState = ServiceState()
+    serviceState = ServiceState(
+      lastGattError = lastGattError,
+      hasConnectionTimeout = hasConnectionTimeout
+    )
   }
 
   override suspend fun <T> performOperation(
@@ -311,7 +491,7 @@ class GattConnectionService constructor(
     return performOperation(operation) ?: defaultValue
   }
 
-  override suspend fun <T> performOperation(operation: GattOperation<T>): T? {
+  override suspend fun <T> performOperation(operation: GattOperation<T>): T? = operationMutex.withLock {
     var value: T? = null
 
     currentConnection?.perform(operation) {
@@ -320,6 +500,10 @@ class GattConnectionService constructor(
         is GattError -> {
           when (!it) {
             GattErrorCode.GattError -> serviceState = serviceState.copy(lastGattError = it)
+            GattErrorCode.MissingPermission -> {
+              serviceState = serviceState.copy(lastGattError = it)
+              handleMissingPermission()
+            }
             GattErrorCode.PreconditionFailed,
             GattErrorCode.SerializationFailed,
             GattErrorCode.GattMethodFailed,
@@ -337,7 +521,7 @@ class GattConnectionService constructor(
     return value
   }
 
-  override suspend fun performWriteTransaction(operations: List<GattOperation<*>>): Boolean {
+  override suspend fun performWriteTransaction(operations: List<GattOperation<*>>): Boolean = operationMutex.withLock {
     var success = false
 
     if (currentConnection?.beginReliableWrite() == true) {
@@ -347,22 +531,35 @@ class GattConnectionService constructor(
         currentConnection?.perform(operation) { result ->
           when(result) {
             is GattData -> noWriteFailures = true
-            is GattError -> serviceState = serviceState.copy(lastGattError = result)
+            is GattError -> {
+              serviceState = serviceState.copy(lastGattError = result)
+              if (result.code == GattErrorCode.MissingPermission) handleMissingPermission()
+            }
             else -> {}
           }
         }
         if (!noWriteFailures) break
       }
 
-      val noEndReliableWriteFailure = performOperation(EndReliableWriteOperation(noWriteFailures)) == true
+      var noEndReliableWriteFailure = false
+      currentConnection?.perform(EndReliableWriteOperation(noWriteFailures)) { result ->
+        when(result) {
+          is GattData -> noEndReliableWriteFailure = !result
+          is GattError -> {
+            serviceState = serviceState.copy(lastGattError = result)
+            if (result.code == GattErrorCode.MissingPermission) handleMissingPermission()
+          }
+          else -> {}
+        }
+      }
 
       success = noWriteFailures && noEndReliableWriteFailure
     }
 
-    return success
+    success
   }
 
-  override suspend fun performSno110WriteTransaction(operations: List<Sno110WriteCharacteristicGattOperation<*>>): Boolean {
+  override suspend fun performSno110WriteTransaction(operations: List<Sno110WriteCharacteristicGattOperation<*>>): Boolean = operationMutex.withLock {
     var success = false
 
     if (currentConnection?.beginReliableWrite() == true) {
@@ -372,19 +569,32 @@ class GattConnectionService constructor(
         currentConnection?.perform(operation) { result ->
           when(result) {
             is GattData -> noWriteFailures = true
-            is GattError -> serviceState = serviceState.copy(lastGattError = result)
+            is GattError -> {
+              serviceState = serviceState.copy(lastGattError = result)
+              if (result.code == GattErrorCode.MissingPermission) handleMissingPermission()
+            }
             else -> {}
           }
         }
         if (!noWriteFailures) break
       }
 
-      val noEndReliableWriteFailure = performOperation(EndReliableWriteOperation(noWriteFailures)) == true
+      var noEndReliableWriteFailure = false
+      currentConnection?.perform(EndReliableWriteOperation(noWriteFailures)) { result ->
+        when(result) {
+          is GattData -> noEndReliableWriteFailure = !result
+          is GattError -> {
+            serviceState = serviceState.copy(lastGattError = result)
+            if (result.code == GattErrorCode.MissingPermission) handleMissingPermission()
+          }
+          else -> {}
+        }
+      }
 
       success = noWriteFailures && noEndReliableWriteFailure
     }
 
-    return success
+    success
   }
 
   protected val callback: BluetoothGattCallback = object : BluetoothGattCallback() {
@@ -394,13 +604,27 @@ class GattConnectionService constructor(
       newState: Int
     ) {
       super.onConnectionStateChange(gatt, status, newState)
+      val stateDescription = when (newState) {
+        BluetoothProfile.STATE_DISCONNECTED -> "DISCONNECTED"
+        BluetoothProfile.STATE_CONNECTING -> "CONNECTING"
+        BluetoothProfile.STATE_CONNECTED -> "CONNECTED"
+        BluetoothProfile.STATE_DISCONNECTING -> "DISCONNECTING"
+        else -> "UNKNOWN"
+      }
+
+      Log.d(
+        TAG,
+        "onConnectionStateChange address=${gatt.device.address}, status=${status.toGattStatusDescription()}, newState=$stateDescription ($newState)"
+      )
 
       val connectionState: GattConnectionStatus? = when (newState) {
         BluetoothProfile.STATE_DISCONNECTED -> GattConnectionStatus.Disconnected
         BluetoothProfile.STATE_CONNECTING -> GattConnectionStatus.Connecting
         BluetoothProfile.STATE_CONNECTED -> {
-          Log.d(TAG, "Device connected, checking permissions and requesting MTU...")
-          requestHigherMtu(gatt)
+          Log.d(TAG, "Device connected")
+          if (currentConnection?.isOperationInProgress() != true) {
+            requestHigherMtu(gatt)
+          }
           GattConnectionStatus.Connected
         }
         BluetoothProfile.STATE_DISCONNECTING -> GattConnectionStatus.Disconnecting
@@ -422,6 +646,17 @@ class GattConnectionService constructor(
         nextServiceState.copy(connectionStatus = connectionState)
       } else {
         nextServiceState
+      }
+
+      when (connectionState) {
+        GattConnectionStatus.Connected -> startKeepAlive()
+        GattConnectionStatus.Disconnected -> {
+          currentConnection?.resetOperation()
+          currentConnection?.close()
+          stopKeepAlive()
+          currentConnection = null
+        }
+        else -> {}
       }
     }
 
@@ -459,6 +694,8 @@ class GattConnectionService constructor(
 
   companion object {
     private const val TAG = "GattConnectionService"
+    private const val DEFAULT_KEEP_ALIVE_INTERVAL = 15_000L
+    private const val CONNECT_ATTEMPT_TIMEOUT_MS = 15_000L
 
     @Volatile
     private var instance: GattConnectionService? = null
@@ -466,7 +703,8 @@ class GattConnectionService constructor(
     fun getInstance(
       scope: CoroutineScope,
       context: Context,
-      deviceManager: BluetoothDeviceManager
+      deviceManager: BluetoothDeviceManager,
+      keepAliveInterval: Long = DEFAULT_KEEP_ALIVE_INTERVAL
     ) =
       instance
         ?: synchronized(this) {
@@ -474,7 +712,8 @@ class GattConnectionService constructor(
             ?: GattConnectionService(
               scope,
               context,
-              deviceManager
+              deviceManager,
+              keepAliveInterval
             ).also {
               instance = it
             }
